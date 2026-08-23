@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wrench, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Wrench, Sun, Moon } from 'lucide-react';
 
 export const Header = () => {
   const location = useLocation();
@@ -17,10 +17,6 @@ export const Header = () => {
       localStorage.setItem('toolnest_theme', 'light');
     }
   }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -44,11 +40,6 @@ export const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/tools" className={`nav-link ${isActive('/tools') || location.pathname.startsWith('/tools/') ? 'active' : ''}`}>
-                All Tools
-              </Link>
-            </li>
-            <li>
               <Link to="/about" className={`nav-link ${isActive('/about') ? 'active' : ''}`}>
                 About
               </Link>
@@ -62,19 +53,17 @@ export const Header = () => {
         </nav>
 
         <div className="header-cta">
-          {/* Eye-Care Theme Toggle */}
           <button
-            onClick={toggleTheme}
+            onClick={() => setIsDarkMode(!isDarkMode)}
             className="btn btn-outline btn-sm"
-            title={isDarkMode ? "Switch to Soft Light Theme" : "Switch to Dark Eye-Care Theme"}
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             style={{ borderRadius: '999px', padding: '0.4rem 0.75rem' }}
           >
-            {isDarkMode ? <Sun size={16} style={{ color: '#F59E0B' }} /> : <Moon size={16} style={{ color: '#6366F1' }} />}
+            {isDarkMode
+              ? <Sun size={16} style={{ color: '#F59E0B' }} />
+              : <Moon size={16} style={{ color: '#6366F1' }} />
+            }
           </button>
-
-          <Link to="/tools" className="btn btn-primary btn-sm">
-            Explore Tools <ArrowRight size={16} />
-          </Link>
         </div>
       </div>
     </header>
