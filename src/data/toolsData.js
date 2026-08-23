@@ -1,14 +1,150 @@
 export const CATEGORIES = [
   { id: 'all', name: 'All Tools' },
-  { id: 'developer', name: 'Developer Tools' },
-  { id: 'image', name: 'Image Tools' },
-  { id: 'text', name: 'Text Tools' },
+  { id: 'developer', name: 'Developer' },
+  { id: 'image', name: 'Image' },
+  { id: 'text', name: 'Text' },
   { id: 'converter', name: 'Converters' },
-  { id: 'calculator', name: 'Calculators' }
+  { id: 'calculator', name: 'Calculators' },
+  { id: 'utility', name: 'Utility' },
+  { id: 'seo', name: 'SEO' },
 ];
 
 export const TOOLS_DATA = [
   {
+    slug: 'qr-code-generator',
+    name: 'QR Code Generator',
+    description: 'Generate custom QR codes for URLs, text, email, or phone. Choose colors, sizes, and error correction levels.',
+    category: 'utility',
+    icon: 'QrCode',
+    isPopular: true,
+    metaTitle: 'Free QR Code Generator Online | ToolNest',
+    metaDescription: 'Generate free QR codes for URLs, text, email, Wi-Fi, and more. Customize colors, size, and error correction. Download as high-res PNG instantly.',
+    about: 'QR Code Generator lets you create high-quality, scannable QR codes for any URL, text, email address, phone number, or plain text instantly in your browser. Customize the foreground and background colors, choose from multiple sizes (128px to 1024px), and select error correction levels to balance data density and scan reliability. Everything runs client-side — no uploads, no tracking.',
+    howToUse: [
+      'Enter any URL, text, email, or phone number in the input box.',
+      'The QR code generates automatically in real time.',
+      'Customize colors, size, and error correction level.',
+      'Click "Download PNG" to save the QR code to your device.'
+    ],
+    faqs: [
+      { question: 'What can I encode in a QR code?', answer: 'You can encode URLs, plain text, email addresses, phone numbers, Wi-Fi credentials, vCards, and much more.' },
+      { question: 'What error correction level should I use?', answer: 'Use "M" for most purposes. Use "H" (30%) if you plan to print the QR code or overlay a logo on it, as it allows the code to be partially damaged and still scan correctly.' },
+      { question: 'Are QR codes generated here stored anywhere?', answer: 'No. QR code generation happens entirely in your browser using the qrcode.js library. Nothing is uploaded or stored.' }
+    ],
+    relatedSlugs: ['url-encoder', 'base64', 'uuid-generator']
+  },
+  {
+    slug: 'hash-generator',
+    name: 'Hash Generator',
+    description: 'Generate SHA-1, SHA-256, SHA-384, and SHA-512 cryptographic hashes from any text instantly.',
+    category: 'developer',
+    icon: 'Hash',
+    isPopular: true,
+    metaTitle: 'Free SHA Hash Generator (SHA-256, SHA-512) | ToolNest',
+    metaDescription: 'Generate SHA-1, SHA-256, SHA-384, and SHA-512 cryptographic hashes online for free. Instant, browser-based processing. Your data never leaves your device.',
+    about: 'Hash Generator uses your browser\'s built-in Web Crypto API to compute cryptographic hash digests. Hashing is used for data integrity checks, password storage verification, digital signatures, file comparison, and more. All hashing is performed locally — your sensitive data is never transmitted over the network.',
+    howToUse: [
+      'Type or paste your text into the input field.',
+      'SHA-1, SHA-256, SHA-384, and SHA-512 hashes are generated automatically.',
+      'Click "Copy" next to any hash to copy it to your clipboard.',
+      'Select HEX or Base64 input encoding if your input is not plain text.'
+    ],
+    faqs: [
+      { question: 'What is a cryptographic hash?', answer: 'A hash function maps input data of any size to a fixed-size output (digest). The same input always produces the same hash, making hashes ideal for data integrity verification.' },
+      { question: 'Is SHA-256 the same as MD5?', answer: 'No. MD5 and SHA-1 are considered cryptographically broken. SHA-256 and above are modern, secure standards used in TLS/SSL, blockchain, and file verification.' }
+    ],
+    relatedSlugs: ['password-generator', 'uuid-generator', 'base64']
+  },
+  {
+    slug: 'text-diff-checker',
+    name: 'Text Diff Checker',
+    description: 'Compare two blocks of text side-by-side and highlight line-by-line additions and deletions.',
+    category: 'text',
+    icon: 'GitDiff',
+    isPopular: true,
+    metaTitle: 'Free Online Text Diff Checker & Comparison Tool | ToolNest',
+    metaDescription: 'Compare two text blocks online for free. Highlight added and removed lines instantly. Ideal for code review, document comparison, and finding changes.',
+    about: 'Text Diff Checker compares two blocks of text line by line and shows you exactly what was added, removed, or unchanged between them. This is invaluable for reviewing code changes, comparing document revisions, checking configuration file differences, or proofreading edited content.',
+    howToUse: [
+      'Paste the original (old) text into the left panel.',
+      'Paste the modified (new) text into the right panel.',
+      'Differences are highlighted in real time — green for additions, red for deletions.',
+      'Copy the diff output or swap the panels using the action buttons.'
+    ],
+    faqs: [
+      { question: 'Can I compare code files?', answer: 'Yes! Text Diff Checker works on any plain text including source code, JSON, XML, HTML, CSS, configuration files, and prose.' },
+      { question: 'Is there a text size limit?', answer: 'No hard limit. Since comparison runs in your browser, very large files (several MB) may take a moment to process.' }
+    ],
+    relatedSlugs: ['json-formatter', 'case-converter', 'word-counter']
+  },
+  {
+    slug: 'regex-tester',
+    name: 'Regex Tester',
+    description: 'Test and debug regular expressions with real-time match highlighting, flag controls, and common presets.',
+    category: 'developer',
+    icon: 'Regex',
+    isPopular: true,
+    metaTitle: 'Free Online Regex Tester & Debugger | ToolNest',
+    metaDescription: 'Test regular expressions online for free. Real-time match highlighting, flag toggles (g, i, m, s), match details, and common regex presets for email, URL, IP, and more.',
+    about: 'Regex Tester is a powerful regular expression playground for developers. Write your regex pattern, select flags, and paste a test string to see all matches highlighted in real time. Use built-in presets for common patterns like email validation, URL matching, IP addresses, phone numbers, hex colors, and dates.',
+    howToUse: [
+      'Enter your regular expression pattern in the pattern field.',
+      'Toggle flags (Global, Case-insensitive, Multiline, Dotall) as needed.',
+      'Paste or type your test string.',
+      'View highlighted matches and detailed match information below.'
+    ],
+    faqs: [
+      { question: 'What regex flavor does this support?', answer: 'This tester uses JavaScript\'s native RegExp engine, which supports most standard PCRE-like syntax including lookaheads, non-capturing groups, and named captures (in modern browsers).' },
+      { question: 'Can I use it to validate email addresses?', answer: 'Yes! Use the "Email" preset button to load a standard email regex pattern instantly.' }
+    ],
+    relatedSlugs: ['text-diff-checker', 'json-formatter', 'url-encoder']
+  },
+  {
+    slug: 'lorem-ipsum-generator',
+    name: 'Lorem Ipsum Generator',
+    description: 'Generate placeholder Lorem Ipsum text by paragraphs, sentences, or words with one click.',
+    category: 'text',
+    icon: 'AlignLeft',
+    isPopular: true,
+    metaTitle: 'Free Lorem Ipsum Generator Online | ToolNest',
+    metaDescription: 'Generate Lorem Ipsum placeholder text online for free. Choose paragraphs, sentences, or words. Customize count and start with the classic "Lorem ipsum" opening.',
+    about: 'Lorem Ipsum Generator creates standard placeholder text used by designers and developers to fill mockups, prototypes, and templates. Quickly generate any number of paragraphs, sentences, or words to test how your design looks with realistic-length content.',
+    howToUse: [
+      'Choose the output type: Paragraphs, Sentences, or Words.',
+      'Set how many units you want (1–100).',
+      'Toggle whether to start with the classic "Lorem ipsum" opening.',
+      'Click "Generate" and copy the result.'
+    ],
+    faqs: [
+      { question: 'What is Lorem Ipsum?', answer: 'Lorem Ipsum is dummy/placeholder text derived from Cicero\'s "de Finibus Bonorum et Malorum" from 45 BC. It has been the industry\'s standard placeholder text since the 1500s.' },
+      { question: 'Can I generate just words or sentences?', answer: 'Yes! Switch between Paragraphs, Sentences, and Words modes using the toggle buttons.' }
+    ],
+    relatedSlugs: ['word-counter', 'case-converter', 'text-diff-checker']
+  },
+  {
+    slug: 'meta-tag-generator',
+    name: 'Meta Tag Generator',
+    description: 'Generate complete HTML meta tags, Open Graph (OG), and Twitter Card tags for SEO and social sharing.',
+    category: 'seo',
+    icon: 'Tags',
+    isPopular: true,
+    metaTitle: 'Free Meta Tag Generator for SEO | ToolNest',
+    metaDescription: 'Generate complete HTML meta tags, Open Graph tags, and Twitter Card tags for your webpage. Includes character count guidance and instant copy. Free SEO tool.',
+    about: 'Meta Tag Generator creates complete, copy-paste-ready HTML meta tags for your webpage including primary meta tags, Open Graph (Facebook), and Twitter Card tags. It includes real-time character count guidance for title (30–60 chars) and description (120–160 chars) to help you write SEO-optimized tags that rank better in search engines.',
+    howToUse: [
+      'Enter your page title, description, keywords, and author.',
+      'Add your page URL and OG image URL for social sharing previews.',
+      'Set your Twitter handle and choose the robots directive.',
+      'Copy the generated meta tags and paste them inside the <head> of your HTML.'
+    ],
+    faqs: [
+      { question: 'What is an OG image?', answer: 'Open Graph image is the thumbnail shown when your page is shared on Facebook, LinkedIn, Slack, and other platforms that support the OG protocol. Recommended size: 1200×630px.' },
+      { question: 'What character length should the title and description be?', answer: 'Google typically displays 50–60 characters for titles and 120–160 characters for descriptions. Our tool shows a live character count with color-coded warnings.' }
+    ],
+    relatedSlugs: ['word-counter', 'case-converter', 'url-encoder']
+  },
+  {
+
     slug: 'json-formatter',
     name: 'JSON Formatter',
     description: 'Format, beautify, and edit raw JSON strings into clean, human-readable structure instantly.',

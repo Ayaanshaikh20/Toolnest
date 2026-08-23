@@ -8,13 +8,15 @@ import { FAQ } from '../components/FAQ';
 import {
   FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
   ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage,
-  Percent, Search, X, ChevronRight
+  Percent, Search, X, ChevronRight, QrCode, Hash, GitMerge, AlignLeft, Tags, Diff
 } from 'lucide-react';
 
 const ICON_MAP = {
   FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
-  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage, Percent
+  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage, Percent,
+  QrCode, Hash, GitDiff: Diff, AlignLeft, Tags, Regex: Hash
 };
+
 
 const ToolIcon = ({ name, size = 18 }) => {
   const Icon = ICON_MAP[name] || FileJson;
