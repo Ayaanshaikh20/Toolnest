@@ -1,46 +1,50 @@
-/* ToolNest Design System & CSS Stylesheet - Eye-Care Soft Slate Theme */
+/* ToolNest Design System & CSS Stylesheet - Premium Modern & Dark Mode */
 
 :root {
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --bg-color: #F1F5F9;          /* Softer, neutral slate background to reduce eye strain */
-  --card-bg: #FFFFFF;            /* Clean white card surface */
-  --hero-bg: #F8FAFC;            /* Subtle soft hero background */
-  --text-main: #0F172A;          /* Softer slate-black text contrast */
-  --text-muted: #475569;         /* Slate muted text */
-  --text-light: #64748B;         /* Light slate text */
-  --primary-color: #2563EB;      /* Vibrant blue primary */
+  --bg-color: #F8FAFC;          /* Clean light gray background */
+  --card-bg: #FFFFFF;            /* White card background */
+  --hero-bg: #FFFFFF;            /* Hero background */
+  --text-main: #0F172A;          /* Slate dark text for sharp readability */
+  --text-muted: #475569;         /* Slate secondary text */
+  --text-light: #64748B;         /* Slate light text */
+  --primary-color: #2563EB;      /* Vibrant primary blue */
   --primary-hover: #1D4ED8;
-  --primary-light: #E0F2FE;      /* Soft blue accent background */
-  --border-color: #E2E8F0;       /* Softer border tone */
+  --primary-light: #EFF6FF;      /* Light blue accent container */
+  --border-color: #E2E8F0;       /* Crisp border line */
   --border-hover: #CBD5E1;
   --success-color: #059669;
-  --success-bg: #D1FAE5;
+  --success-bg: #ECFDF5;
   --error-color: #DC2626;
-  --error-bg: #FEE2E2;
+  --error-bg: #FEF2F2;
   --warning-color: #D97706;
-  --warning-bg: #FEF3C7;
+  --warning-bg: #FFFBEB;
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-lg: 14px;
   --radius-full: 9999px;
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 12px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.03);
-  --shadow-lg: 0 10px 20px -3px rgba(15, 23, 42, 0.08);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.1);
   --max-width: 1200px;
   --transition: all 0.2s ease-in-out;
 }
 
-/* Dark Mode Theme Variables (Eye-Care Slate Dark Mode) */
+/* Dark Mode Theme Variables - High Contrast & High Legibility */
 body.dark-mode {
-  --bg-color: #0F172A;
-  --card-bg: #1E293B;
-  --hero-bg: #0F172A;
-  --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
-  --text-light: #64748B;
-  --primary-light: #1E3A8A;
-  --border-color: #334155;
-  --border-hover: #475569;
+  --bg-color: #0B0F19;          /* Deep rich dark background */
+  --card-bg: #111827;          /* High contrast card background */
+  --hero-bg: #0F172A;          /* Deep hero background */
+  --text-main: #F9FAFB;        /* Pure white main text */
+  --text-muted: #9CA3AF;       /* Light gray secondary text */
+  --text-light: #6B7280;       /* Muted gray text */
+  --primary-color: #3B82F6;    /* Electric blue primary */
+  --primary-hover: #60A5FA;
+  --primary-light: #1E3A8A;    /* Dark blue container */
+  --border-color: #1F2937;     /* Clean dark border line */
+  --border-hover: #374151;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px 0 rgba(0, 0, 0, 0.5);
 }
 
 *, *::before, *::after {
@@ -56,7 +60,7 @@ html {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body {
@@ -243,9 +247,9 @@ a:hover {
   color: #FFFFFF;
 }
 .btn-secondary {
-  background-color: var(--border-color);
+  background-color: var(--card-bg);
   color: var(--text-main);
-  border-color: var(--border-hover);
+  border-color: var(--border-color);
 }
 .btn-secondary:hover {
   background-color: var(--border-hover);
@@ -279,6 +283,29 @@ a:hover {
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Quick Launch Pill Buttons */
+.quick-launch-pill {
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+.quick-launch-pill:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
 }
 
 /* Component: Form Controls */
@@ -606,7 +633,7 @@ a:hover {
 /* Reusable Ad Placeholder Component */
 .ad-placeholder {
   margin: 2.5rem 0;
-  background-color: rgba(148, 163, 184, 0.12);
+  background-color: rgba(148, 163, 184, 0.1);
   border: 1px dashed var(--border-hover);
   border-radius: var(--radius-md);
   padding: 1.5rem;

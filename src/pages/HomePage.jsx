@@ -81,11 +81,11 @@ export const HomePage = () => {
             marginTop: '1.25rem'
           }}>
             <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-light)', marginRight: '0.25rem' }}>Quick Launch:</span>
-            <Link to="/tools/json-formatter" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ JSON Formatter</Link>
-            <Link to="/tools/image-compressor" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Image Compressor</Link>
-            <Link to="/tools/password-generator" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Password Generator</Link>
-            <Link to="/tools/word-counter" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Word Counter</Link>
-            <Link to="/tools/uuid-generator" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ UUID Generator</Link>
+            <Link to="/tools/json-formatter" className="quick-launch-pill">⚡ JSON Formatter</Link>
+            <Link to="/tools/image-compressor" className="quick-launch-pill">⚡ Image Compressor</Link>
+            <Link to="/tools/password-generator" className="quick-launch-pill">⚡ Password Generator</Link>
+            <Link to="/tools/word-counter" className="quick-launch-pill">⚡ Word Counter</Link>
+            <Link to="/tools/uuid-generator" className="quick-launch-pill">⚡ UUID Generator</Link>
           </div>
         </div>
       </section>
