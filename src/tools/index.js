@@ -1,0 +1,33 @@
+import { JsonFormatter } from './JsonFormatter';
+import { JsonValidator } from './JsonValidator';
+import { UuidGenerator } from './UuidGenerator';
+import { Base64Tool } from './Base64Tool';
+import { UrlEncoderTool } from './UrlEncoderTool';
+import { TimestampConverter } from './TimestampConverter';
+import { PasswordGenerator } from './PasswordGenerator';
+import { WordCounter } from './WordCounter';
+import { CaseConverter } from './CaseConverter';
+import { ColorConverter } from './ColorConverter';
+import { ImageCompressor } from './ImageCompressor';
+import { ImageResizer } from './ImageResizer';
+import { JpgToPng } from './JpgToPng';
+import { PngToJpg } from './PngToJpg';
+import { PercentageCalculator } from './PercentageCalculator';
+
+export const TOOL_COMPONENTS = {
+  'json-formatter': JsonFormatter,
+  'json-validator': JsonValidator,
+  'uuid-generator': UuidGenerator,
+  'base64': Base64Tool,
+  'url-encoder': UrlEncoderTool,
+  'timestamp-converter': TimestampConverter,
+  'password-generator': PasswordGenerator,
+  'word-counter': WordCounter,
+  'case-converter': CaseConverter,
+  'color-converter': ColorConverter,
+  'image-compressor': ImageCompressor,
+  'image-resizer': ImageResizer,
+  'jpg-to-png': JpgToPng,
+  'png-to-jpg': PngToJpg,
+  'percentage-calculator': PercentageCalculator,
+};
