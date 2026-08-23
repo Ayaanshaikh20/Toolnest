@@ -48,7 +48,7 @@ export const PrivacyPolicyPage = () => {
 
         <h2>6. Contact Us</h2>
         <p>
-          If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at support@toolnest.com.
+          If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us via our <a href="/contact">Contact Page</a> or by email at <strong>support@shaikhayaan.com</strong>.
         </p>
       </div>
     </div>
