@@ -97,7 +97,7 @@ export const HomePage = () => {
           <section className="section" style={{ paddingTop: '1.5rem', paddingBottom: '2rem' }}>
             <div style={{
               background: 'var(--primary-light)',
-              border: '1px solid #BFDBFE',
+              border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
               padding: '1rem 1.25rem',
               marginBottom: '1.5rem',
@@ -114,7 +114,7 @@ export const HomePage = () => {
               <button
                 onClick={() => setSearchQuery('')}
                 className="btn btn-outline btn-sm"
-                style={{ background: '#fff' }}
+                style={{ background: 'var(--card-bg)' }}
               >
                 <X size={16} /> Clear Search
               </button>

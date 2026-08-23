@@ -87,7 +87,7 @@ export const ColorConverter = () => {
             padding: '0.5rem 1rem',
             borderRadius: 'var(--radius-md)',
             border: '1px solid var(--border-color)',
-            background: '#fff'
+            background: 'var(--card-bg)'
           }}>
             <Palette size={18} /> Choose Color
             <input

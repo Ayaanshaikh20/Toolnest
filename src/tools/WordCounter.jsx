@@ -27,32 +27,32 @@ export const WordCounter = () => {
         gap: '1rem',
         marginBottom: '1.5rem'
       }}>
-        <div style={{ background: 'var(--primary-light)', border: '1px solid #BFDBFE', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--primary-light)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--primary-color)' }}>{wordCount}</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Words</div>
         </div>
 
-        <div style={{ background: '#F3F4F6', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)' }}>{charCount}</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Characters</div>
         </div>
 
-        <div style={{ background: '#F3F4F6', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)' }}>{charNoSpacesCount}</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>No Spaces</div>
         </div>
 
-        <div style={{ background: '#F3F4F6', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)' }}>{sentenceCount}</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Sentences</div>
         </div>
 
-        <div style={{ background: '#F3F4F6', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)' }}>{paragraphCount}</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Paragraphs</div>
         </div>
 
-        <div style={{ background: '#F3F4F6', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
+        <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)' }}>~{readingTime}m</div>
           <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Reading Time</div>
         </div>

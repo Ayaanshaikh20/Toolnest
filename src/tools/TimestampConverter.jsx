@@ -51,7 +51,7 @@ export const TimestampConverter = () => {
       {/* Live Current Timestamp Banner */}
       <div style={{
         backgroundColor: 'var(--primary-light)',
-        border: '1px solid #BFDBFE',
+        border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-md)',
         padding: '1.25rem',
         display: 'flex',
@@ -75,7 +75,7 @@ export const TimestampConverter = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
         {/* Section 1: Timestamp -> Date */}
-        <div style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', backgroundColor: '#FAFBFD' }}>
+        <div style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-color)' }}>
           <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Timestamp &rarr; Date Conversion</h3>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem' }}>
@@ -94,19 +94,19 @@ export const TimestampConverter = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
               <div>
                 <strong>GMT / UTC:</strong>
-                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: '#fff', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginTop: '0.25rem' }}>
+                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: 'var(--card-bg)', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid var(--border-color)', marginTop: '0.25rem' }}>
                   {parsedDate.toUTCString()}
                 </div>
               </div>
               <div>
                 <strong>Local Time:</strong>
-                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: '#fff', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginTop: '0.25rem' }}>
+                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: 'var(--card-bg)', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid var(--border-color)', marginTop: '0.25rem' }}>
                   {parsedDate.toString()}
                 </div>
               </div>
               <div>
                 <strong>ISO 8601:</strong>
-                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: '#fff', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginTop: '0.25rem' }}>
+                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: 'var(--card-bg)', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid var(--border-color)', marginTop: '0.25rem' }}>
                   {parsedDate.toISOString()}
                 </div>
               </div>
@@ -120,7 +120,7 @@ export const TimestampConverter = () => {
         </div>
 
         {/* Section 2: Date -> Timestamp */}
-        <div style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', backgroundColor: '#FAFBFD' }}>
+        <div style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--bg-color)' }}>
           <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Date &rarr; Timestamp Conversion</h3>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem' }}>
@@ -138,13 +138,13 @@ export const TimestampConverter = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
               <div>
                 <strong>Timestamp (Seconds):</strong>
-                <div style={{ fontFamily: 'monospace', color: 'var(--primary-color)', fontWeight: '700', background: '#fff', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginTop: '0.25rem' }}>
+                <div style={{ fontFamily: 'monospace', color: 'var(--primary-color)', fontWeight: '700', background: 'var(--card-bg)', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid var(--border-color)', marginTop: '0.25rem' }}>
                   {calculatedTs.seconds}
                 </div>
               </div>
               <div>
                 <strong>Timestamp (Milliseconds):</strong>
-                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: '#fff', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginTop: '0.25rem' }}>
+                <div style={{ fontFamily: 'monospace', color: 'var(--text-main)', background: 'var(--card-bg)', padding: '0.375rem 0.625rem', borderRadius: '4px', border: '1px solid var(--border-color)', marginTop: '0.25rem' }}>
                   {calculatedTs.millis}
                 </div>
               </div>

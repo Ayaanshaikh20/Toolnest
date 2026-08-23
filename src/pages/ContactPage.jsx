@@ -30,7 +30,7 @@ export const ContactPage = () => {
       {submitted ? (
         <div style={{
           backgroundColor: 'var(--success-bg)',
-          border: '1px solid #6EE7B7',
+          border: '1px solid var(--success-color)',
           borderRadius: 'var(--radius-md)',
           padding: '2rem',
           textAlign: 'center'
@@ -40,7 +40,7 @@ export const ContactPage = () => {
           <p>Your message has been sent successfully. We will get back to you shortly.</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', background: '#fff', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', background: 'var(--card-bg)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '0.375rem' }}>Your Name</label>
             <input

@@ -23,7 +23,7 @@ export const PercentageCalculator = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Formula 1 */}
-      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: '#FAFBFD' }}>
+      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: 'var(--bg-color)' }}>
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
           1. Basic Percentage: What is X% of Y?
         </h3>
@@ -46,7 +46,7 @@ export const PercentageCalculator = () => {
           />
           <span>?</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--card-bg)', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
           <strong>Result:</strong>
           <span style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--primary-color)' }}>
             {isNaN(res1) ? '0' : res1.toLocaleString()}
@@ -58,7 +58,7 @@ export const PercentageCalculator = () => {
       </div>
 
       {/* Formula 2 */}
-      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: '#FAFBFD' }}>
+      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: 'var(--bg-color)' }}>
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
           2. Fraction Percentage: X is what percentage of Y?
         </h3>
@@ -80,7 +80,7 @@ export const PercentageCalculator = () => {
           />
           <span>?</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--card-bg)', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
           <strong>Result:</strong>
           <span style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--primary-color)' }}>
             {isNaN(res2) ? '0' : `${res2.toFixed(2)}%`}
@@ -92,7 +92,7 @@ export const PercentageCalculator = () => {
       </div>
 
       {/* Formula 3 */}
-      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: '#FAFBFD' }}>
+      <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.5rem', backgroundColor: 'var(--bg-color)' }}>
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-main)' }}>
           3. Percentage Increase / Decrease: From X to Y
         </h3>
@@ -115,7 +115,7 @@ export const PercentageCalculator = () => {
           />
           <span>?</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#fff', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--card-bg)', padding: '0.875rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
           <strong>Result:</strong>
           <span style={{
             fontSize: '1.35rem',

@@ -57,7 +57,7 @@ export const PasswordGenerator = () => {
     <div>
       {/* Generated Password Box */}
       <div style={{
-        background: '#FAFBFD',
+        background: 'var(--bg-color)',
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-md)',
         padding: '1.25rem',
@@ -83,7 +83,7 @@ export const PasswordGenerator = () => {
             <span>Password Strength:</span>
             <span style={{ color: strength.color }}>{strength.label}</span>
           </div>
-          <div style={{ height: '6px', width: '100%', background: '#E5E7EB', borderRadius: '3px', overflow: 'hidden' }}>
+          <div style={{ height: '6px', width: '100%', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${strength.score}%`, background: strength.color, transition: 'var(--transition)' }}></div>
           </div>
         </div>
