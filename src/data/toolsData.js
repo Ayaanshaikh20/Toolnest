@@ -1,5 +1,6 @@
 export const CATEGORIES = [
   { id: 'all', name: 'All Tools' },
+  { id: 'pdf', name: 'PDF Tools' },
   { id: 'developer', name: 'Developer' },
   { id: 'image', name: 'Image' },
   { id: 'text', name: 'Text' },
@@ -10,6 +11,94 @@ export const CATEGORIES = [
 ];
 
 export const TOOLS_DATA = [
+  {
+    slug: 'pdf-merger',
+    name: 'PDF Merger',
+    description: 'Combine and merge multiple PDF files into one single organized PDF document in seconds.',
+    category: 'pdf',
+    icon: 'Layers',
+    isPopular: true,
+    metaTitle: 'Free Online PDF Merger - Combine Multiple PDFs | ToolNest',
+    metaDescription: 'Merge PDF files online for free. Combine multiple PDF documents into one single file with drag & drop reordering. 100% private in-browser processing.',
+    about: 'PDF Merger allows you to easily combine multiple PDF files into a single, cohesive document directly inside your browser. Reorder files with one click, merge invoices, reports, scanned pages, or study notes without sending private files to any remote server.',
+    howToUse: [
+      'Click the upload area or drag and drop 2 or more PDF documents.',
+      'Use the Up and Down arrow buttons to arrange the desired page sequence.',
+      'Click the "Merge PDFs" button to combine files.',
+      'Click "Download Merged PDF" to save the final document.'
+    ],
+    faqs: [
+      { question: 'Are my PDF files uploaded to your server?', answer: 'No! All merging is executed 100% client-side inside your browser memory using WebAssembly & JavaScript. Your sensitive PDFs never leave your machine.' },
+      { question: 'Is there a limit to how many PDFs I can merge?', answer: 'No arbitrary file limit. You can combine as many PDF files as your computer or phone memory can handle.' }
+    ],
+    relatedSlugs: ['pdf-splitter', 'images-to-pdf', 'pdf-to-images']
+  },
+  {
+    slug: 'pdf-splitter',
+    name: 'PDF Splitter',
+    description: 'Extract specific pages or page ranges (e.g. 1-3, 5, 8-10) from any PDF into a new document.',
+    category: 'pdf',
+    icon: 'Scissors',
+    isPopular: true,
+    metaTitle: 'Free Online PDF Splitter & Page Extractor | ToolNest',
+    metaDescription: 'Extract specific pages or ranges from PDF files online for free. Fast, secure, and 100% client-side with no file uploads.',
+    about: 'PDF Splitter lets you extract specific pages or custom page ranges from any PDF document. Whether you need just page 1 of a contract or chapters 3 to 7 of an eBook, this tool creates a clean new PDF containing only your selected pages instantly.',
+    howToUse: [
+      'Upload the PDF document you want to split or extract.',
+      'Enter your desired page numbers or ranges (e.g., 1-4, 7, 10-12).',
+      'Click "Extract & Download" to generate your new document.',
+      'Download your customized PDF file immediately.'
+    ],
+    faqs: [
+      { question: 'How do I specify page ranges?', answer: 'You can use commas and hyphens. For example: "1-3" extracts pages 1, 2, and 3. "1, 5, 9-12" extracts pages 1, 5, 9, 10, 11, and 12.' },
+      { question: 'Is my data secure?', answer: 'Yes! Processing happens entirely in your local browser. No files are transmitted over the internet.' }
+    ],
+    relatedSlugs: ['pdf-merger', 'images-to-pdf', 'pdf-to-images']
+  },
+  {
+    slug: 'images-to-pdf',
+    name: 'Images to PDF Converter',
+    description: 'Convert and combine multiple JPG and PNG images into a clean, multi-page PDF document.',
+    category: 'pdf',
+    icon: 'FileImage',
+    isPopular: true,
+    metaTitle: 'Free Images to PDF Converter (JPG, PNG to PDF) | ToolNest',
+    metaDescription: 'Convert JPG, JPEG, and PNG images into a PDF document online for free. Reorder photos, choose page formats, and download your PDF instantly.',
+    about: 'Images to PDF Converter makes it effortless to compile receipts, photos, scanned notes, or graphic designs into a polished PDF document. Arrange images in your desired sequence, select standard A4 or exact image-fit page sizing, and download in seconds.',
+    howToUse: [
+      'Select or drag & drop multiple JPG or PNG image files.',
+      'Reorder images using the arrow buttons to set page order.',
+      'Choose between "Fit Image Size" or "Standard A4 Page".',
+      'Click "Convert to PDF" and download your document.'
+    ],
+    faqs: [
+      { question: 'Can I convert multiple images at once?', answer: 'Yes! You can upload multiple JPG and PNG images and combine them into a single multi-page PDF.' },
+      { question: 'What formats are supported?', answer: 'We currently support JPG, JPEG, and PNG image formats.' }
+    ],
+    relatedSlugs: ['pdf-to-images', 'pdf-merger', 'image-compressor']
+  },
+  {
+    slug: 'pdf-to-images',
+    name: 'PDF to Images Converter',
+    description: 'Convert every page of a PDF document into high-resolution PNG photos with 1-click download.',
+    category: 'pdf',
+    icon: 'Image',
+    isPopular: true,
+    metaTitle: 'Free PDF to Images Converter (PDF to PNG) | ToolNest',
+    metaDescription: 'Convert PDF pages into high-resolution PNG images online for free. Render pages with high quality and download individual pages or all at once.',
+    about: 'PDF to Images Converter renders each page of your PDF file into a crisp, high-resolution PNG image directly in your browser. Perfect for sharing document slides, embedding pages in presentations, or extracting graphics from PDFs.',
+    howToUse: [
+      'Upload any PDF document from your device.',
+      'Wait a moment while the browser renders each page into an image.',
+      'Preview all converted pages on screen.',
+      'Download individual page PNGs or click "Download All".'
+    ],
+    faqs: [
+      { question: 'What image quality is produced?', answer: 'We render pages at high 2x scale to ensure text and graphics remain razor sharp when saved as PNG.' },
+      { question: 'Are PDF files stored on any server?', answer: 'No. The conversion runs strictly client-side inside your browser canvas. Your documents remain completely private.' }
+    ],
+    relatedSlugs: ['images-to-pdf', 'pdf-merger', 'pdf-splitter']
+  },
   {
     slug: 'qr-code-generator',
     name: 'QR Code Generator',

@@ -19,6 +19,10 @@ import { LoremIpsumGenerator } from './LoremIpsumGenerator';
 import { RegexTester } from './RegexTester';
 import { TextDiffChecker } from './TextDiffChecker';
 import { MetaTagGenerator } from './MetaTagGenerator';
+import { PdfMerger } from './PdfMerger';
+import { PdfSplitter } from './PdfSplitter';
+import { ImagesToPdf } from './ImagesToPdf';
+import { PdfToImages } from './PdfToImages';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -42,4 +46,8 @@ export const TOOL_COMPONENTS = {
   'regex-tester': RegexTester,
   'text-diff-checker': TextDiffChecker,
   'meta-tag-generator': MetaTagGenerator,
+  'pdf-merger': PdfMerger,
+  'pdf-splitter': PdfSplitter,
+  'images-to-pdf': ImagesToPdf,
+  'pdf-to-images': PdfToImages,
 };
