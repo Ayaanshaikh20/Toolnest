@@ -1,45 +1,45 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TOOLS_DATA, CATEGORIES } from '../data/toolsData';
-import { ToolCard } from '../components/ToolCard';
 import { SearchBar } from '../components/SearchBar';
-import { CategoryFilter } from '../components/CategoryFilter';
-import { FAQ } from '../components/FAQ';
 import { SEO } from '../components/SEO';
 import { AdPlaceholder } from '../components/AdPlaceholder';
-import { Zap, ShieldCheck, Cpu, Lock, Globe, ArrowRight, Search, X } from 'lucide-react';
+import { FAQ } from '../components/FAQ';
+import {
+  FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
+  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage,
+  Percent, Search, X, ChevronRight
+} from 'lucide-react';
+
+const ICON_MAP = {
+  FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
+  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage, Percent
+};
+
+const ToolIcon = ({ name, size = 18 }) => {
+  const Icon = ICON_MAP[name] || FileJson;
+  return <Icon size={size} />;
+};
 
 export const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
-  const popularTools = TOOLS_DATA.filter(tool => tool.isPopular);
-
   const filteredTools = TOOLS_DATA.filter(tool => {
-    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          tool.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = !q ||
+      tool.name.toLowerCase().includes(q) ||
+      tool.description.toLowerCase().includes(q) ||
+      tool.category.toLowerCase().includes(q);
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
   const homepageFaqs = [
-    {
-      question: 'Are all tools on ToolNest completely free?',
-      answer: 'Yes! Every single tool on ToolNest is 100% free to use with no hidden fees, premium tiers, or limits.'
-    },
-    {
-      question: 'Do I need to create an account or sign up?',
-      answer: 'No account registration is required. You can visit any tool URL directly, use it immediately, and leave.'
-    },
-    {
-      question: 'Is my data private and secure when using ToolNest?',
-      answer: 'Yes. Most tools process your data locally inside your web browser using JavaScript and Web APIs. Your images, text payloads, passwords, and data never leave your device or get stored on any server.'
-    },
-    {
-      question: 'Can I use ToolNest on mobile devices?',
-      answer: 'Absolutely. ToolNest is fully responsive and optimized for smartphones, tablets, laptops, and desktop screens.'
-    }
+    { question: 'Are all tools free?', answer: 'Yes! Every tool is 100% free with no hidden fees, premium tiers, or limits.' },
+    { question: 'Do I need to sign up?', answer: 'No account required. Visit any tool URL and start working immediately.' },
+    { question: 'Is my data private?', answer: 'Yes. All tools run inside your browser. Your files and text never leave your device.' },
+    { question: 'Does it work on mobile?', answer: 'Yes, fully responsive on smartphones, tablets, and desktops.' }
   ];
 
   const homepageStructuredData = {
@@ -63,174 +63,98 @@ export const HomePage = () => {
         structuredData={homepageStructuredData}
       />
 
-      {/* Hero */}
-      <section className="hero">
+      {/* ── Compact Hero ── */}
+      <section className="hero-compact">
         <div className="container">
-          <h1>Free Online Tools That Just Work</h1>
-          <p>Fast, simple and free tools for developers, creators, students and everyday tasks.</p>
-
-          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search for any tool (e.g. Image, JSON, Password)..." />
-
-          {/* Quick Access Pills */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-            flexWrap: 'wrap',
-            marginTop: '1.25rem'
-          }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-light)', marginRight: '0.25rem' }}>Quick Launch:</span>
-            <Link to="/tools/json-formatter" className="quick-launch-pill">⚡ JSON Formatter</Link>
-            <Link to="/tools/image-compressor" className="quick-launch-pill">⚡ Image Compressor</Link>
-            <Link to="/tools/password-generator" className="quick-launch-pill">⚡ Password Generator</Link>
-            <Link to="/tools/word-counter" className="quick-launch-pill">⚡ Word Counter</Link>
-            <Link to="/tools/uuid-generator" className="quick-launch-pill">⚡ UUID Generator</Link>
+          <div className="hero-compact-inner">
+            <div className="hero-compact-text">
+              <h1>Free Online Tools.<br /><span style={{ color: 'var(--primary-color)' }}>Open. Use. Done.</span></h1>
+              <p>15+ fast, privacy-first utilities. No login, no uploads, no nonsense.</p>
+            </div>
+            <div className="hero-compact-search">
+              <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search tools (JSON, Image, Password...)" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Main Container */}
+      {/* ── Main Layout: Sidebar + Tool Grid ── */}
       <div className="container">
-        {/* INSTANT SEARCH RESULTS - Appears Immediately Below Hero When Typing */}
-        {searchQuery.trim() !== '' ? (
-          <section className="section" style={{ paddingTop: '1.5rem', paddingBottom: '2rem' }}>
-            <div style={{
-              background: 'var(--primary-light)',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--radius-md)',
-              padding: '1rem 1.25rem',
-              marginBottom: '1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <Search size={20} style={{ color: 'var(--primary-color)' }} />
-                <span style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--primary-color)' }}>
-                  Found {filteredTools.length} tool{filteredTools.length === 1 ? '' : 's'} for "{searchQuery}"
-                </span>
-              </div>
+        <div className="tools-layout">
+
+          {/* Sidebar: Category Filter */}
+          <aside className="tools-sidebar">
+            <div className="sidebar-section-label">Categories</div>
+            {CATEGORIES.map(cat => (
               <button
-                onClick={() => setSearchQuery('')}
-                className="btn btn-outline btn-sm"
-                style={{ background: 'var(--card-bg)' }}
+                key={cat.id}
+                className={`sidebar-category-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}
               >
-                <X size={16} /> Clear Search
+                {cat.name}
+                <span className="sidebar-count">
+                  {cat.id === 'all' ? TOOLS_DATA.length : TOOLS_DATA.filter(t => t.category === cat.id).length}
+                </span>
               </button>
+            ))}
+
+            <div className="sidebar-ad-slot">
+              <AdPlaceholder position="sidebar" />
             </div>
+          </aside>
+
+          {/* Main: Tool Grid */}
+          <main className="tools-main">
+            {/* Search result label */}
+            {(searchQuery || activeCategory !== 'all') && (
+              <div className="results-bar">
+                <span>
+                  {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''}
+                  {searchQuery ? ` for "${searchQuery}"` : ''}
+                  {activeCategory !== 'all' ? ` in ${CATEGORIES.find(c => c.id === activeCategory)?.name}` : ''}
+                </span>
+                <button
+                  className="results-clear"
+                  onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
+                >
+                  <X size={14} /> Clear
+                </button>
+              </div>
+            )}
 
             {filteredTools.length > 0 ? (
-              <div className="tool-grid">
+              <div className="compact-tool-grid">
                 {filteredTools.map(tool => (
-                  <ToolCard key={tool.slug} tool={tool} />
+                  <Link key={tool.slug} to={`/tools/${tool.slug}`} className="compact-tool-card">
+                    <div className="compact-tool-icon">
+                      <ToolIcon name={tool.icon} size={20} />
+                    </div>
+                    <div className="compact-tool-body">
+                      <div className="compact-tool-name">{tool.name}</div>
+                      <div className="compact-tool-desc">{tool.description}</div>
+                    </div>
+                    <ChevronRight size={16} className="compact-tool-arrow" />
+                  </Link>
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
-                <h3>No matching tools for "{searchQuery}"</h3>
-                <p style={{ marginTop: '0.5rem' }}>Try searching for "JSON", "Image", "Password", or "Word".</p>
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="btn btn-primary btn-sm"
-                  style={{ marginTop: '1rem' }}
-                >
+              <div className="no-results">
+                <Search size={40} style={{ color: 'var(--text-light)', marginBottom: '1rem' }} />
+                <h3>No tools found for "{searchQuery}"</h3>
+                <p>Try: JSON, Image, Password, Word, UUID</p>
+                <button className="btn btn-primary btn-sm" style={{ marginTop: '1rem' }} onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}>
                   Show All Tools
                 </button>
               </div>
             )}
-          </section>
-        ) : (
-          <>
-            {/* Top Ad Banner (Only shown when not actively searching to prevent pushing search cards down) */}
-            <AdPlaceholder position="top" />
 
-            {/* Popular Tools Section */}
-            {activeCategory === 'all' && (
-              <section className="section">
-                <div className="section-title">
-                  <h2>Popular Tools</h2>
-                  <Link to="/tools" className="btn btn-outline btn-sm">
-                    View All Tools <ArrowRight size={16} />
-                  </Link>
-                </div>
-                <div className="tool-grid">
-                  {popularTools.map(tool => (
-                    <ToolCard key={tool.slug} tool={tool} />
-                  ))}
-                </div>
-              </section>
-            )}
+            <AdPlaceholder position="middle" />
+          </main>
+        </div>
 
-            {/* Directory Section */}
-            <section className="section" style={{ paddingTop: activeCategory !== 'all' ? '1rem' : '0' }}>
-              <div className="section-title">
-                <h2>Explore All Tools</h2>
-              </div>
-
-              <CategoryFilter
-                categories={CATEGORIES}
-                activeCategory={activeCategory}
-                onSelectCategory={setActiveCategory}
-              />
-
-              <div className="tool-grid">
-                {filteredTools.map(tool => (
-                  <ToolCard key={tool.slug} tool={tool} />
-                ))}
-              </div>
-            </section>
-          </>
-        )}
-
-        <AdPlaceholder position="middle" />
-
-        {/* Why ToolNest? Section */}
-        <section className="section">
-          <div className="section-title" style={{ textAlign: 'center', display: 'block' }}>
-            <h2>Why ToolNest?</h2>
-            <p style={{ marginTop: '0.5rem' }}>Engineered for speed, privacy, and frictionless everyday productivity.</p>
-          </div>
-
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon"><Zap size={24} /></div>
-              <h3>100% Free Forever</h3>
-              <p>No paywalls, subscriptions, or feature locks. Use all tools without restrictions.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><Lock size={24} /></div>
-              <h3>No Registration</h3>
-              <p>No sign-up or email required. Get straight to work without creating accounts.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><Cpu size={24} /></div>
-              <h3>Fast Processing</h3>
-              <p>Instant client-side execution means zero server latency for your workflows.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><ShieldCheck size={24} /></div>
-              <h3>Privacy-Friendly</h3>
-              <p>Your sensitive images, JSON, and text payloads stay on your device local browser.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon"><Globe size={24} /></div>
-              <h3>Works In Your Browser</h3>
-              <p>Cross-platform compatibility. Works on Windows, Mac, Linux, iOS, and Android.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="section">
-          <div className="section-title" style={{ textAlign: 'center', display: 'block' }}>
-            <h2>Frequently Asked Questions</h2>
-            <p style={{ marginTop: '0.5rem' }}>Got questions? We've got answers.</p>
-          </div>
+        {/* FAQ */}
+        <section style={{ padding: '2.5rem 0' }}>
+          <h2 style={{ marginBottom: '1.25rem' }}>Frequently Asked Questions</h2>
           <FAQ faqs={homepageFaqs} />
         </section>
 
