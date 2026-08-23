@@ -16,7 +16,7 @@ export const TermsPage = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
         <h2>1. Terms</h2>
         <p>
-          By accessing the website at https://toolnest.com, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
+          By accessing the website at https://toolnest.shaikhayaan.com, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
         </p>
 
         <h2>2. Use License</h2>
