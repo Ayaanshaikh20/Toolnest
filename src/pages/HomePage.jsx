@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TOOLS_DATA, CATEGORIES } from '../data/toolsData';
 import { ToolCard } from '../components/ToolCard';
@@ -7,12 +7,11 @@ import { CategoryFilter } from '../components/CategoryFilter';
 import { FAQ } from '../components/FAQ';
 import { SEO } from '../components/SEO';
 import { AdPlaceholder } from '../components/AdPlaceholder';
-import { Zap, ShieldCheck, Cpu, Lock, Globe, ArrowRight, Search } from 'lucide-react';
+import { Zap, ShieldCheck, Cpu, Lock, Globe, ArrowRight, Search, X } from 'lucide-react';
 
 export const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const resultsRef = useRef(null);
 
   const popularTools = TOOLS_DATA.filter(tool => tool.isPopular);
 
@@ -23,10 +22,6 @@ export const HomePage = () => {
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const handleSearchChange = (query) => {
-    setSearchQuery(query);
-  };
 
   const homepageFaqs = [
     {
@@ -74,9 +69,9 @@ export const HomePage = () => {
           <h1>Free Online Tools That Just Work</h1>
           <p>Fast, simple and free tools for developers, creators, students and everyday tasks.</p>
 
-          <SearchBar value={searchQuery} onChange={handleSearchChange} placeholder="Search for any tool (e.g. JSON, Image, Password, Word)..." />
+          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search for any tool (e.g. Image, JSON, Password)..." />
 
-          {/* Quick Access Pills for Ultra-Fast UX */}
+          {/* Quick Access Pills */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -96,87 +91,97 @@ export const HomePage = () => {
       </section>
 
       {/* Main Container */}
-      <div className="container" ref={resultsRef}>
-        {/* Instant Search Overlay / Header when typing */}
-        {searchQuery.trim() !== '' && (
-          <div style={{
-            background: 'var(--primary-light)',
-            border: '1px solid #BFDBFE',
-            borderRadius: 'var(--radius-md)',
-            padding: '1rem 1.5rem',
-            marginTop: '2rem',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Search size={20} style={{ color: 'var(--primary-color)' }} />
-              <span style={{ fontSize: '1.05rem', fontWeight: '600' }}>
-                Showing {filteredTools.length} tool{filteredTools.length === 1 ? '' : 's'} matching "{searchQuery}"
-              </span>
-            </div>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="btn btn-outline btn-sm"
-              style={{ background: '#fff' }}
-            >
-              Clear Search
-            </button>
-          </div>
-        )}
-
-        <AdPlaceholder position="top" />
-
-        {/* Popular Tools Section (shown when no search query active) */}
-        {searchQuery === '' && activeCategory === 'all' && (
-          <section className="section">
-            <div className="section-title">
-              <h2>Popular Tools</h2>
-              <Link to="/tools" className="btn btn-outline btn-sm">
-                View All Tools <ArrowRight size={16} />
-              </Link>
-            </div>
-            <div className="tool-grid">
-              {popularTools.map(tool => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Directory Search / Category Filter Section */}
-        <section className="section" style={{ paddingTop: searchQuery !== '' || activeCategory !== 'all' ? '1rem' : '0' }}>
-          <div className="section-title">
-            <h2>{searchQuery || activeCategory !== 'all' ? 'Search Results' : 'Explore All Tools'}</h2>
-          </div>
-
-          <CategoryFilter
-            categories={CATEGORIES}
-            activeCategory={activeCategory}
-            onSelectCategory={setActiveCategory}
-          />
-
-          {filteredTools.length > 0 ? (
-            <div className="tool-grid">
-              {filteredTools.map(tool => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
-              <h3>No tools match your search "{searchQuery}"</h3>
-              <p style={{ marginTop: '0.5rem' }}>Try searching for keywords like "JSON", "Image", "Password", "Word", or "UUID".</p>
+      <div className="container">
+        {/* INSTANT SEARCH RESULTS - Appears Immediately Below Hero When Typing */}
+        {searchQuery.trim() !== '' ? (
+          <section className="section" style={{ paddingTop: '1.5rem', paddingBottom: '2rem' }}>
+            <div style={{
+              background: 'var(--primary-light)',
+              border: '1px solid #BFDBFE',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem 1.25rem',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <Search size={20} style={{ color: 'var(--primary-color)' }} />
+                <span style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--primary-color)' }}>
+                  Found {filteredTools.length} tool{filteredTools.length === 1 ? '' : 's'} for "{searchQuery}"
+                </span>
+              </div>
               <button
                 onClick={() => setSearchQuery('')}
-                className="btn btn-primary btn-sm"
-                style={{ marginTop: '1rem' }}
+                className="btn btn-outline btn-sm"
+                style={{ background: '#fff' }}
               >
-                Show All Tools
+                <X size={16} /> Clear Search
               </button>
             </div>
-          )}
-        </section>
+
+            {filteredTools.length > 0 ? (
+              <div className="tool-grid">
+                {filteredTools.map(tool => (
+                  <ToolCard key={tool.slug} tool={tool} />
+                ))}
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                <h3>No matching tools for "{searchQuery}"</h3>
+                <p style={{ marginTop: '0.5rem' }}>Try searching for "JSON", "Image", "Password", or "Word".</p>
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="btn btn-primary btn-sm"
+                  style={{ marginTop: '1rem' }}
+                >
+                  Show All Tools
+                </button>
+              </div>
+            )}
+          </section>
+        ) : (
+          <>
+            {/* Top Ad Banner (Only shown when not actively searching to prevent pushing search cards down) */}
+            <AdPlaceholder position="top" />
+
+            {/* Popular Tools Section */}
+            {activeCategory === 'all' && (
+              <section className="section">
+                <div className="section-title">
+                  <h2>Popular Tools</h2>
+                  <Link to="/tools" className="btn btn-outline btn-sm">
+                    View All Tools <ArrowRight size={16} />
+                  </Link>
+                </div>
+                <div className="tool-grid">
+                  {popularTools.map(tool => (
+                    <ToolCard key={tool.slug} tool={tool} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Directory Section */}
+            <section className="section" style={{ paddingTop: activeCategory !== 'all' ? '1rem' : '0' }}>
+              <div className="section-title">
+                <h2>Explore All Tools</h2>
+              </div>
+
+              <CategoryFilter
+                categories={CATEGORIES}
+                activeCategory={activeCategory}
+                onSelectCategory={setActiveCategory}
+              />
+
+              <div className="tool-grid">
+                {filteredTools.map(tool => (
+                  <ToolCard key={tool.slug} tool={tool} />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
 
         <AdPlaceholder position="middle" />
 
