@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wrench, ArrowRight } from 'lucide-react';
+import { Wrench, ArrowRight, Sun, Moon } from 'lucide-react';
 
 export const Header = () => {
   const location = useLocation();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('toolnest_theme') === 'dark';
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('toolnest_theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('toolnest_theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -45,6 +62,16 @@ export const Header = () => {
         </nav>
 
         <div className="header-cta">
+          {/* Eye-Care Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="btn btn-outline btn-sm"
+            title={isDarkMode ? "Switch to Soft Light Theme" : "Switch to Dark Eye-Care Theme"}
+            style={{ borderRadius: '999px', padding: '0.4rem 0.75rem' }}
+          >
+            {isDarkMode ? <Sun size={16} style={{ color: '#F59E0B' }} /> : <Moon size={16} style={{ color: '#6366F1' }} />}
+          </button>
+
           <Link to="/tools" className="btn btn-primary btn-sm">
             Explore Tools <ArrowRight size={16} />
           </Link>
