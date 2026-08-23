@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Textarea = ({ value, onChange, placeholder, rows = 6, readOnly = false, className = '', ...props }) => {
+export const Textarea = ({ value, onChange, placeholder, rows = 6, readOnly = false, autoFocus = true, className = '', ...props }) => {
   return (
     <textarea
       className={`textarea ${className}`}
@@ -9,6 +9,7 @@ export const Textarea = ({ value, onChange, placeholder, rows = 6, readOnly = fa
       placeholder={placeholder}
       rows={rows}
       readOnly={readOnly}
+      autoFocus={autoFocus}
       {...props}
     />
   );

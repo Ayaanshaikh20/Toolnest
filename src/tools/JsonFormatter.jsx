@@ -9,6 +9,24 @@ export const JsonFormatter = () => {
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(null);
 
+  const handleInputChange = (val) => {
+    setInput(val);
+    if (!val.trim()) {
+      setError(null);
+      setStatus(null);
+      return;
+    }
+    // Instant Auto-Parse Attempt
+    try {
+      const parsed = JSON.parse(val);
+      setError(null);
+      setStatus('Valid JSON payload');
+    } catch (err) {
+      setError(`Invalid JSON: ${err.message}`);
+      setStatus(null);
+    }
+  };
+
   const formatJson = (indent = 2) => {
     if (!input.trim()) {
       setError('Please enter JSON text to format.');
@@ -51,18 +69,21 @@ export const JsonFormatter = () => {
 
   return (
     <div>
-      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.9rem' }}>
-        JSON Input / Output
-      </label>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+        <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>
+          JSON Input / Output
+        </label>
+        <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>
+          ⚡ Auto-validates as you type or paste (Ctrl+V)
+        </span>
+      </div>
+
       <Textarea
         value={input}
-        onChange={(e) => {
-          setInput(e.target.value);
-          if (error) setError(null);
-          if (status) setStatus(null);
-        }}
+        onChange={(e) => handleInputChange(e.target.value)}
         placeholder='Paste your JSON here (e.g. {"name": "ToolNest", "active": true})'
         rows={12}
+        autoFocus
       />
 
       {error && (

@@ -69,6 +69,23 @@ export const HomePage = () => {
           <p>Fast, simple and free tools for developers, creators, students and everyday tasks.</p>
 
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
+
+          {/* Quick Access Pills for Ultra-Fast UX */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            flexWrap: 'wrap',
+            marginTop: '1.25rem'
+          }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-light)', marginRight: '0.25rem' }}>Quick Launch:</span>
+            <Link to="/tools/json-formatter" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ JSON Formatter</Link>
+            <Link to="/tools/image-compressor" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Image Compressor</Link>
+            <Link to="/tools/password-generator" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Password Generator</Link>
+            <Link to="/tools/word-counter" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ Word Counter</Link>
+            <Link to="/tools/uuid-generator" className="btn btn-outline btn-sm" style={{ background: '#fff', borderRadius: '999px', fontSize: '0.8rem' }}>⚡ UUID Generator</Link>
+          </div>
         </div>
       </section>
 
