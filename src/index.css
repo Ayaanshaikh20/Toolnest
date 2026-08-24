@@ -94,6 +94,9 @@ h1 { font-size: 2.25rem; letter-spacing: -0.025em; }
 h2 { font-size: 1.75rem; letter-spacing: -0.02em; }
 h3 { font-size: 1.25rem; }
 p { font-size: 1rem; color: var(--text-muted); }
+strong, b { color: var(--text-main); font-weight: 700; }
+ul, ol { color: var(--text-muted); }
+li { color: var(--text-muted); line-height: 1.6; }
 
 a {
   color: var(--primary-color);
