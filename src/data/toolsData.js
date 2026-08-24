@@ -1254,6 +1254,93 @@ export const TOOLS_DATA = [
       { question: 'Can I use the resulting image commercially?', answer: 'Yes. The output is your original image with the background removed. You retain full copyright and commercial usage rights.' }
     ],
     relatedSlugs: ['image-compressor', 'image-resizer', 'jpg-to-png', 'png-to-jpg']
+  },
+  {
+    slug: 'markdown-converter',
+    name: 'Markdown to HTML Converter',
+    description: 'Convert Markdown to HTML or HTML to Markdown instantly with live preview. Free, in-browser, no uploads.',
+    category: 'developer',
+    icon: 'FileText',
+    isPopular: true,
+    metaTitle: 'Free Markdown to HTML Converter with Live Preview | ToolNest',
+    metaDescription: 'Convert Markdown to HTML instantly with live preview. Also converts HTML back to Markdown. 100% free, in-browser, no sign-up, download your output.',
+    about: 'ToolNest Markdown Converter transforms Markdown-formatted text into clean, standards-compliant HTML in real time using the industry-standard `marked.js` library. It also provides HTML-to-Markdown reverse conversion for cases where you need to extract structured content from existing web pages. The entire conversion pipeline runs in your browser — no text is sent to any server.',
+    whatIs: {
+      heading: 'What is Markdown and How Does Conversion Work?',
+      content: [
+        'Markdown is a lightweight markup language created by John Gruber in 2004 that uses plain text formatting syntax to produce structurally valid HTML. It is the de facto standard for writing README files on GitHub, technical documentation on platforms like Read the Docs, and content in static site generators such as Jekyll and Hugo.',
+        'Converting Markdown to HTML involves a lexer-parser pipeline that tokenizes the plain-text syntax (headings, bold, lists, code blocks) and maps them to their corresponding HTML element equivalents. ToolNest uses the `marked.js` library which implements the CommonMark and GitHub Flavored Markdown (GFM) specifications for maximum compatibility.'
+      ]
+    },
+    howToUse: [
+      'Select "Markdown → HTML" or "HTML → Markdown" mode using the toggle buttons at the top.',
+      'Type or paste your content into the left input panel.',
+      'For Markdown input, use the view buttons to switch between Split view, Live Preview, or Raw HTML output.',
+      'Click "Copy Output" to copy the converted result, or "Download File" to save it as a .html or .md file.'
+    ],
+    features: [
+      { title: 'Live Split Preview', description: 'See the rendered HTML preview side-by-side with your Markdown source as you type.' },
+      { title: 'Bi-Directional Conversion', description: 'Converts both Markdown → HTML and HTML → Markdown.' },
+      { title: 'GitHub Flavored Markdown (GFM)', description: 'Supports tables, strikethrough, task lists, fenced code blocks, and other GFM extensions.' },
+      { title: 'Download as File', description: 'Export the converted result directly as a .html or .md file.' },
+      { title: '100% In-Browser', description: 'Your text is processed locally using marked.js. Nothing is sent to any server.' }
+    ],
+    examples: [
+      { title: 'README Files', description: 'Convert GitHub README.md files to HTML for embedding in web pages or email newsletters.' },
+      { title: 'Blog Post Drafting', description: 'Write content in Markdown for speed, then export as HTML to paste into WordPress or any CMS editor.' },
+      { title: 'Documentation Sites', description: 'Convert Markdown documentation pages to HTML snippets for embedding in existing websites.' }
+    ],
+    faqs: [
+      { question: 'What Markdown syntax is supported?', answer: 'ToolNest supports standard CommonMark plus GitHub Flavored Markdown (GFM): headings, bold, italic, links, images, code blocks, blockquotes, tables, and strikethrough.' },
+      { question: 'Is my text sent to a server?', answer: 'No. The conversion runs 100% in your browser using the marked.js library. Your content never leaves your device.' },
+      { question: 'Can I convert HTML back to Markdown?', answer: 'Yes. Switch to "HTML → Markdown" mode to convert existing HTML pages or snippets back into clean Markdown syntax.' },
+      { question: 'Can I download the output?', answer: 'Yes. Click "Download File" to save the output as a .html or .md file directly to your device.' }
+    ],
+    relatedSlugs: ['json-formatter', 'code-minifier', 'meta-tag-generator']
+  },
+  {
+    slug: 'code-minifier',
+    name: 'CSS & JS Minifier',
+    description: 'Minify CSS and JavaScript files instantly to reduce file sizes. See exact savings percentage. Free, in-browser.',
+    category: 'developer',
+    icon: 'Minimize2',
+    isPopular: true,
+    metaTitle: 'Free Online CSS & JS Minifier — Reduce File Size Instantly | ToolNest',
+    metaDescription: 'Minify CSS and JavaScript online for free. Remove whitespace, comments, and redundant characters to reduce file sizes. See exact savings percentage. 100% in-browser.',
+    about: 'ToolNest CSS & JS Minifier compresses your stylesheet and script files by removing whitespace, code comments, and redundant syntax characters to produce the smallest possible output file. Smaller files load faster in browsers, reducing page weight and improving Core Web Vitals scores such as Time to First Byte (TTFB) and Largest Contentful Paint (LCP). The entire minification process runs client-side without transmitting your code to any external server.',
+    whatIs: {
+      heading: 'What is Code Minification and Why Does It Matter?',
+      content: [
+        'Code minification is the process of removing all non-essential characters from source code — including whitespace, line breaks, comments, and block delimiters — without changing the code\'s functional behavior. The resulting minified file is semantically identical to the original but significantly smaller in byte size.',
+        'For CSS, minification typically achieves 30–70% size reduction. For JavaScript, savings of 40–80% are common. These smaller transfer sizes directly improve browser loading speeds, Time to Interactive (TTI), and Google PageSpeed Insights scores, which in turn benefit search engine rankings and user retention.'
+      ]
+    },
+    howToUse: [
+      'Select either "CSS Minifier" or "JS Minifier" using the tab buttons at the top.',
+      'Paste your CSS or JavaScript code into the left input panel.',
+      'Click "Minify CSS" or "Minify JS" to process the code.',
+      'Review the savings statistics (percentage and bytes saved) shown in the results bar.',
+      'Click "Copy Output" or "Download" to save your minified file.'
+    ],
+    features: [
+      { title: 'CSS & JavaScript Support', description: 'Minifies both CSS stylesheets and JavaScript files with a single, unified interface.' },
+      { title: 'Instant Savings Report', description: 'Displays exact bytes saved and percentage reduction after every minification run.' },
+      { title: 'CSS Beautifier', description: 'Also formats and beautifies minified or compressed CSS back into readable, indented code.' },
+      { title: 'One-Click Download', description: 'Download the minified output directly as a .css or .js file.' },
+      { title: '100% In-Browser', description: 'No code is sent to any server. All processing is done locally in your browser.' }
+    ],
+    examples: [
+      { title: 'Production Deployment', description: 'Minify your CSS and JS before deploying to production to reduce page load times and improve Google PageSpeed scores.' },
+      { title: 'Static Site Optimization', description: 'Compress stylesheets and scripts for Jekyll, Hugo, or Gatsby static sites before publishing.' },
+      { title: 'Email Template CSS', description: 'Inline email templates often have CSS size restrictions. Minify your styles before inlining.' }
+    ],
+    faqs: [
+      { question: 'Is minified code safe to use in production?', answer: 'Yes. Minification only removes whitespace and comments — it does not change the logical behavior of your CSS or JavaScript.' },
+      { question: 'How much file size can I expect to save?', answer: 'CSS typically sees 30–70% reduction. JavaScript can see 40–80% reduction depending on the amount of whitespace and comments in the original.' },
+      { question: 'Does minifying JavaScript break anything?', answer: 'For most standard JavaScript, no. The minifier handles common patterns safely. However, very complex JS with unusual syntax may need a professional tool like Terser for guaranteed correctness.' },
+      { question: 'Is my source code sent to a server?', answer: 'No. All minification runs entirely in your browser. Your code is never uploaded to any external service.' }
+    ],
+    relatedSlugs: ['json-formatter', 'markdown-converter', 'meta-tag-generator']
   }
 ];
 
