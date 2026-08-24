@@ -38,6 +38,17 @@
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9121405701876332"
      crossorigin="anonymous"></script>
+
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FH7P7EV9W7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FH7P7EV9W7', {
+      send_page_view: false // Tracked by SPA router in analytics.js
+    });
+  </script>
 </head>
 
 <body>
