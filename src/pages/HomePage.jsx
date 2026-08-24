@@ -127,9 +127,10 @@ export const HomePage = () => {
             )}
 
             {filteredTools.length > 0 ? (
-              <div className="compact-tool-grid">
+            <div className="compact-tool-grid">
                 {filteredTools.map(tool => (
                   <Link key={tool.slug} to={`/tools/${tool.slug}`} className="compact-tool-card">
+                    <span className="compact-tool-badge">{tool.category}</span>
                     <div className="compact-tool-icon">
                       <ToolIcon name={tool.icon} size={20} />
                     </div>
@@ -137,7 +138,6 @@ export const HomePage = () => {
                       <div className="compact-tool-name">{tool.name}</div>
                       <div className="compact-tool-desc">{tool.description}</div>
                     </div>
-                    <ChevronRight size={16} className="compact-tool-arrow" />
                   </Link>
                 ))}
               </div>
