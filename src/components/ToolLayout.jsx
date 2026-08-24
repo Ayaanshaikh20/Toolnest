@@ -4,6 +4,7 @@ import { AdPlaceholder } from './AdPlaceholder';
 import { FAQ } from './FAQ';
 import { RelatedTools } from './RelatedTools';
 import { SEO } from './SEO';
+import { CustomToolIcon } from './CustomToolIcons';
 import { getRelatedTools } from '../data/toolsData';
 import { CheckCircle, Lightbulb } from 'lucide-react';
 
@@ -80,9 +81,25 @@ export const ToolLayout = ({ tool, children }) => {
 
       <Breadcrumb toolName={tool.name} />
 
-      <header className="tool-header">
-        <h1>{tool.name}</h1>
-        <p>{tool.description}</p>
+      <header className="tool-header" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
+        <div style={{
+          width: '52px',
+          height: '52px',
+          borderRadius: 'var(--radius-lg)',
+          backgroundColor: 'var(--card-bg)',
+          border: '1.5px solid var(--border-color)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <CustomToolIcon slug={tool.slug} size={36} />
+        </div>
+        <div>
+          <h1 style={{ margin: 0 }}>{tool.name}</h1>
+          <p style={{ marginTop: '0.35rem' }}>{tool.description}</p>
+        </div>
       </header>
 
       {/* Main Tool Interactive Sandbox Component */}

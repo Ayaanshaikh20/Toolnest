@@ -5,25 +5,8 @@ import { SearchBar } from '../components/SearchBar';
 import { SEO } from '../components/SEO';
 import { AdPlaceholder } from '../components/AdPlaceholder';
 import { FAQ } from '../components/FAQ';
-import {
-  FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
-  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage,
-  Percent, Search, X, ChevronRight, QrCode, Hash, GitMerge, AlignLeft, Tags, Diff,
-  Layers, Scissors, Eraser, Minimize2
-} from 'lucide-react';
-
-const ICON_MAP = {
-  FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
-  ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage, Percent,
-  QrCode, Hash, GitDiff: Diff, AlignLeft, Tags, Regex: Hash,
-  Layers, Scissors, Eraser, Minimize2
-};
-
-
-const ToolIcon = ({ name, size = 18 }) => {
-  const Icon = ICON_MAP[name] || FileJson;
-  return <Icon size={size} />;
-};
+import { CustomToolIcon } from '../components/CustomToolIcons';
+import { Search, X } from 'lucide-react';
 
 export const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -127,12 +110,12 @@ export const HomePage = () => {
             )}
 
             {filteredTools.length > 0 ? (
-            <div className="compact-tool-grid">
+              <div className="compact-tool-grid">
                 {filteredTools.map(tool => (
                   <Link key={tool.slug} to={`/tools/${tool.slug}`} className="compact-tool-card">
                     <span className="compact-tool-badge">{tool.category}</span>
                     <div className="compact-tool-icon">
-                      <ToolIcon name={tool.icon} size={20} />
+                      <CustomToolIcon slug={tool.slug} size={30} />
                     </div>
                     <div className="compact-tool-body">
                       <div className="compact-tool-name">{tool.name}</div>

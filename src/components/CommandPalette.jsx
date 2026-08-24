@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X, ArrowRight, Clock, Zap } from 'lucide-react';
 import { TOOLS_DATA } from '../data/toolsData';
+import { CustomToolIcon } from './CustomToolIcons';
 
 const ICON_COLORS = {
   pdf: '#EF4444',
@@ -246,16 +247,12 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                       width: '32px',
                       height: '32px',
                       borderRadius: 'var(--radius-sm)',
-                      backgroundColor: accentColor + '18',
-                      color: accentColor,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '0.75rem',
-                      fontWeight: 800,
                       flexShrink: 0,
                     }}>
-                      {tool.name.substring(0, 2).toUpperCase()}
+                      <CustomToolIcon slug={tool.slug} size={26} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{

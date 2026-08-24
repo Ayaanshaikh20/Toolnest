@@ -1,15 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as Icons from 'lucide-react';
+import { CustomToolIcon } from './CustomToolIcons';
 
 export const ToolCard = ({ tool }) => {
-  const IconComponent = Icons[tool.icon] || Icons.Wrench;
-
   return (
     <div className="tool-card">
       <div className="tool-card-header">
         <div className="tool-card-icon">
-          <IconComponent size={24} />
+          <CustomToolIcon slug={tool.slug} size={30} />
         </div>
         {tool.isPopular && <span className="tool-card-badge">Popular</span>}
       </div>
