@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, Download, X, Sparkles, ImageOff, Loader2, ZoomIn } from 'lucide-react';
+import { Upload, Download, X, Sparkles, ImageOff, Loader2 } from 'lucide-react';
 import { Button } from '../components/Button';
 import { showToast } from '../components/Toast';
 
@@ -181,55 +181,62 @@ export const BackgroundRemover = () => {
             </div>
           )}
 
-          {/* Image Preview Area */}
+          {/* Image Preview Area — anchor height with original image; overlay result on top */}
           <div
             ref={sliderRef}
             style={{
               position: 'relative',
               width: '100%',
-              maxHeight: '480px',
               borderRadius: 'var(--radius-lg)',
               overflow: 'hidden',
               border: '1.5px solid var(--border-color)',
-              background: 'repeating-conic-gradient(#e0e0e0 0% 25%, #fff 0% 50%) 0 0 / 20px 20px',
+              background: 'repeating-conic-gradient(#808080 0% 25%, #b0b0b0 0% 50%) 0 0 / 16px 16px',
               cursor: resultUrl && viewMode === 'split' ? 'col-resize' : 'default',
               userSelect: 'none',
+              lineHeight: 0, // prevent inline gap
             }}
           >
-            {/* Result Image (behind the slider) */}
+            {/* ── Original image always rendered — it anchors the container height ── */}
+            <img
+              src={originalUrl}
+              alt="Original"
+              style={{
+                display: 'block',
+                width: '100%',
+                maxHeight: '480px',
+                objectFit: 'contain',
+                // In Result mode: hide it completely; in Compare: clip it to left side; in Original: show fully
+                opacity: viewMode === 'result' ? 0 : 1,
+                clipPath: resultUrl && viewMode === 'split'
+                  ? `inset(0 ${100 - sliderPos}% 0 0)`
+                  : 'none',
+                position: 'relative',
+                zIndex: 2,
+              }}
+              draggable={false}
+            />
+
+            {/* ── Result image overlays on top, absolutely positioned ── */}
             {resultUrl && viewMode !== 'original' && (
               <img
                 src={resultUrl}
                 alt="Background removed"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  zIndex: viewMode === 'result' ? 3 : 1, // Result mode: on top; Split mode: behind original clip
+                  display: 'block',
+                }}
                 draggable={false}
               />
             )}
 
-            {/* Original Image (clipped by slider) */}
-            {viewMode === 'original' && (
-              <img
-                src={originalUrl}
-                alt="Original"
-                style={{ width: '100%', height: '100%', maxHeight: '480px', objectFit: 'contain', display: 'block' }}
-                draggable={false}
-              />
-            )}
 
             {resultUrl && viewMode === 'split' && (
               <>
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  clipPath: `inset(0 ${100 - sliderPos}% 0 0)`,
-                }}>
-                  <img
-                    src={originalUrl}
-                    alt="Original"
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                    draggable={false}
-                  />
-                </div>
-
                 {/* Divider Line */}
                 <div
                   onMouseDown={handleSliderMouseDown}
@@ -250,25 +257,25 @@ export const BackgroundRemover = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '30px',
-                    height: '30px',
+                    width: '32px',
+                    height: '32px',
                     borderRadius: '50%',
                     background: 'var(--primary-color)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: '#fff',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  }}>
-                    <ZoomIn size={14} />
-                  </div>
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.4)',
+                    fontSize: '1rem',
+                  }}>⇔</div>
                 </div>
 
                 {/* Labels */}
-                <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '999px' }}>Original</span>
-                <span style={{ position: 'absolute', top: '8px', right: '8px', background: 'var(--primary-color)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '999px' }}>✨ No BG</span>
+                <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '3px 10px', borderRadius: '999px', zIndex: 5 }}>Original</span>
+                <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--primary-color)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '3px 10px', borderRadius: '999px', zIndex: 5 }}>✨ No BG</span>
               </>
             )}
+
 
             {/* Loading Overlay */}
             {loading && (
