@@ -23,6 +23,7 @@ import { PdfMerger } from './PdfMerger';
 import { PdfSplitter } from './PdfSplitter';
 import { ImagesToPdf } from './ImagesToPdf';
 import { PdfToImages } from './PdfToImages';
+import { BackgroundRemover } from './BackgroundRemover';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -50,4 +51,5 @@ export const TOOL_COMPONENTS = {
   'pdf-splitter': PdfSplitter,
   'images-to-pdf': ImagesToPdf,
   'pdf-to-images': PdfToImages,
+  'background-remover': BackgroundRemover,
 };

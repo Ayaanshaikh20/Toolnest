@@ -9,14 +9,14 @@ import {
   FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
   ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage,
   Percent, Search, X, ChevronRight, QrCode, Hash, GitMerge, AlignLeft, Tags, Diff,
-  Layers, Scissors
+  Layers, Scissors, Eraser
 } from 'lucide-react';
 
 const ICON_MAP = {
   FileJson, CheckCircle2, Fingerprint, Binary, Link2, Clock,
   ShieldCheck, FileText, Type, Palette, Image, Scaling, FileImage, Percent,
   QrCode, Hash, GitDiff: Diff, AlignLeft, Tags, Regex: Hash,
-  Layers, Scissors
+  Layers, Scissors, Eraser
 };
 
 

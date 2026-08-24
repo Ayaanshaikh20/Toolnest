@@ -1210,6 +1210,50 @@ export const TOOLS_DATA = [
       { question: 'Are calculations performed locally on my device?', answer: 'Yes. All mathematical calculations run in real time within your browser.' }
     ],
     relatedSlugs: ['word-counter', 'timestamp-converter']
+  },
+  {
+    slug: 'background-remover',
+    name: 'Background Remover',
+    description: 'Remove image backgrounds instantly using AI. 100% private — processed in your browser, no uploads.',
+    category: 'image',
+    icon: 'Eraser',
+    isPopular: true,
+    metaTitle: 'Free AI Background Remover — No Sign Up, No Upload | ToolNest',
+    metaDescription: 'Remove image backgrounds instantly with AI. Free, private, and 100% in-browser — your images never leave your device. No sign-up, no watermarks, no subscription.',
+    about: 'ToolNest Background Remover uses a state-of-the-art on-device AI model to automatically detect and remove the background from any photograph or illustration. Unlike cloud services such as remove.bg or Canva Pro that upload your images to remote servers, ToolNest runs the entire inference pipeline locally in your browser using WebAssembly and ONNX neural network models. Your photos — including private portraits, product shots, and ID documents — are processed entirely in your local RAM and never transmitted to any external server.',
+    whatIs: {
+      heading: 'How Does AI Background Removal Work?',
+      content: [
+        'Background removal is a computer vision task that uses a deep neural network trained on millions of image-subject pairs to produce a high-precision alpha matte — a pixel-level mask that distinguishes the foreground subject from the background.',
+        'The model used by ToolNest is an ONNX-format image segmentation network executed locally via WebAssembly in your browser. This means all inference (the prediction computation) happens on your CPU or GPU without any network call after the model is cached on the first use, giving you instant processing on repeat runs.'
+      ]
+    },
+    howToUse: [
+      'Click "Choose Image" or drag and drop a JPG, PNG, or WebP file (up to 15 MB) onto the upload zone.',
+      'Click "Remove Background" to start the AI processing. The first run downloads the model (~10 MB, cached after that).',
+      'Use the interactive split-view slider to compare the original image against the transparent-background result.',
+      'Click "Download PNG" to save the result with a transparent background to your device.'
+    ],
+    features: [
+      { title: '100% Private — Zero Uploads', description: 'The AI runs entirely in your browser. Your photos never leave your device or touch any cloud server.' },
+      { title: 'AI-Powered Precision', description: 'Uses a deep ONNX segmentation model for accurate subject detection on people, products, and objects.' },
+      { title: 'Interactive Before/After Slider', description: 'Drag the split-view slider to compare original vs. transparent result side by side.' },
+      { title: 'Transparent PNG Output', description: 'Downloads a high-quality PNG with a fully transparent background, ready for any design workflow.' },
+      { title: 'No Watermarks, No Limits', description: 'Unlike free tiers of remove.bg or Canva, ToolNest imposes no watermarks, no monthly credits, and no subscriptions.' },
+    ],
+    examples: [
+      { title: 'Product Photography', description: 'Remove cluttered backgrounds from product photos for clean e-commerce listings on Amazon, Shopify, or Etsy.' },
+      { title: 'Profile & ID Photos', description: 'Extract yourself from a background for LinkedIn profile pictures, job applications, or virtual meeting backdrops.' },
+      { title: 'Graphic Design & Presentations', description: 'Isolate logos, icons, or illustrations for use in PowerPoint, Figma, Canva, or Photoshop projects.' }
+    ],
+    faqs: [
+      { question: 'Is my image uploaded to a server?', answer: 'No. The AI model runs 100% locally inside your browser using WebAssembly. Your image data never leaves your device.' },
+      { question: 'Why does the first run take longer?', answer: 'The first time you use the tool, the ONNX AI model (~10 MB) is downloaded and cached in your browser. Subsequent uses are near-instant because the model is already stored locally.' },
+      { question: 'What image formats are supported?', answer: 'JPG, PNG, and WebP files up to 15 MB. The output is always a transparent PNG.' },
+      { question: 'Will it work on complex backgrounds like forests or crowds?', answer: 'The AI performs best with clear subject-background contrast. It handles most common scenarios (product photos, portraits) very well. Complex or camouflaged scenes may have minor imprecisions.' },
+      { question: 'Can I use the resulting image commercially?', answer: 'Yes. The output is your original image with the background removed. You retain full copyright and commercial usage rights.' }
+    ],
+    relatedSlugs: ['image-compressor', 'image-resizer', 'jpg-to-png', 'png-to-jpg']
   }
 ];
 
