@@ -206,18 +206,12 @@ a:hover {
     display: inline;
   }
 }
-.cmd-kbd {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 6px;
-  font-family: monospace;
-  font-size: 0.7rem;
-  color: var(--text-light);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background: var(--card-bg);
-  margin-left: 2px;
+.search-kbd-btn:hover {
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  background: var(--primary-light) !important;
 }
+
 
 /* Command Palette & Toast Keyframe Animations */
 @keyframes cmdPaletteIn {

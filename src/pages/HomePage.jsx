@@ -8,7 +8,7 @@ import { FAQ } from '../components/FAQ';
 import { CustomToolIcon } from '../components/CustomToolIcons';
 import { Search, X } from 'lucide-react';
 
-export const HomePage = () => {
+export const HomePage = ({ onOpenCommandPalette }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
@@ -59,7 +59,7 @@ export const HomePage = () => {
               <p>15+ fast, privacy-first utilities. No login, no uploads, no nonsense.</p>
             </div>
             <div className="hero-compact-search">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search tools (JSON, Image, Password...)" />
+              <SearchBar value={searchQuery} onChange={setSearchQuery} onOpenCommandPalette={onOpenCommandPalette} placeholder="Search tools (JSON, Image, Password...)" />
             </div>
           </div>
         </div>

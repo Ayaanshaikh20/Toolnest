@@ -51,14 +51,14 @@ export function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Header onOpenCommandPalette={openCmd} />
+      <Header />
       <CommandPalette isOpen={cmdOpen} onClose={closeCmd} />
       <ToastContainer />
       <main style={{ flex: 1, backgroundColor: 'var(--bg-color)', transition: 'background-color 0.25s ease' }}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage onOpenCommandPalette={openCmd} />} />
           {/* /tools redirects to home since all tools are listed there */}
-          <Route path="/tools" element={<HomePage />} />
+          <Route path="/tools" element={<HomePage onOpenCommandPalette={openCmd} />} />
           <Route path="/tools/:slug" element={<ToolPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
