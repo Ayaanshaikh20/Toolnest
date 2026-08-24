@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wrench, Sun, Moon } from 'lucide-react';
+import { Wrench, Sun, Moon, Menu, X } from 'lucide-react';
 
 export const Header = () => {
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('toolnest_theme') === 'dark';
   });
@@ -18,12 +19,28 @@ export const Header = () => {
     }
   }, [isDarkMode]);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   const isActive = (path) => location.pathname === path;
 
   return (
     <header className="header">
       <div className="container header-inner">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" aria-label="ToolNest Homepage">
           <div className="logo-icon">
             <Wrench size={20} />
           </div>
@@ -32,7 +49,8 @@ export const Header = () => {
           </div>
         </Link>
 
-        <nav>
+        {/* Desktop Navigation */}
+        <nav className="desktop-nav" aria-label="Primary Navigation">
           <ul className="nav-links">
             <li>
               <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
@@ -52,11 +70,13 @@ export const Header = () => {
           </ul>
         </nav>
 
+        {/* Desktop & Mobile Actions */}
         <div className="header-cta">
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="btn btn-outline btn-sm"
+            className="btn btn-outline btn-sm theme-toggle-btn"
             title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             style={{ borderRadius: '999px', padding: '0.4rem 0.75rem' }}
           >
             {isDarkMode
@@ -64,8 +84,43 @@ export const Header = () => {
               : <Moon size={16} style={{ color: '#6366F1' }} />
             }
           </button>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-controls="mobile-nav-menu"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div id="mobile-nav-menu" className="mobile-nav-drawer" role="dialog" aria-modal="true">
+          <ul className="mobile-nav-links">
+            <li>
+              <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className={`mobile-nav-link ${isActive('/about') ? 'active' : ''}`}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className={`mobile-nav-link ${isActive('/contact') ? 'active' : ''}`}>
+                Contact
+              </Link>
+            </li>
+          </ul>
+        </div>
+      )}
     </header>
   );
 };

@@ -47,7 +47,7 @@ export const TextDiffChecker = () => {
   return (
     <div>
       {/* Two-panel input */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+      <div className="two-column-tool-grid" style={{ marginBottom: '1.25rem' }}>
         <div>
           <label style={{ display: 'block', fontWeight: '700', fontSize: '0.875rem', marginBottom: '0.375rem', color: 'var(--text-main)' }}>
             Original Text
