@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { Button } from './Button';
+import { copyToClipboard } from './Toast';
 
-export const CopyButton = ({ text, label = "Copy Result", className = "" }) => {
+export const CopyButton = ({ text, label = "Copy Result", className = "", successMessage }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     if (!text) return;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
+    const msg = successMessage || `${label !== 'Copy Result' ? label : 'Result'} copied!`;
+    await copyToClipboard(text, msg);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -22,6 +20,7 @@ export const CopyButton = ({ text, label = "Copy Result", className = "" }) => {
       onClick={handleCopy}
       disabled={!text}
       className={className}
+      title={copied ? 'Copied!' : `Click to copy`}
     >
       {copied ? (
         <>
