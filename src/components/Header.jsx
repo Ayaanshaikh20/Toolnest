@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Wrench, Sun, Moon, Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Wrench, Sun, Moon, Menu, X, Search } from 'lucide-react';
 
-export const Header = () => {
+export const Header = ({ onOpenCommandPalette }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('toolnest_theme') === 'dark';
@@ -72,6 +73,18 @@ export const Header = () => {
 
         {/* Desktop & Mobile Actions */}
         <div className="header-cta">
+          {/* Ctrl+K Search Button */}
+          <button
+            onClick={onOpenCommandPalette}
+            className="cmd-search-btn"
+            aria-label="Open tool search (Ctrl+K)"
+            title="Search tools (Ctrl+K)"
+          >
+            <Search size={15} />
+            <span className="cmd-search-text">Search tools...</span>
+            <kbd className="cmd-kbd">⌘K</kbd>
+          </button>
+
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="btn btn-outline btn-sm theme-toggle-btn"
@@ -102,6 +115,27 @@ export const Header = () => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div id="mobile-nav-menu" className="mobile-nav-drawer" role="dialog" aria-modal="true">
+          {/* Mobile Search */}
+          <button
+            onClick={() => { setMobileMenuOpen(false); onOpenCommandPalette(); }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.625rem',
+              padding: '0.75rem 1.25rem',
+              background: 'var(--bg-color)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              fontSize: '0.9rem',
+              marginBottom: '0.5rem',
+            }}
+          >
+            <Search size={16} />
+            Search tools...
+          </button>
           <ul className="mobile-nav-links">
             <li>
               <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}>

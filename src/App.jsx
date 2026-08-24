@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { CommandPalette } from './components/CommandPalette';
+import { ToastContainer } from './components/Toast';
 import { HomePage } from './pages/HomePage';
 import { ToolPage } from './pages/ToolPage';
 import { AboutPage } from './pages/AboutPage';
@@ -25,14 +27,33 @@ const ScrollToTop = () => {
 };
 
 export function App() {
+  const [cmdOpen, setCmdOpen] = useState(false);
+
   useEffect(() => {
     initAnalytics();
   }, []);
 
+  // Global Ctrl+K / Cmd+K listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const openCmd = useCallback(() => setCmdOpen(true), []);
+  const closeCmd = useCallback(() => setCmdOpen(false), []);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Header />
+      <Header onOpenCommandPalette={openCmd} />
+      <CommandPalette isOpen={cmdOpen} onClose={closeCmd} />
+      <ToastContainer />
       <main style={{ flex: 1, backgroundColor: 'var(--bg-color)', transition: 'background-color 0.25s ease' }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
