@@ -15,7 +15,7 @@ export const PrivacyPolicyPage = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
         <p>
-          At <strong>ToolNest</strong> (accessible from https://toolnest.com), one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ToolNest and how we use it.
+          At <strong>ToolNest</strong> (accessible from https://toolnest.shaikhayaan.com), one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ToolNest and how we use it.
         </p>
 
         <h2>1. Client-Side Browser Processing</h2>
