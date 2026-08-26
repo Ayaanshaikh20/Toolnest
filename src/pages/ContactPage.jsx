@@ -2,24 +2,51 @@ import React, { useState } from 'react';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/Button';
 import { Textarea } from '../components/Textarea';
-import { Mail, CheckCircle2, Send, MessageSquare } from 'lucide-react';
+import { Mail, CheckCircle2, Send, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
 
 export const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.message) return;
 
-    // Trigger mailto link so user's client can send directly to support@shaikhayaan.com
-    const subject = encodeURIComponent(`ToolNest Feedback from ${formData.name || 'User'}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    );
-    window.open(`mailto:support@shaikhayaan.com?subject=${subject}&body=${body}`, '_blank');
+    setLoading(true);
+    setError('');
 
-    setSubmitted(true);
+    try {
+      // Using FormSubmit.co - 100% Free, zero-backend, pure frontend fetch API
+      const response = await fetch('https://formsubmit.co/ajax/support@shaikhayaan.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `ToolNest Feedback from ${formData.name || 'User'}`
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && (result.success === 'true' || result.success === true)) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        throw new Error(result.message || 'Failed to send message.');
+      }
+    } catch (err) {
+      console.error('Email sending error:', err);
+      setError('Something went wrong. Please try again or email us directly at support@shaikhayaan.com.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,9 +109,9 @@ export const ContactPage = () => {
           textAlign: 'center'
         }}>
           <CheckCircle2 size={48} style={{ color: 'var(--success-color)', marginBottom: '1rem' }} />
-          <h2 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Thank You!</h2>
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>Message Sent Successfully!</h2>
           <p style={{ color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto 1.5rem auto', lineHeight: '1.6' }}>
-            Your email draft has been prepared for <strong>support@shaikhayaan.com</strong>. We will get back to you promptly!
+            Thank you for reaching out! Your message has been sent directly to <strong>support@shaikhayaan.com</strong>. We will reply promptly.
           </p>
           <Button variant="secondary" onClick={() => setSubmitted(false)}>
             Send Another Message
@@ -108,6 +135,22 @@ export const ContactPage = () => {
             <MessageSquare size={18} style={{ color: 'var(--primary-color)' }} />
             <h2 style={{ fontSize: '1.15rem', margin: 0, color: 'var(--text-main)' }}>Send Feedback</h2>
           </div>
+
+          {error && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: 'var(--danger-color, #ef4444)',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              padding: '0.75rem 1rem',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.875rem'
+            }}>
+              <AlertCircle size={18} />
+              <span>{error}</span>
+            </div>
+          )}
 
           <div>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.375rem', color: 'var(--text-main)' }}>
@@ -150,8 +193,9 @@ export const ContactPage = () => {
             />
           </div>
 
-          <Button type="submit" variant="primary" size="lg">
-            <Send size={18} /> Send Message to Support
+          <Button type="submit" variant="primary" size="lg" disabled={loading}>
+            {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={18} />}
+            {loading ? 'Sending Message...' : 'Send Message'}
           </Button>
         </form>
       )}
