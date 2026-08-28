@@ -57,7 +57,7 @@ export const TOOLS_DATA = [
       { question: 'Will merging PDFs reduce the quality of text or images?', answer: 'No. PDF Merger performs a lossless binary merge, preserving all original vector paths, high-resolution raster images, and embedded fonts.' },
       { question: 'Can I reorder the files before merging?', answer: 'Yes. Use the up and down arrow buttons next to each uploaded file to position them in your exact preferred sequence.' }
     ],
-    relatedSlugs: ['pdf-splitter', 'images-to-pdf', 'pdf-to-images']
+    relatedSlugs: ['pdf-compressor', 'pdf-splitter', 'images-to-pdf', 'pdf-to-images']
   },
   {
     slug: 'pdf-splitter',
@@ -105,7 +105,7 @@ export const TOOLS_DATA = [
       { question: 'Will the extracted PDF keep high resolution?', answer: 'Yes. The tool copies original vector paths, embedded fonts, and raster images without re-compressing or degrading resolution.' },
       { question: 'Can I split encrypted or password-protected PDFs?', answer: 'You must unlock or decrypt the PDF before extracting pages, as browser cryptography requires access to the document stream.' }
     ],
-    relatedSlugs: ['pdf-merger', 'images-to-pdf', 'pdf-to-images']
+    relatedSlugs: ['pdf-compressor', 'pdf-merger', 'images-to-pdf', 'pdf-to-images']
   },
   {
     slug: 'images-to-pdf',
@@ -153,7 +153,7 @@ export const TOOLS_DATA = [
       { question: 'Does converting images to PDF reduce their visual quality?', answer: 'No. Images are embedded directly using high-fidelity binary streams, preserving their original resolution and sharpness.' },
       { question: 'Is there a limit on how many images I can merge into one PDF?', answer: 'There is no artificial limit. You can compile as many images as your computer or smartphone RAM can handle.' }
     ],
-    relatedSlugs: ['pdf-to-images', 'pdf-merger', 'image-compressor']
+    relatedSlugs: ['pdf-compressor', 'pdf-to-images', 'pdf-merger', 'image-compressor']
   },
   {
     slug: 'pdf-to-images',
@@ -201,7 +201,57 @@ export const TOOLS_DATA = [
       { question: 'Why convert a PDF to PNG images instead of JPEG?', answer: 'PNG uses lossless compression, ensuring text, diagrams, and sharp edges are preserved without JPEG block compression artifacts.' },
       { question: 'Can this tool process multi-page documents?', answer: 'Yes. The converter iterates through all pages in the PDF document sequentially and displays them in an organized gallery.' }
     ],
-    relatedSlugs: ['images-to-pdf', 'pdf-merger', 'pdf-splitter']
+    relatedSlugs: ['pdf-compressor', 'images-to-pdf', 'pdf-merger', 'pdf-splitter']
+  },
+  {
+    slug: 'pdf-compressor',
+    name: 'PDF Compressor',
+    description: 'Compress and reduce PDF file size online with multiple compression presets, grayscale mode, and zero quality loss.',
+    category: 'pdf',
+    icon: 'Minimize2',
+    isPopular: true,
+    metaTitle: 'Free Online PDF Compressor - Reduce PDF File Size | ToolNest',
+    metaDescription: 'Compress PDF files online for free while maintaining high quality. Extreme, Recommended, and Custom presets with 100% private in-browser processing.',
+    about: 'PDF Compressor is a privacy-first browser utility that compresses heavy PDF files and scanned documents into lightweight, email-ready files directly on your device. Whether you need to meet a strict government job portal upload limit (e.g. under 1MB or 500KB), email a multi-page agreement without bounce errors, or free up device storage, ToolNest optimizes your PDF files locally using client-side rendering and intelligent stream compression. Your documents are never uploaded to any remote server.',
+    whatIs: {
+      heading: 'How Does Client-Side PDF Compression Work?',
+      content: [
+        'PDF documents frequently balloon in size due to uncompressed embedded raster graphics, 300+ DPI full-color scans, redundant object streams, and font subset caches. Standard desktop scanners and word processors often export PDFs with heavy raw bitmaps that exceed online submission caps.',
+        'ToolNest decompiles and renders each PDF page into high-efficiency compressed image streams using Mozilla PDF.js, optionally applies grayscale color filtering for text-heavy documents, and re-assembles the document into a streamlined PDF structure using pdf-lib with Object Streams enabled. All processing occurs strictly within your local browser memory, ensuring your sensitive bank statements, resumes, and medical records remain completely private.'
+      ]
+    },
+    howToUse: [
+      'Click the upload area or drag and drop any PDF document into the tool.',
+      'Select your preferred compression preset: "Extreme" (maximum size reduction), "Recommended" (balanced quality & size), "Less Compression" (high fidelity), or "Custom Settings".',
+      'Optionally toggle "Convert to Grayscale" for invoices and scanned paper documents to save extra space.',
+      'Click "Compress PDF Now" to begin instant client-side processing.',
+      'Review your space savings and click "Download Compressed PDF" to save the optimized file.'
+    ],
+    features: [
+      { title: '100% On-Device Privacy', description: 'Your PDF is processed strictly in your browser memory and never uploaded to any external server.' },
+      { title: 'Multiple Compression Presets', description: 'Choose between Extreme, Recommended, High Quality, or granular custom DPI and JPEG quality sliders.' },
+      { title: 'Grayscale B&W Optimization', description: 'Convert color scans to clean monochrome to strip chrominance data and shrink file sizes even further.' },
+      { title: 'Instant Quality Previews', description: 'Inspect generated page thumbnail previews directly on screen before downloading.' },
+      { title: 'Zero File Size Limits & Free Forever', description: 'No daily document caps, no paywalls, and no account registration required.' }
+    ],
+    examples: [
+      {
+        title: 'Meeting Strict Portal Caps',
+        description: 'Compress a 15MB scanned passport, degree certificate, or tax filing down to under 1MB for smooth upload to government and university admission portals.'
+      },
+      {
+        title: 'Emailing Large Business Contracts',
+        description: 'Reduce a 25MB multi-page presentation or legal agreement to 3MB so it sends instantly without triggering email attachment rejection.'
+      }
+    ],
+    faqs: [
+      { question: 'Will compressing my PDF reduce text readability?', answer: 'Our "Recommended" preset uses smart DPI downsampling and high-quality JPEG quantization that preserves sharp, readable typography while reducing file size by 50–80%.' },
+      { question: 'Are my confidential PDF documents uploaded to your server?', answer: 'No! All rendering and binary recompilation happens 100% locally inside your web browser. Your confidential files never touch our servers.' },
+      { question: 'Which preset should I choose for scanned documents?', answer: 'For scanned receipts, contracts, and tax documents, choose "Extreme Compression" and check "Convert to Grayscale" to achieve maximum size reduction.' },
+      { question: 'Can I compress password-protected PDF files?', answer: 'You must remove the password before compressing, as client-side parsers require an unencrypted document stream.' },
+      { question: 'Is there a limit on file size or number of pages?', answer: 'There are no artificial limits. You can compress any PDF as large as your device RAM and CPU can process.' }
+    ],
+    relatedSlugs: ['pdf-merger', 'pdf-splitter', 'pdf-to-images', 'images-to-pdf', 'image-compressor']
   },
   {
     slug: 'qr-code-generator',

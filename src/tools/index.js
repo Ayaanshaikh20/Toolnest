@@ -26,6 +26,7 @@ import { PdfToImages } from './PdfToImages';
 import { BackgroundRemover } from './BackgroundRemover';
 import { MarkdownConverter } from './MarkdownConverter';
 import { CodeMinifier } from './CodeMinifier';
+import { PdfCompressor } from './PdfCompressor';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -53,6 +54,7 @@ export const TOOL_COMPONENTS = {
   'pdf-splitter': PdfSplitter,
   'images-to-pdf': ImagesToPdf,
   'pdf-to-images': PdfToImages,
+  'pdf-compressor': PdfCompressor,
   'background-remover': BackgroundRemover,
   'markdown-converter': MarkdownConverter,
   'code-minifier': CodeMinifier,

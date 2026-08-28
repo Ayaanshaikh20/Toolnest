@@ -121,6 +121,26 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
         </svg>
       );
 
+    // ── PDF COMPRESSOR: PDF document with downward compression arrows & size reduction ──
+    case 'pdf-compressor':
+      return (
+        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
+          {/* Main PDF Document */}
+          <rect x="5" y="4" width="22" height="24" rx="3" fill={C.pdf} />
+          {/* Document Fold */}
+          <path d="M21 4L27 10H23C21.8954 10 21 9.10457 21 8V4Z" fill="#B91C1C" />
+          {/* Content Lines */}
+          <path d="M9 11H18M9 15H17M9 19H15" stroke="#FFF" strokeWidth="1.4" strokeLinecap="round" />
+          
+          {/* Compression Arrows Top & Bottom pointing inwards */}
+          <circle cx="21" cy="21" r="7.5" fill="#10B981" />
+          {/* Inward compression arrows in badge */}
+          <path d="M21 16V20M21 20L19 18M21 20L23 18" stroke="#FFF" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M21 26V22M21 22L19 24M21 22L23 24" stroke="#FFF" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="17.5" y1="21" x2="24.5" y2="21" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="1 1" />
+        </svg>
+      );
+
     // ── AI BACKGROUND REMOVER: Magic wand removing background on checkerboard ──
     case 'background-remover':
       return (
