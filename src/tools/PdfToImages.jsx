@@ -24,7 +24,7 @@ export const PdfToImages = () => {
       setIsProcessing(true);
 
       const arrayBuffer = await selectedFile.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
       const pdf = await loadingTask.promise;
       const totalPages = pdf.numPages;
 

@@ -100,22 +100,24 @@ export const PdfCompressor = () => {
       setError('');
       setCompressedResult(null);
       setPreviewPages([]);
-      setSelectedFile(file);
 
       const arrayBuffer = await file.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-      const pdf = await loadingTask.promise;
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const count = pdfDoc.getPageCount();
 
+      if (count === 0) {
+        throw new Error('This document contains no readable pages.');
+      }
+
+      setSelectedFile(file);
       setPdfInfo({
         name: file.name,
         size: file.size,
-        numPages: pdf.numPages
+        numPages: count
       });
     } catch (err) {
       console.error('Error reading PDF:', err);
-      setError('Failed to load PDF. The document may be encrypted or password-protected.');
-      setSelectedFile(null);
-      setPdfInfo(null);
+      setError('Failed to load PDF. The document may be encrypted or corrupted.');
     }
   };
 
@@ -132,7 +134,7 @@ export const PdfCompressor = () => {
       const quality = preset === 'custom' ? customQuality / 100 : activePreset.quality;
 
       const arrayBuffer = await selectedFile.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
       const pdf = await loadingTask.promise;
       const totalPages = pdf.numPages;
 
