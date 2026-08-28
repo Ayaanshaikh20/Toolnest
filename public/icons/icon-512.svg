@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="pwaGrad512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <filter id="shadow512" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="112" fill="url(#pwaGrad512)"/>
+
+  <!-- Inner Highlighting Ring -->
+  <rect x="4" y="4" width="504" height="504" rx="108" stroke="rgba(255,255,255,0.25)" stroke-width="4"/>
+
+  <!-- Logo Icon Graphics -->
+  <g filter="url(#shadow512)">
+    <!-- Terminal / Tool Chevron -->
+    <path d="M154 180L230 256L154 332" stroke="#FFFFFF" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Underscore Cursor -->
+    <path d="M282 332H358" stroke="#FFFFFF" stroke-width="40" stroke-linecap="round"/>
+    <!-- Glowing Accent Dot -->
+    <circle cx="336" cy="180" r="24" fill="#93C5FD"/>
+  </g>
+</svg>

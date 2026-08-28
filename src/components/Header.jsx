@@ -1,13 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wrench, Sun, Moon, Menu, X } from 'lucide-react';
+import { Wrench, Sun, Moon, Menu, X, Download } from 'lucide-react';
 
 export const Header = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('toolnest_theme') === 'dark';
   });
+
+  useEffect(() => {
+    const handleBeforeInstall = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    const handleAppInstalled = () => setInstallPrompt(null);
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
+  };
 
   useEffect(() => {
     if (isDarkMode) {
@@ -72,6 +98,24 @@ export const Header = () => {
 
         {/* Desktop & Mobile Actions */}
         <div className="header-cta">
+          {installPrompt && (
+            <button
+              onClick={handleInstall}
+              className="btn btn-primary btn-sm"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                fontSize: '0.78rem',
+                padding: '0.35rem 0.75rem',
+                borderRadius: '6px'
+              }}
+              title="Install ToolNest Desktop/Mobile App"
+            >
+              <Download size={14} /> Install App
+            </button>
+          )}
+
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="btn btn-outline btn-sm theme-toggle-btn"
@@ -118,6 +162,17 @@ export const Header = () => {
                 Contact
               </Link>
             </li>
+            {installPrompt && (
+              <li style={{ marginTop: '0.5rem' }}>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); handleInstall(); }}
+                  className="btn btn-primary btn-md"
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                >
+                  <Download size={16} /> Install ToolNest App
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       )}

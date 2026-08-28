@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { CommandPalette } from './components/CommandPalette';
 import { ToastContainer } from './components/Toast';
+import { InstallAppBanner } from './components/InstallAppBanner';
 import { HomePage } from './pages/HomePage';
 import { ToolPage } from './pages/ToolPage';
 import { AboutPage } from './pages/AboutPage';
@@ -52,6 +53,7 @@ export function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Header />
+      <InstallAppBanner />
       <CommandPalette isOpen={cmdOpen} onClose={closeCmd} />
       <ToastContainer />
       <main style={{ flex: 1, backgroundColor: 'var(--bg-color)', transition: 'background-color 0.25s ease' }}>
