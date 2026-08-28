@@ -82,7 +82,7 @@ export const DocumentRedactor = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Page-specific data: { [pageNum]: { imageBitmap, textItems: [], redactions: [] } }
+  // Page-specific data: { [pageNum]: { dataUrl, width, height, textItems: [], redactions: [] } }
   const [pageData, setPageData] = useState({});
   const [detectedFindings, setDetectedFindings] = useState([]);
   
@@ -103,7 +103,7 @@ export const DocumentRedactor = () => {
   const [exportedResult, setExportedResult] = useState(null);
   const [error, setError] = useState('');
   
-  const canvasRef = useRef(null);
+  const overlayCanvasRef = useRef(null);
   const containerRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -114,7 +114,7 @@ export const DocumentRedactor = () => {
     };
   }, [exportedResult]);
 
-  // Handle file upload
+  // Handle file upload & page rendering
   const handleFileSelect = async (e) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -123,6 +123,7 @@ export const DocumentRedactor = () => {
     setExportedResult(null);
     setDetectedFindings([]);
     setPageData({});
+    setPdfDocProxy(null);
 
     const isPdf = selectedFile.type === 'application/pdf' || selectedFile.name.toLowerCase().endsWith('.pdf');
     const isImg = selectedFile.type.startsWith('image/') || /\.(png|jpe?g|webp|bmp)$/i.test(selectedFile.name);
@@ -143,81 +144,126 @@ export const DocumentRedactor = () => {
         const pdf = await loadingTask.promise;
         
         setPdfDocProxy(pdf);
-        setTotalPages(pdf.numPages);
+        const numPages = pdf.numPages || 1;
+        setTotalPages(numPages);
         setCurrentPage(1);
 
-        // Scan all pages for sensitive text patterns
         const findings = [];
         const initialPages = {};
 
-        for (let pNum = 1; pNum <= pdf.numPages; pNum++) {
+        for (let pNum = 1; pNum <= numPages; pNum++) {
           const page = await pdf.getPage(pNum);
           const viewport = page.getViewport({ scale: 1.5 });
-          const textContent = await page.getTextContent();
-          
+
+          // Render page to canvas to create high-res image
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = Math.max(1, Math.floor(viewport.width));
+          offCanvas.height = Math.max(1, Math.floor(viewport.height));
+          const offCtx = offCanvas.getContext('2d', { alpha: false });
+
+          offCtx.fillStyle = '#FFFFFF';
+          offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+
+          await page.render({
+            canvasContext: offCtx,
+            viewport: viewport
+          }).promise;
+
+          const dataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
+
+          // Extract text and scan patterns safely without throwing
           const textItems = [];
           const pageRedactions = [];
 
-          textContent.items.forEach((item, idx) => {
-            const str = item.str;
-            if (!str || !str.trim()) return;
+          try {
+            const textContent = await page.getTextContent();
+            if (textContent && Array.isArray(textContent.items)) {
+              textContent.items.forEach((item, idx) => {
+                if (!item || typeof item.str !== 'string' || !item.str.trim()) return;
+                const str = item.str;
 
-            // Compute canvas-relative coordinates
-            const tx = item.transform[4];
-            const ty = item.transform[5];
-            const [vx, vy] = viewport.convertToViewportPoint(tx, ty);
-            const itemWidth = item.width * (viewport.scale / (viewport.scale / 1.5));
-            const itemHeight = Math.max(12, item.height * 1.5);
+                let vx = 0;
+                let vy = 0;
+                if (Array.isArray(item.transform) && item.transform.length >= 6) {
+                  const tx = item.transform[4] || 0;
+                  const ty = item.transform[5] || 0;
+                  vx = tx * 1.5;
+                  vy = viewport.height - (ty * 1.5);
+                  if (typeof viewport.convertToViewportPoint === 'function') {
+                    try {
+                      const pt = viewport.convertToViewportPoint(tx, ty);
+                      if (Array.isArray(pt)) {
+                        vx = pt[0];
+                        vy = pt[1];
+                      }
+                    } catch (e) {}
+                  }
+                }
 
-            const bounds = {
-              x: Math.max(0, vx),
-              y: Math.max(0, vy - itemHeight),
-              width: Math.max(10, itemWidth),
-              height: Math.max(14, itemHeight)
-            };
+                const itemWidth = Math.max(10, (item.width || 20) * 1.5);
+                const itemHeight = Math.max(12, (item.height || 12) * 1.5);
 
-            textItems.push({ text: str, bounds, id: `p${pNum}_t${idx}` });
+                const bounds = {
+                  x: Math.max(0, Math.round(vx)),
+                  y: Math.max(0, Math.round(vy - itemHeight)),
+                  width: Math.round(itemWidth),
+                  height: Math.round(itemHeight)
+                };
 
-            // Check sensitive patterns
-            Object.entries(SENSITIVE_PATTERNS).forEach(([categoryKey, category]) => {
-              const matches = str.match(category.regex);
-              if (matches) {
-                matches.forEach((matchStr) => {
-                  const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
-                  const findingItem = {
-                    id: redactionId,
-                    category: categoryKey,
-                    categoryName: category.name,
-                    color: category.color,
-                    matchedText: matchStr,
-                    pageNum: pNum,
-                    bounds: { ...bounds },
-                    applied: true
-                  };
-                  findings.push(findingItem);
-                  pageRedactions.push({
-                    id: redactionId,
-                    ...bounds,
-                    type: 'blackout',
-                    category: categoryKey,
-                    label: category.name
-                  });
+                textItems.push({ text: str, bounds, id: `p${pNum}_t${idx}` });
+
+                // Check sensitive patterns
+                Object.entries(SENSITIVE_PATTERNS).forEach(([categoryKey, category]) => {
+                  try {
+                    const matches = str.match(category.regex);
+                    if (matches) {
+                      matches.forEach((matchStr) => {
+                        const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
+                        findings.push({
+                          id: redactionId,
+                          category: categoryKey,
+                          categoryName: category.name,
+                          color: category.color,
+                          matchedText: matchStr,
+                          pageNum: pNum,
+                          bounds: { ...bounds },
+                          applied: true
+                        });
+                        pageRedactions.push({
+                          id: redactionId,
+                          ...bounds,
+                          type: 'blackout',
+                          category: categoryKey,
+                          label: category.name
+                        });
+                      });
+                    }
+                  } catch (regErr) {}
                 });
-              }
-            });
-          });
+              });
+            }
+          } catch (textErr) {
+            console.warn('Text scan skipped for page', pNum, textErr);
+          }
 
           initialPages[pNum] = {
-            viewport,
+            dataUrl,
+            width: offCanvas.width,
+            height: offCanvas.height,
             textItems,
             redactions: pageRedactions
           };
+
+          // Progressively update page data so Page 1 appears immediately!
+          setPageData(prev => ({
+            ...prev,
+            [pNum]: initialPages[pNum]
+          }));
         }
 
         setDetectedFindings(findings);
         setPageData(initialPages);
       } else {
-        // Handle single image file
         setTotalPages(1);
         setCurrentPage(1);
 
@@ -230,73 +276,62 @@ export const DocumentRedactor = () => {
           img.src = objectUrl;
         });
 
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = img.width;
+        offCanvas.height = img.height;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.fillStyle = '#FFFFFF';
+        offCtx.fillRect(0, 0, img.width, img.height);
+        offCtx.drawImage(img, 0, 0);
+        const dataUrl = offCanvas.toDataURL('image/jpeg', 0.95);
+
         setPageData({
           1: {
-            imageElement: img,
+            dataUrl,
             width: img.width,
             height: img.height,
+            textItems: [],
             redactions: []
           }
         });
       }
     } catch (err) {
       console.error('Error loading file for redaction:', err);
-      setError('Failed to parse document. The file might be encrypted or corrupted.');
+      setError('Failed to parse document: ' + (err?.message || 'File could not be opened.'));
     } finally {
       setIsScanning(false);
     }
   };
 
-  // Render current page onto canvas
+  // Render Redaction Overlays onto overlayCanvas
   useEffect(() => {
-    if (!canvasRef.current || !pageData[currentPage]) return;
+    const overlayCanvas = overlayCanvasRef.current;
+    const curPage = pageData[currentPage];
+    if (!overlayCanvas || !curPage) return;
 
-    let isMounted = true;
+    overlayCanvas.width = curPage.width;
+    overlayCanvas.height = curPage.height;
 
-    const renderCanvas = async () => {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      const curPageInfo = pageData[currentPage];
+    const ctx = overlayCanvas.getContext('2d');
+    ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      if (fileType === 'pdf' && pdfDocProxy) {
-        try {
-          const page = await pdfDocProxy.getPage(currentPage);
-          const viewport = page.getViewport({ scale: 1.5 });
+    const redactions = curPage.redactions || [];
+    drawRedactions(ctx, redactions);
 
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+    // Active drag-to-redact box preview
+    if (isDrawing && currentBox && currentBox.width > 2 && currentBox.height > 2) {
+      ctx.save();
+      ctx.fillStyle = activeTool === 'blackout' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(59, 130, 246, 0.45)';
+      ctx.fillRect(currentBox.x, currentBox.y, currentBox.width, currentBox.height);
+      ctx.strokeStyle = '#3B82F6';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(currentBox.x, currentBox.y, currentBox.width, currentBox.height);
+      ctx.restore();
+    }
+  }, [pageData, currentPage, activeTool, isDrawing, currentBox, selectedRedactionId]);
 
-          // Render underlying PDF page
-          await page.render({
-            canvasContext: ctx,
-            viewport: viewport
-          }).promise;
-
-          if (!isMounted) return;
-
-          // Draw active redactions for this page
-          drawRedactions(ctx, curPageInfo.redactions || []);
-        } catch (err) {
-          console.error('Error rendering PDF page on canvas:', err);
-        }
-      } else if (fileType === 'image' && curPageInfo.imageElement) {
-        const img = curPageInfo.imageElement;
-        canvas.width = img.width;
-        canvas.height = img.height;
-
-        ctx.drawImage(img, 0, 0);
-        drawRedactions(ctx, curPageInfo.redactions || []);
-      }
-    };
-
-    renderCanvas();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [currentPage, pageData, fileType, pdfDocProxy]);
-
-  // Helper to draw redactions on canvas
+  // Draw Redactions Helper
   const drawRedactions = (ctx, redactions) => {
     redactions.forEach((box) => {
       ctx.save();
@@ -311,34 +346,26 @@ export const DocumentRedactor = () => {
         ctx.lineWidth = 1;
         ctx.strokeRect(box.x, box.y, box.width, box.height);
       } else if (box.type === 'pixelate') {
-        // High-quality mosaic pixelation
-        const pixelSize = Math.max(6, Math.floor(Math.min(box.width, box.height) / 8));
+        // High visibility mosaic block
         const w = Math.max(1, Math.floor(box.width));
         const h = Math.max(1, Math.floor(box.height));
+        const size = Math.max(6, Math.floor(Math.min(w, h) / 6));
 
-        try {
-          const imgData = ctx.getImageData(box.x, box.y, w, h);
-          for (let y = 0; y < h; y += pixelSize) {
-            for (let x = 0; x < w; x += pixelSize) {
-              const pixelIndex = (y * w + x) * 4;
-              const r = imgData.data[pixelIndex] || 128;
-              const g = imgData.data[pixelIndex + 1] || 128;
-              const b = imgData.data[pixelIndex + 2] || 128;
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(box.x, box.y, box.width, box.height);
 
-              ctx.fillStyle = `rgb(${r},${g},${b})`;
-              ctx.fillRect(box.x + x, box.y + y, pixelSize, pixelSize);
-            }
+        for (let y = 0; y < h; y += size) {
+          for (let x = 0; x < w; x += size) {
+            const shade = ((Math.floor(x / size) + Math.floor(y / size)) % 2 === 0) ? '#475569' : '#1E293B';
+            ctx.fillStyle = shade;
+            ctx.fillRect(box.x + x, box.y + y, Math.min(size, w - x), Math.min(size, h - y));
           }
-        } catch (e) {
-          ctx.fillStyle = '#475569';
-          ctx.fillRect(box.x, box.y, box.width, box.height);
         }
       } else if (box.type === 'blur') {
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
         ctx.fillRect(box.x, box.y, box.width, box.height);
       }
 
-      // If selected in UI, draw an active border
       if (box.id === selectedRedactionId) {
         ctx.strokeStyle = '#3B82F6';
         ctx.lineWidth = 2;
@@ -350,13 +377,13 @@ export const DocumentRedactor = () => {
     });
   };
 
-  // Canvas Mouse Events for Manual Drag-to-Redact
+  // Canvas Mouse Coordinates
   const getCanvasCoordinates = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+    const overlay = overlayCanvasRef.current;
+    if (!overlay) return { x: 0, y: 0 };
+    const rect = overlay.getBoundingClientRect();
+    const scaleX = overlay.width / rect.width;
+    const scaleY = overlay.height / rect.height;
     return {
       x: (e.clientX - rect.left) * scaleX,
       y: (e.clientY - rect.top) * scaleY
@@ -430,7 +457,7 @@ export const DocumentRedactor = () => {
         
         setPageData(pData => {
           const pInfo = pData[f.pageNum] || { redactions: [] };
-          let updatedRedactions = [...pInfo.redactions];
+          let updatedRedactions = [...(pInfo.redactions || [])];
           
           if (nextApplied) {
             updatedRedactions.push({
@@ -477,7 +504,6 @@ export const DocumentRedactor = () => {
     if (!customSearchQuery.trim() || fileType !== 'pdf') return;
 
     const query = customSearchQuery.trim().toLowerCase();
-    let matchesCount = 0;
 
     setPageData(prev => {
       const nextPages = { ...prev };
@@ -487,7 +513,6 @@ export const DocumentRedactor = () => {
 
         (pInfo.textItems || []).forEach(item => {
           if (item.text.toLowerCase().includes(query)) {
-            matchesCount++;
             newRedactions.push({
               id: `custom_search_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
               ...item.bounds,
@@ -556,25 +581,22 @@ export const DocumentRedactor = () => {
           setExportProgress(Math.round(((pNum - 0.5) / total) * 100));
 
           const page = await pdfDocProxy.getPage(pNum);
-          const viewport = page.getViewport({ scale: 2.0 }); // 2x DPI for crisp print quality
+          const viewport = page.getViewport({ scale: 2.0 });
           const originalViewport = page.getViewport({ scale: 1.0 });
 
-          const offCanvas = document.createElement('canvas');
-          offCanvas.width = viewport.width;
-          offCanvas.height = viewport.height;
-          const offCtx = offCanvas.getContext('2d', { alpha: false });
+          const expCanvas = document.createElement('canvas');
+          expCanvas.width = viewport.width;
+          expCanvas.height = viewport.height;
+          const expCtx = expCanvas.getContext('2d', { alpha: false });
 
-          // Fill pure white background
-          offCtx.fillStyle = '#FFFFFF';
-          offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+          expCtx.fillStyle = '#FFFFFF';
+          expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
 
-          // Render base PDF layer
           await page.render({
-            canvasContext: offCtx,
+            canvasContext: expCtx,
             viewport: viewport
           }).promise;
 
-          // Scale up redaction coordinates from 1.5x editor scale to 2.0x export scale
           const pRedactions = pageData[pNum]?.redactions || [];
           const scaleFactor = 2.0 / 1.5;
 
@@ -586,10 +608,9 @@ export const DocumentRedactor = () => {
             height: r.height * scaleFactor
           }));
 
-          drawRedactions(offCtx, scaledRedactions);
+          drawRedactions(expCtx, scaledRedactions);
 
-          // Burn canvas into high-quality JPEG (stripping underlying text stream completely)
-          const imgDataUrl = offCanvas.toDataURL('image/jpeg', 0.90);
+          const imgDataUrl = expCanvas.toDataURL('image/jpeg', 0.92);
           const imgBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
           const embeddedJpg = await newPdfDoc.embedJpg(imgBytes);
 
@@ -614,10 +635,23 @@ export const DocumentRedactor = () => {
           size: blob.size,
           type: 'pdf'
         });
-      } else if (fileType === 'image' && canvasRef.current) {
-        // Export flattened image with EXIF metadata stripped
-        const canvas = canvasRef.current;
-        const dataUrl = canvas.toDataURL('image/png');
+      } else if (fileType === 'image') {
+        const curPage = pageData[1];
+        const expCanvas = document.createElement('canvas');
+        expCanvas.width = curPage.width;
+        expCanvas.height = curPage.height;
+        const expCtx = expCanvas.getContext('2d');
+
+        const baseImg = new Image();
+        await new Promise((resolve) => {
+          baseImg.onload = resolve;
+          baseImg.src = curPage.dataUrl;
+        });
+
+        expCtx.drawImage(baseImg, 0, 0);
+        drawRedactions(expCtx, curPage.redactions || []);
+
+        const dataUrl = expCanvas.toDataURL('image/png');
         const blob = await fetch(dataUrl).then(r => r.blob());
         const url = URL.createObjectURL(blob);
 
@@ -653,7 +687,7 @@ export const DocumentRedactor = () => {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-      {error && !file && (
+      {error && (
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -769,7 +803,7 @@ export const DocumentRedactor = () => {
               <Button
                 variant="primary"
                 onClick={handleExportSanitized}
-                disabled={isExporting}
+                disabled={isExporting || isScanning}
                 size="sm"
                 style={{ background: '#EF4444', borderColor: '#EF4444' }}
               >
@@ -821,7 +855,7 @@ export const DocumentRedactor = () => {
             gap: '1.25rem',
             alignItems: 'start'
           }}>
-            {/* Left: Canvas Viewer & Redaction Toolbar */}
+            {/* Left: Document Viewer & Redaction Toolbar */}
             <div style={{
               background: 'var(--card-bg, #fff)',
               border: '1px solid var(--border-color)',
@@ -912,7 +946,7 @@ export const DocumentRedactor = () => {
                 </div>
               </div>
 
-              {/* Interactive Canvas Viewport */}
+              {/* Document Viewport with Direct Image & Overlay Canvas */}
               <div
                 ref={containerRef}
                 style={{
@@ -926,37 +960,62 @@ export const DocumentRedactor = () => {
                   userSelect: 'none'
                 }}
               >
-                <div style={{ position: 'relative', boxShadow: '0 8px 30px rgba(0,0,0,0.5)' }}>
-                  <canvas
-                    ref={canvasRef}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                    style={{
-                      display: 'block',
-                      cursor: 'crosshair',
-                      maxWidth: '100%',
-                      height: 'auto'
-                    }}
-                  />
-
-                  {/* Drag selection preview box */}
-                  {isDrawing && currentBox && (
-                    <div
+                {pageData[currentPage]?.dataUrl ? (
+                  <div style={{
+                    position: 'relative',
+                    display: 'inline-block',
+                    background: '#FFFFFF',
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Layer 1: Native High-Res Image Display */}
+                    <img
+                      src={pageData[currentPage].dataUrl}
+                      alt={`Page ${currentPage}`}
                       style={{
-                        position: 'absolute',
-                        left: `${(currentBox.x / (canvasRef.current?.width || 1)) * 100}%`,
-                        top: `${(currentBox.y / (canvasRef.current?.height || 1)) * 100}%`,
-                        width: `${(currentBox.width / (canvasRef.current?.width || 1)) * 100}%`,
-                        height: `${(currentBox.height / (canvasRef.current?.height || 1)) * 100}%`,
-                        background: activeTool === 'blackout' ? 'rgba(0,0,0,0.8)' : 'rgba(59, 130, 246, 0.4)',
-                        border: '1px dashed #3B82F6',
+                        display: 'block',
+                        maxWidth: '100%',
+                        height: 'auto',
+                        userSelect: 'none',
                         pointerEvents: 'none'
                       }}
+                      draggable={false}
                     />
-                  )}
-                </div>
+
+                    {/* Layer 2: Interactive Redactions Canvas Overlay */}
+                    <canvas
+                      ref={overlayCanvasRef}
+                      width={pageData[currentPage].width}
+                      height={pageData[currentPage].height}
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={handleMouseUp}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        cursor: 'crosshair'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4rem 2rem',
+                    color: '#94A3B8',
+                    gap: '0.75rem'
+                  }}>
+                    <RefreshCw size={28} className="spin-animation" />
+                    <span style={{ fontSize: '0.875rem' }}>Rendering document page...</span>
+                  </div>
+                )}
               </div>
 
               {/* Multi-page Navigation Bar */}
