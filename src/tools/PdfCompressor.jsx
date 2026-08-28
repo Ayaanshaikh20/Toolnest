@@ -34,8 +34,8 @@ const PRESETS = [
     badge: 'Max Savings',
     badgeColor: '#EF4444',
     description: 'Lowest size, suitable for email limits and government portal forms (<1-2MB)',
-    scale: 1.0,
-    quality: 0.45,
+    scale: 0.75,
+    quality: 0.35,
     icon: Zap
   },
   {
@@ -43,9 +43,9 @@ const PRESETS = [
     name: 'Recommended',
     badge: 'Best Balance',
     badgeColor: '#10B981',
-    description: 'Optimal balance of high text clarity and substantial file size reduction (~60-80%)',
-    scale: 1.3,
-    quality: 0.68,
+    description: 'Optimal balance of high text clarity and substantial file size reduction (~50-75%)',
+    scale: 0.90,
+    quality: 0.48,
     icon: Sparkles
   },
   {
@@ -53,9 +53,9 @@ const PRESETS = [
     name: 'Less Compression',
     badge: 'High Quality',
     badgeColor: '#3B82F6',
-    description: 'Crisp images and vector-sharp text with moderate size savings (~30-50%)',
-    scale: 1.7,
-    quality: 0.85,
+    description: '1:1 original scale with crisp vector text clarity (~25-50% savings)',
+    scale: 1.0,
+    quality: 0.62,
     icon: ShieldCheck
   },
   {
@@ -63,9 +63,9 @@ const PRESETS = [
     name: 'Custom Settings',
     badge: 'Manual',
     badgeColor: '#8B5CF6',
-    description: 'Fine-tune resolution scaling factor and JPEG compression quality manually',
-    scale: 1.3,
-    quality: 0.70,
+    description: 'Fine-tune resolution scaling factor (0.4x - 1.2x) and JPEG compression quality manually',
+    scale: 0.90,
+    quality: 0.50,
     icon: Sliders
   }
 ];
@@ -74,8 +74,8 @@ export const PdfCompressor = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [pdfInfo, setPdfInfo] = useState(null);
   const [preset, setPreset] = useState('recommended');
-  const [customScale, setCustomScale] = useState(1.3);
-  const [customQuality, setCustomQuality] = useState(70);
+  const [customScale, setCustomScale] = useState(0.90);
+  const [customQuality, setCustomQuality] = useState(50);
   const [grayscale, setGrayscale] = useState(false);
   
   const [isCompressing, setIsCompressing] = useState(false);
@@ -130,96 +130,104 @@ export const PdfCompressor = () => {
 
     try {
       const activePreset = PRESETS.find(p => p.id === preset) || PRESETS[1];
-      const scale = preset === 'custom' ? customScale : activePreset.scale;
-      const quality = preset === 'custom' ? customQuality / 100 : activePreset.quality;
+      let scale = preset === 'custom' ? customScale : activePreset.scale;
+      let quality = preset === 'custom' ? customQuality / 100 : activePreset.quality;
 
       const arrayBuffer = await selectedFile.arrayBuffer();
       const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
       const pdf = await loadingTask.promise;
       const totalPages = pdf.numPages;
 
-      const newPdfDoc = await PDFDocument.create();
-      const generatedPreviews = [];
+      const processCompressionPass = async (passScale, passQuality) => {
+        const newPdfDoc = await PDFDocument.create();
+        const previews = [];
 
-      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-        setProgress({
-          current: pageNum,
-          total: totalPages,
-          percentage: Math.round(((pageNum - 0.5) / totalPages) * 100)
-        });
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          setProgress({
+            current: pageNum,
+            total: totalPages,
+            percentage: Math.round(((pageNum - 0.5) / totalPages) * 100)
+          });
 
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale });
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: passScale });
+          const originalViewport = page.getViewport({ scale: 1.0 });
 
-        // Unscaled viewport to maintain standard PDF dimension ratios in points
-        const originalViewport = page.getViewport({ scale: 1.0 });
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(viewport.width));
+          canvas.height = Math.max(1, Math.round(viewport.height));
+          const ctx = canvas.getContext('2d', { alpha: false });
 
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d', { alpha: false });
+          if (grayscale) {
+            ctx.filter = 'grayscale(100%)';
+          }
 
-        if (grayscale) {
-          ctx.filter = 'grayscale(100%)';
-        }
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Fill background white to avoid dark transparency artifacts
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+          }).promise;
 
-        await page.render({
-          canvasContext: ctx,
-          viewport: viewport
-        }).promise;
+          const imgDataUrl = canvas.toDataURL('image/jpeg', passQuality);
 
-        // Convert page to compressed JPEG
-        const imgDataUrl = canvas.toDataURL('image/jpeg', quality);
-        
-        if (pageNum <= 4) {
-          generatedPreviews.push({
-            pageNum,
-            dataUrl: imgDataUrl
+          if (pageNum <= 4) {
+            previews.push({
+              pageNum,
+              dataUrl: imgDataUrl
+            });
+          }
+
+          const imgBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+          const embeddedJpg = await newPdfDoc.embedJpg(imgBytes);
+
+          const pdfPage = newPdfDoc.addPage([originalViewport.width, originalViewport.height]);
+          pdfPage.drawImage(embeddedJpg, {
+            x: 0,
+            y: 0,
+            width: originalViewport.width,
+            height: originalViewport.height
+          });
+
+          setProgress({
+            current: pageNum,
+            total: totalPages,
+            percentage: Math.round((pageNum / totalPages) * 100)
           });
         }
 
-        // Embed JPEG in new PDF
-        const imgBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
-        const embeddedJpg = await newPdfDoc.embedJpg(imgBytes);
+        const pdfBytes = await newPdfDoc.save({ useObjectStreams: true });
+        return { bytes: pdfBytes, previews };
+      };
 
-        // Add page matching original point dimensions
-        const pdfPage = newPdfDoc.addPage([originalViewport.width, originalViewport.height]);
-        pdfPage.drawImage(embeddedJpg, {
-          x: 0,
-          y: 0,
-          width: originalViewport.width,
-          height: originalViewport.height
-        });
+      let result = await processCompressionPass(scale, quality);
+      let compressedBlob = new Blob([result.bytes], { type: 'application/pdf' });
 
-        setProgress({
-          current: pageNum,
-          total: totalPages,
-          percentage: Math.round((pageNum / totalPages) * 100)
-        });
+      // Adaptive Compression Guarantee: If preset mode produced an output larger than original, auto-tune
+      if (preset !== 'custom' && compressedBlob.size >= selectedFile.size) {
+        scale = Math.min(scale, 0.75);
+        quality = Math.min(quality, 0.35);
+        result = await processCompressionPass(scale, quality);
+        compressedBlob = new Blob([result.bytes], { type: 'application/pdf' });
       }
 
-      // Save compressed PDF bytes
-      const compressedPdfBytes = await newPdfDoc.save({ useObjectStreams: true });
-      const compressedBlob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
       const compressedUrl = URL.createObjectURL(compressedBlob);
       const compressedSize = compressedBlob.size;
-
       const bytesSaved = Math.max(0, selectedFile.size - compressedSize);
-      const reductionPercent = selectedFile.size > 0 
-        ? Math.max(0, Math.round(((selectedFile.size - compressedSize) / selectedFile.size) * 100))
+      const isSmaller = compressedSize < selectedFile.size;
+      const reductionPercent = isSmaller
+        ? Math.round(((selectedFile.size - compressedSize) / selectedFile.size) * 100)
         : 0;
 
-      setPreviewPages(generatedPreviews);
+      setPreviewPages(result.previews);
       setCompressedResult({
         url: compressedUrl,
         size: compressedSize,
         originalSize: selectedFile.size,
         bytesSaved,
         reductionPercent,
+        isSmaller,
         filename: `compressed_${selectedFile.name.replace(/\.pdf$/i, '')}.pdf`
       });
     } catch (err) {
@@ -495,23 +503,23 @@ export const PdfCompressor = () => {
                         Resolution DPI Scale:
                       </label>
                       <span style={{ fontSize: '0.875rem', fontWeight: '700', color: 'var(--primary-color)' }}>
-                        {customScale.toFixed(1)}x ({Math.round(customScale * 72)} DPI)
+                        {customScale.toFixed(2)}x ({Math.round(customScale * 72)} DPI)
                       </span>
                     </div>
                     <input
                       type="range"
-                      min="0.5"
-                      max="2.2"
-                      step="0.1"
+                      min="0.4"
+                      max="1.2"
+                      step="0.05"
                       value={customScale}
                       onChange={(e) => setCustomScale(parseFloat(e.target.value))}
                       className="slider"
                       style={{ width: '100%' }}
                     />
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                      <span>0.5x (Smallest)</span>
-                      <span>1.3x (Balanced)</span>
-                      <span>2.2x (Ultra Sharp)</span>
+                      <span>0.4x (Max Savings)</span>
+                      <span>0.9x (Recommended)</span>
+                      <span>1.2x (High Sharpness)</span>
                     </div>
                   </div>
 
@@ -527,7 +535,7 @@ export const PdfCompressor = () => {
                     <input
                       type="range"
                       min="15"
-                      max="95"
+                      max="80"
                       step="5"
                       value={customQuality}
                       onChange={(e) => setCustomQuality(parseInt(e.target.value))}
@@ -535,9 +543,9 @@ export const PdfCompressor = () => {
                       style={{ width: '100%' }}
                     />
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                      <span>15% (High Compression)</span>
-                      <span>70% (Standard)</span>
-                      <span>95% (Maximum Quality)</span>
+                      <span>15% (Ultra Small)</span>
+                      <span>50% (Standard Balance)</span>
+                      <span>80% (Max Quality)</span>
                     </div>
                   </div>
                 </div>
@@ -706,19 +714,25 @@ export const PdfCompressor = () => {
 
                 <div style={{
                   padding: '1rem',
-                  background: 'rgba(16, 185, 129, 0.08)',
+                  background: compressedResult.isSmaller ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)',
                   borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  border: compressedResult.isSmaller ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(59, 130, 246, 0.3)',
                   textAlign: 'center'
                 }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--success-color)', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '700' }}>
-                    Total Space Saved
+                  <div style={{ fontSize: '0.75rem', color: compressedResult.isSmaller ? 'var(--success-color)' : 'var(--primary-color)', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '700' }}>
+                    {compressedResult.isSmaller ? 'Total Space Saved' : 'Status'}
                   </div>
-                  <div style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--success-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}>
-                    <TrendingDown size={20} /> -{compressedResult.reductionPercent}%
+                  <div style={{ fontSize: '1.35rem', fontWeight: '800', color: compressedResult.isSmaller ? 'var(--success-color)' : 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}>
+                    {compressedResult.isSmaller ? (
+                      <>
+                        <TrendingDown size={20} /> -{compressedResult.reductionPercent}%
+                      </>
+                    ) : (
+                      'Optimized'
+                    )}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    ({formatBytes(compressedResult.bytesSaved)} saved)
+                    {compressedResult.isSmaller ? `(${formatBytes(compressedResult.bytesSaved)} saved)` : 'Original is already minimal'}
                   </div>
                 </div>
               </div>
