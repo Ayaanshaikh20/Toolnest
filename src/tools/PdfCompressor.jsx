@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import { pdfjsLib } from '../config/pdfWorker';
 import { PDFDocument } from 'pdf-lib';
 import { Button } from '../components/Button';
 import { 
@@ -18,11 +18,6 @@ import {
   Minimize2,
   TrendingDown
 } from 'lucide-react';
-
-// Setup pdf.js worker
-if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version || '3.11.174'}/pdf.worker.min.js`;
-}
 
 const formatBytes = (bytes) => {
   if (!bytes || bytes === 0) return '0 Bytes';
@@ -247,6 +242,23 @@ export const PdfCompressor = () => {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+      {error && !selectedFile && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          padding: '0.85rem 1.25rem',
+          background: 'var(--error-bg, #FEF2F2)',
+          color: 'var(--error-color, #DC2626)',
+          borderRadius: 'var(--radius-md)',
+          marginBottom: '1.5rem',
+          fontSize: '0.875rem'
+        }}>
+          <AlertCircle size={18} style={{ flexShrink: 0 }} />
+          <div>{error}</div>
+        </div>
+      )}
+
       {/* Upload Dropzone */}
       {!selectedFile ? (
         <div

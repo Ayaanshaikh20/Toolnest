@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import { pdfjsLib } from '../config/pdfWorker';
 import { Button } from '../components/Button';
 import { FileUp, Download, Image as ImageIcon, CheckCircle2 } from 'lucide-react';
-
-// Configure pdfjs worker to unpkg/cdnjs CDN for reliable client-side rendering
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version || '3.11.174'}/pdf.worker.min.js`;
 
 export const PdfToImages = () => {
   const [file, setFile] = useState(null);
