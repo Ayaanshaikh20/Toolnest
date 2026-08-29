@@ -290,7 +290,7 @@ export const DocumentRedactor = () => {
                       const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${startIdx}`;
                       
                       // Calculate exact sub-string bounding box for precise strike placement
-                      const charWidth = totalWidth / Math.max(1, str.length);
+                      const charWidth = textWidth / Math.max(1, str.length);
                       const subX = Math.max(0, Math.round(boxX + startIdx * charWidth));
                       const subW = Math.max(12, Math.round(matchStr.length * charWidth + 4));
 
