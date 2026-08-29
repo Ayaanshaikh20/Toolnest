@@ -251,57 +251,7 @@ export const TOOLS_DATA = [
       { question: 'Can I compress password-protected PDF files?', answer: 'You must remove the password before compressing, as client-side parsers require an unencrypted document stream.' },
       { question: 'Is there a limit on file size or number of pages?', answer: 'There are no artificial limits. You can compress any PDF as large as your device RAM and CPU can process.' }
     ],
-    relatedSlugs: ['document-redactor', 'pdf-merger', 'pdf-splitter', 'pdf-to-images', 'images-to-pdf', 'image-compressor']
-  },
-  {
-    slug: 'document-redactor',
-    name: 'Smart Document Redactor & Sanitizer',
-    description: 'Auto-detect and permanently blackout or pixelate API keys, emails, phone numbers, credit cards, and confidential text in PDFs and screenshots.',
-    category: 'pdf',
-    icon: 'ShieldAlert',
-    isPopular: true,
-    metaTitle: 'Free Smart PDF & Image Redactor — Auto-Detect & Blackout Sensitive Data | ToolNest',
-    metaDescription: 'Auto-detect and permanently redact API keys, emails, credit card numbers, and confidential text from PDFs and images. True irreversible burn-in with 100% in-browser privacy.',
-    about: 'Smart Document Redactor is a next-generation, client-side privacy tool designed to sanitize sensitive information from PDFs, invoices, receipts, and screenshots before sharing. Using intelligent pattern recognition, ToolNest scans your document for API keys, secret tokens, email addresses, phone numbers, and payment details, allowing you to blackout, whiteout, or pixelate them in one click. Unlike standard PDF software that merely draws a superficial black shape over text, ToolNest burns the redactions permanently into the raster layer and strips underlying text streams and EXIF metadata, making recovery mathematically impossible.',
-    whatIs: {
-      heading: 'What is True Permanent Document Redaction?',
-      content: [
-        'Many users mistakenly believe that drawing a black rectangle over text in a standard PDF viewer redacts the document. In reality, standard vector PDFs retain the underlying raw text layer underneath the black box, allowing anyone to select, copy, or extract the hidden text using simple inspection tools.',
-        'ToolNest executes True Irreversible Redaction: every page is re-rasterized onto high-DPI canvases where redaction blocks are painted directly into the pixel grid. The underlying text streams, embedded metadata, GPS coordinates, and font tables are completely destroyed and replaced with a clean, flattened visual representation. Your redacted credentials and confidential figures can never be recovered.'
-      ]
-    },
-    howToUse: [
-      'Upload any PDF document, invoice, or screenshot (PNG, JPG, WebP) into the upload dropzone.',
-      'Review the "Auto-Detected Secrets" panel to see detected API keys, emails, phone numbers, and credentials.',
-      'Click "Redact All" to automatically apply blackouts, or click & drag custom redaction boxes directly on the canvas.',
-      'Use the "Custom Search & Redact" input to blackout specific names, project codes, or dollar amounts across all pages.',
-      'Click "Export Sanitized File" to generate a flattened, permanently redacted PDF or clean image.'
-    ],
-    features: [
-      { title: 'Intelligent Pattern Auto-Detection', description: 'Automatically identifies API keys (OpenAI, GitHub, AWS), emails, phone numbers, credit cards, and IP addresses.' },
-      { title: 'Multiple Redaction Styles', description: 'Choose between Solid Blackout, Whiteout, Pixelate Mosaic, and Blur overlay effects.' },
-      { title: 'True Irreversible Burn-In', description: 'Flattens visual layers and destroys underlying text streams so redacted data cannot be copied or reversed.' },
-      { title: 'EXIF & Metadata Stripper', description: 'Strips camera info, geolocation GPS tags, device identifiers, and edit timestamps automatically.' },
-      { title: '100% In-Browser Privacy', description: 'Zero files or text are transmitted to remote servers. All scanning and rendering executes in local browser memory.' }
-    ],
-    examples: [
-      {
-        title: 'Sharing Developer Debug Logs & Screenshots',
-        description: 'Blackout OpenAI API keys (`sk-...`), AWS credentials, and database passwords before sharing bug reports on GitHub or Discord.'
-      },
-      {
-        title: 'Submitting Identity & Tax Documents',
-        description: 'Obscure your Social Security Number, bank account numbers, or home address before submitting verification documents to employers or landlords.'
-      }
-    ],
-    faqs: [
-      { question: 'Can someone undo or copy-paste text underneath the blacked-out areas?', answer: 'No! ToolNest permanently burns redactions into the raster pixel layer and strips the underlying text object stream. There is no hidden text layer to copy or recover.' },
-      { question: 'What types of sensitive data does the tool automatically detect?', answer: 'The auto-detection engine scans for API keys & tokens (OpenAI, GitHub, AWS), email addresses, international phone numbers, credit card numbers, and IPv4 addresses.' },
-      { question: 'Can I redact specific names or custom phrases?', answer: 'Yes! Use the "Custom Search & Redact" input box to type any person\'s name, company name, or reference code, and the tool will automatically blackout all matching instances across every page.' },
-      { question: 'Are my confidential documents uploaded to any server?', answer: 'No. All parsing, scanning, canvas drawing, and PDF compilation runs 100% locally in your browser using WebAssembly. Your documents never leave your device.' },
-      { question: 'Does this tool work on screenshots and photos?', answer: 'Yes! You can upload PNG, JPG, and WebP screenshots or photos and drag-and-drop custom blackout, pixelate, or blur boxes anywhere on the image.' }
-    ],
-    relatedSlugs: ['pdf-compressor', 'pdf-merger', 'pdf-splitter', 'image-compressor', 'pdf-to-images']
+    relatedSlugs: ['pdf-merger', 'pdf-splitter', 'image-compressor', 'pdf-to-images']
   },
   {
     slug: 'qr-code-generator',

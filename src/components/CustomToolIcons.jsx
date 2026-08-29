@@ -141,34 +141,6 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
         </svg>
       );
 
-    // ── SMART DOCUMENT REDACTOR: Document with redacted blackout strips & privacy shield ──
-    case 'document-redactor':
-      return (
-        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
-          {/* Main Document Body */}
-          <rect x="4" y="3" width="24" height="26" rx="3" fill="#1E293B" />
-          
-          {/* Document Fold */}
-          <path d="M20 3L28 11H23C21.3431 11 20 9.65685 20 8V3Z" fill="#334155" />
-          
-          {/* Normal Text Lines */}
-          <line x1="8" y1="8" x2="16" y2="8" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
-          
-          {/* Redacted Blackout Strip 1 */}
-          <rect x="8" y="12" width="16" height="3" rx="0.75" fill="#EF4444" />
-          
-          {/* Normal Text Line */}
-          <line x1="8" y1="18" x2="14" y2="18" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" />
-          
-          {/* Redacted Blackout Strip 2 */}
-          <rect x="8" y="21" width="10" height="3" rx="0.75" fill="#000000" stroke="#EF4444" strokeWidth="0.8" />
-          
-          {/* Shield Badge */}
-          <circle cx="23" cy="22" r="6.5" fill="#10B981" />
-          <path d="M23 18L26.5 19.5V22.5C26.5 24.5 23 26 23 26C23 26 19.5 24.5 19.5 22.5V19.5L23 18Z" fill="#047857" />
-          <path d="M21.5 22L22.5 23L24.5 21" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
 
     // ── AI BACKGROUND REMOVER: Magic wand removing background on checkerboard ──
     case 'background-remover':
