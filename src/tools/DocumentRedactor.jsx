@@ -1193,59 +1193,8 @@ export const DocumentRedactor = () => {
               )}
             </div>
 
-            {/* Right: Auto-Detect Sidebar & Custom Keyword Redactor */}
+            {/* Right: Auto-Detect Sidebar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {/* Custom Keyword Redaction Card */}
-              <div style={{
-                background: 'var(--card-bg, #fff)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '1.25rem'
-              }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Search size={16} style={{ color: 'var(--primary-color)' }} />
-                  Custom Search & Redact
-                </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                  Blackout any confidential name, project code, or invoice ID across all pages.
-                </p>
-
-                <div style={{ display: 'flex', gap: '0.4rem' }}>
-                  <input
-                    type="text"
-                    placeholder="e.g. John Doe, $5,000..."
-                    value={customSearchQuery}
-                    onChange={(e) => setCustomSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleCustomKeywordRedact()}
-                    style={{
-                      flexGrow: 1,
-                      padding: '0.45rem 0.65rem',
-                      fontSize: '0.8rem',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: 'var(--radius-sm)',
-                      background: 'var(--bg-color)',
-                      color: 'var(--text-main)'
-                    }}
-                  />
-                  <button
-                    onClick={handleCustomKeywordRedact}
-                    disabled={!customSearchQuery.trim()}
-                    style={{
-                      padding: '0.45rem 0.75rem',
-                      background: 'var(--primary-color)',
-                      color: '#FFF',
-                      border: 'none',
-                      borderRadius: 'var(--radius-sm)',
-                      fontSize: '0.75rem',
-                      fontWeight: '700',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Redact All
-                  </button>
-                </div>
-              </div>
-
               {/* Auto-Detection Findings Inspector */}
               <div style={{
                 background: 'var(--card-bg, #fff)',
