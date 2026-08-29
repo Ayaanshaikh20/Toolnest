@@ -203,6 +203,7 @@ export const DocumentRedactor = () => {
           const dataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
 
           const textItems = [];
+          const pageRedactions = [];
           try {
             const textContent = await page.getTextContent();
             if (textContent && Array.isArray(textContent.items)) {
