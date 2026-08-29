@@ -218,13 +218,16 @@ export const DocumentRedactor = () => {
                 let fontCanvasSize = 16;
                 let textWidth = 20;
 
-                if (Array.isArray(item.transform) && item.transform.length === 6) {
+                const hasTransform = item.transform && item.transform.length === 6;
+                const hasViewportTransform = viewport.transform && viewport.transform.length === 6;
+
+                if (hasTransform) {
                   // Text matrix in PDF space
                   const m2 = item.transform;
                   // Viewport matrix (PDF to Canvas)
                   const m1 = viewport.transform;
                   
-                  if (Array.isArray(m1) && m1.length === 6) {
+                  if (hasViewportTransform) {
                     // Multiply m1 * m2
                     const finalMatrix = [
                       m1[0] * m2[0] + m1[2] * m2[1],
@@ -236,15 +239,9 @@ export const DocumentRedactor = () => {
                     ];
                     
                     vx = finalMatrix[4];
-                    // finalMatrix[5] is the Canvas Y of the baseline.
                     vy = finalMatrix[5];
                     
-                    // finalMatrix[3] is the scaled font height in Canvas space.
-                    // finalMatrix[0] is the scaled font width.
                     fontCanvasSize = Math.abs(finalMatrix[3]) || Math.abs(finalMatrix[0]) || 16;
-                    
-                    // item.width is in PDF space. Scale it by the viewport scale.
-                    // The viewport scale is roughly m1[0] (if no rotation) or viewport.scale.
                     textWidth = (item.width || 0) * viewport.scale;
                   } else {
                     vx = m2[4] * viewport.scale;
