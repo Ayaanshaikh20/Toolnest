@@ -51,7 +51,19 @@ const SENSITIVE_PATTERNS = {
     name: 'Phone Numbers',
     icon: Phone,
     color: '#10B981',
-    regex: /\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}\b/g
+    regex: /\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,5}\b/g
+  },
+  nationalIds: {
+    name: 'Aadhar & National IDs',
+    icon: Shield,
+    color: '#EC4899',
+    regex: /\b\d{4}\s\d{4}\s\d{4}\b/g
+  },
+  panCards: {
+    name: 'PAN & Tax IDs',
+    icon: FileText,
+    color: '#6366F1',
+    regex: /\b[A-Z]{5}[0-9]{4}[A-Z]\b/g
   },
   creditCards: {
     name: 'Credit Cards',
@@ -184,11 +196,13 @@ export const DocumentRedactor = () => {
 
                 let vx = 0;
                 let vy = 0;
+                let fontPtSize = 12;
+
                 if (Array.isArray(item.transform) && item.transform.length >= 6) {
                   const tx = item.transform[4] || 0;
                   const ty = item.transform[5] || 0;
-                  vx = tx * 1.5;
-                  vy = viewport.height - (ty * 1.5);
+                  fontPtSize = Math.abs(item.transform[0]) || Math.abs(item.transform[3]) || item.height || 12;
+
                   if (typeof viewport.convertToViewportPoint === 'function') {
                     try {
                       const pt = viewport.convertToViewportPoint(tx, ty);
@@ -196,21 +210,31 @@ export const DocumentRedactor = () => {
                         vx = pt[0];
                         vy = pt[1];
                       }
-                    } catch (e) {}
+                    } catch (e) {
+                      vx = tx * 1.5;
+                      vy = viewport.height - (ty * 1.5);
+                    }
+                  } else {
+                    vx = tx * 1.5;
+                    vy = viewport.height - (ty * 1.5);
                   }
                 }
 
-                const itemWidth = Math.max(10, (item.width || 20) * 1.5);
-                const itemHeight = Math.max(12, (item.height || 12) * 1.5);
+                const fontCanvasSize = fontPtSize * 1.5;
+                const boxHeight = Math.max(16, Math.round(fontCanvasSize * 1.25));
+                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.98)));
+                const totalWidth = Math.max(10, Math.round((item.width || 20) * 1.5));
+                const boxX = Math.max(0, Math.round(vx - 2));
+                const boxW = Math.round(totalWidth + 4);
 
-                const bounds = {
-                  x: Math.max(0, Math.round(vx)),
-                  y: Math.max(0, Math.round(vy - itemHeight)),
-                  width: Math.round(itemWidth),
-                  height: Math.round(itemHeight)
+                const itemBounds = {
+                  x: boxX,
+                  y: boxY,
+                  width: boxW,
+                  height: boxHeight
                 };
 
-                textItems.push({ text: str, bounds, id: `p${pNum}_t${idx}` });
+                textItems.push({ text: str, bounds: itemBounds, id: `p${pNum}_t${idx}` });
 
                 // Check sensitive patterns
                 Object.entries(SENSITIVE_PATTERNS).forEach(([categoryKey, category]) => {
@@ -219,6 +243,20 @@ export const DocumentRedactor = () => {
                     if (matches) {
                       matches.forEach((matchStr) => {
                         const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
+                        
+                        // Calculate exact sub-string bounding box for precise strike placement
+                        const charWidth = totalWidth / Math.max(1, str.length);
+                        const matchIndex = str.indexOf(matchStr);
+                        const subX = matchIndex >= 0 ? Math.max(0, Math.round(boxX + matchIndex * charWidth)) : boxX;
+                        const subW = matchIndex >= 0 ? Math.max(12, Math.round(matchStr.length * charWidth + 4)) : boxW;
+
+                        const matchBounds = {
+                          x: subX,
+                          y: boxY,
+                          width: subW,
+                          height: boxHeight
+                        };
+
                         findings.push({
                           id: redactionId,
                           category: categoryKey,
@@ -226,12 +264,12 @@ export const DocumentRedactor = () => {
                           color: category.color,
                           matchedText: matchStr,
                           pageNum: pNum,
-                          bounds: { ...bounds },
+                          bounds: matchBounds,
                           applied: true
                         });
                         pageRedactions.push({
                           id: redactionId,
-                          ...bounds,
+                          ...matchBounds,
                           type: 'blackout',
                           category: categoryKey,
                           label: category.name
@@ -512,13 +550,25 @@ export const DocumentRedactor = () => {
         const newRedactions = [...(pInfo.redactions || [])];
 
         (pInfo.textItems || []).forEach(item => {
-          if (item.text.toLowerCase().includes(query)) {
+          const lowerStr = item.text.toLowerCase();
+          let idx = lowerStr.indexOf(query);
+
+          while (idx !== -1) {
+            const charWidth = item.bounds.width / Math.max(1, item.text.length);
+            const subX = Math.max(0, Math.round(item.bounds.x + idx * charWidth));
+            const subW = Math.max(12, Math.round(query.length * charWidth + 4));
+
             newRedactions.push({
               id: `custom_search_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-              ...item.bounds,
+              x: subX,
+              y: item.bounds.y,
+              width: subW,
+              height: item.bounds.height,
               type: activeTool,
               label: `"${customSearchQuery}"`
             });
+
+            idx = lowerStr.indexOf(query, idx + query.length);
           }
         });
 
