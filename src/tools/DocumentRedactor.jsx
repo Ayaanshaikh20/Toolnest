@@ -39,7 +39,7 @@ const SENSITIVE_PATTERNS = {
     name: 'API Keys & Secrets',
     icon: KeyRound,
     color: '#EF4444',
-    regex: /\b(?:sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{20,}|AIza[0-9A-Za-z-_]{35}|AKIA[0-9A-Z]{16}|[a-zA-Z0-9_\-]{32,})\b/g
+    regex: /\b(?:sk-(?:live|test|proj)-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{20,}|gho_[a-zA-Z0-9]{20,}|AIza[0-9A-Za-z-_]{35}|AKIA[0-9A-Z]{16}|rk_live_[a-zA-Z0-9]{24,}|xox[baprs]-[a-zA-Z0-9]{10,})\b/g
   },
   emails: {
     name: 'Email Addresses',
@@ -69,7 +69,7 @@ const SENSITIVE_PATTERNS = {
     name: 'UAN & Account IDs',
     icon: FileText,
     color: '#10B981',
-    regex: /\b10\d{10}\b/g
+    regex: /\b102?\d{9}\b/g
   },
   datesOfBirth: {
     name: 'Dates of Birth',
@@ -81,7 +81,7 @@ const SENSITIVE_PATTERNS = {
     name: 'Phone Numbers',
     icon: Phone,
     color: '#06B6D4',
-    regex: /\b(?:\+91[\s.-]?)?[6-9]\d{4}[\s.-]?\d{5}\b|\b(?:\+?\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g
+    regex: /\b(?:\+91[\s.-]?)?[6-9]\d{9}\b|\b(?:\+?\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g
   },
   creditCards: {
     name: 'Credit Cards',
@@ -212,27 +212,27 @@ export const DocumentRedactor = () => {
                 if (!item || typeof item.str !== 'string' || !item.str.trim()) return;
                 const str = item.str;
 
-                let matrix = item.transform;
-                if (pdfjsLib.Util && typeof pdfjsLib.Util.transform === 'function') {
-                  matrix = pdfjsLib.Util.transform(viewport.transform, item.transform);
-                } else if (Array.isArray(viewport.transform) && Array.isArray(item.transform)) {
-                  const [vA, vB, vC, vD, vE, vF] = viewport.transform;
-                  const [mA, mB, mC, mD, mE, mF] = item.transform;
-                  matrix = [
-                    vA * mA + vC * mB,
-                    vB * mA + vD * mB,
-                    vA * mC + vC * mD,
-                    vB * mC + vD * mD,
-                    vA * mE + vC * mF + vE,
-                    vB * mE + vD * mF + vF
-                  ];
+                const tx = (Array.isArray(item.transform) && item.transform.length >= 6) ? item.transform[4] : 0;
+                const ty = (Array.isArray(item.transform) && item.transform.length >= 6) ? item.transform[5] : 0;
+
+                let vx = tx * 1.5;
+                let vy = viewport.height - (ty * 1.5);
+                if (typeof viewport.convertToViewportPoint === 'function') {
+                  try {
+                    const pt = viewport.convertToViewportPoint(tx, ty);
+                    if (Array.isArray(pt)) {
+                      vx = pt[0];
+                      vy = pt[1];
+                    }
+                  } catch (e) {}
                 }
 
-                const vx = matrix ? matrix[4] : 0;
-                const vy = matrix ? matrix[5] : 0; // Exact Canvas Baseline Y!
-                const fontCanvasSize = matrix ? (Math.abs(matrix[3]) || Math.abs(matrix[0]) || (12 * 1.5)) : (12 * 1.5);
+                const fontPtSize = (Array.isArray(item.transform) && item.transform.length >= 6)
+                  ? (Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || item.height || 10)
+                  : (item.height || 10);
+                const fontCanvasSize = fontPtSize * 1.5;
                 const boxHeight = Math.max(14, Math.round(fontCanvasSize * 1.15));
-                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.88)));
+                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.85)));
                 const totalWidth = Math.max(10, Math.round((item.width || 20) * 1.5));
                 const boxX = Math.max(0, Math.round(vx - 2));
                 const boxW = Math.round(totalWidth + 4);
