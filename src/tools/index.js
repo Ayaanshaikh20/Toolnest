@@ -27,6 +27,7 @@ import { BackgroundRemover } from './BackgroundRemover';
 import { MarkdownConverter } from './MarkdownConverter';
 import { CodeMinifier } from './CodeMinifier';
 import { PdfCompressor } from './PdfCompressor';
+import { MockupStudio } from './MockupStudio';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -55,6 +56,7 @@ export const TOOL_COMPONENTS = {
   'images-to-pdf': ImagesToPdf,
   'pdf-to-images': PdfToImages,
   'pdf-compressor': PdfCompressor,
+  'mockup-studio': MockupStudio,
   'background-remover': BackgroundRemover,
   'markdown-converter': MarkdownConverter,
   'code-minifier': CodeMinifier,

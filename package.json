@@ -12,6 +12,7 @@
   "dependencies": {
     "@imgly/background-removal": "^1.7.0",
     "diff": "^9.0.0",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.344.0",
     "marked": "^18.0.10",
     "pdf-lib": "^1.17.1",

@@ -476,6 +476,39 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
         </svg>
       );
 
+    // ── TOOLNEST STUDIO: 3D Mockup Generator ──
+    case 'mockup-studio':
+      return (
+        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
+          {/* Gradient Background */}
+          <rect x="2" y="4" width="28" height="24" rx="4" fill="url(#paint0_linear)" />
+          
+          {/* 3D Browser Mockup Window */}
+          <g filter="url(#filter0_d)">
+            <rect x="6" y="8" width="20" height="14" rx="1.5" fill="#1E293B" stroke="#334155" strokeWidth="0.5" />
+            <rect x="6.5" y="8.5" width="19" height="3" fill="#0F172A" />
+            <circle cx="8.5" cy="10" r="0.75" fill="#EF4444" />
+            <circle cx="11" cy="10" r="0.75" fill="#F59E0B" />
+            <circle cx="13.5" cy="10" r="0.75" fill="#10B981" />
+            
+            {/* Inner Content (Screenshot) */}
+            <rect x="8" y="13" width="16" height="7" rx="0.5" fill="#3B82F6" opacity="0.8" />
+            <path d="M10 16L14 14L16 17L20 15" stroke="#FFF" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+
+          <defs>
+            <linearGradient id="paint0_linear" x1="2" y1="4" x2="30" y2="28" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#F472B6" />
+              <stop offset="0.5" stopColor="#8B5CF6" />
+              <stop offset="1" stopColor="#3B82F6" />
+            </linearGradient>
+            <filter id="filter0_d" x="4" y="6" width="24" height="20" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+              <feDropShadow dx="0" dy="2" stdDeviation="1.5" floodOpacity="0.4" />
+            </filter>
+          </defs>
+        </svg>
+      );
+
     // Default Fallback
     default:
       return (

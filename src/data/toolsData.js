@@ -254,6 +254,54 @@ export const TOOLS_DATA = [
     relatedSlugs: ['pdf-merger', 'pdf-splitter', 'image-compressor', 'pdf-to-images']
   },
   {
+    slug: 'mockup-studio',
+    name: 'ToolNest Studio',
+    description: 'Turn boring screenshots into gorgeous, viral-ready 3D mockups for social media. Everything renders securely in your browser.',
+    category: 'image',
+    icon: 'Sparkles',
+    isPopular: true,
+    metaTitle: 'Free 3D Screenshot Mockup Generator | ToolNest Studio',
+    metaDescription: 'Wrap your screenshots in beautiful 3D browser and device frames with stunning gradient backgrounds. Free, no watermarks, client-side rendering.',
+    about: 'ToolNest Studio is a powerful, client-side mockup engine designed for founders, developers, and content creators. It takes a standard screenshot and instantly wraps it in a high-fidelity 3D device frame (like macOS, Windows 11, or minimal browsers), applies perfect drop shadows, and sets it against stunning mesh gradients. Generate viral, professional imagery for Twitter, LinkedIn, and landing pages instantly.',
+    whatIs: {
+      heading: 'Why Use a Mockup Generator?',
+      content: [
+        'Plain screenshots often look unpolished and lack the visual hierarchy needed to grab attention in a crowded social media feed. By adding physical device context (like a browser window), padding, and a contrasting background, the eye is naturally drawn to the content of the image.',
+        'ToolNest Studio utilizes modern CSS 3D transforms and HTML-to-Canvas rendering to build these composites entirely within your browser. There is no cloud processing, meaning it is lightning-fast and your unreleased product screenshots remain 100% confidential.'
+      ]
+    },
+    howToUse: [
+      'Click the upload area to load your screenshot, software interface, or code snippet.',
+      'Select a Frame Style (e.g., macOS Dark, Windows 11, Minimal).',
+      'Choose a Background from the curated list of solid colors and mesh gradients.',
+      'Fine-tune the Padding, Border Roundness, and Shadow Intensity using the sliders.',
+      'Click "Export High-Res PNG" to download a crisp 1200x630 image.'
+    ],
+    features: [
+      { title: 'Zero Cloud Processing', description: 'Everything is rendered in your browser using local canvas. No data leaves your machine.' },
+      { title: 'High-Resolution 3x Export', description: 'Images are exported at 3x scale to ensure crisp retina-quality rendering.' },
+      { title: 'Curated Mesh Gradients', description: 'Includes a selection of stunning, vibrant gradients used by top designers.' },
+      { title: 'Instant Preview', description: 'See your changes immediately as you adjust sliders and swap frames.' }
+    ],
+    examples: [
+      {
+        title: 'Social Media Updates',
+        description: 'Post your latest software feature or SaaS update on Twitter/X in a gorgeous macOS frame.'
+      },
+      {
+        title: 'Landing Page Assets',
+        description: 'Create uniform, professional hero images for your website showcasing your app.'
+      }
+    ],
+    faqs: [
+      { question: 'What image format is exported?', answer: 'The tool exports a high-resolution, uncompressed PNG file.' },
+      { question: 'Is there a watermark on the exported image?', answer: 'No! ToolNest Studio is completely free and never applies watermarks to your mockups.' },
+      { question: 'Does this tool upload my images to a server?', answer: 'No. The entire rendering process is done locally in your browser via HTML-to-Canvas.' },
+      { question: 'Can I paste images directly from my clipboard?', answer: 'Currently, you need to upload the image file, but clipboard support is coming in a future update!' }
+    ],
+    relatedSlugs: ['image-compressor', 'background-remover']
+  },
+  {
     slug: 'qr-code-generator',
     name: 'QR Code Generator',
     description: 'Generate custom QR codes for URLs, text, email, or phone. Choose colors, sizes, and error correction levels.',
