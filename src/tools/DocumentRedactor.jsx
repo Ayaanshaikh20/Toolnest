@@ -26,6 +26,7 @@ import {
   Maximize2,
   Layers,
   FileText,
+  Calendar,
   Image as ImageIcon,
   CheckCircle2,
   AlertCircle,
@@ -72,8 +73,8 @@ const SENSITIVE_PATTERNS = {
     regex: /\b102?\d{9}\b/g
   },
   datesOfBirth: {
-    name: 'Dates of Birth',
-    icon: FileText,
+    name: 'Dates',
+    icon: Calendar,
     color: '#F59E0B',
     regex: /\b\d{2}[-/.]\d{2}[-/.]\d{2,4}\b/g
   },
