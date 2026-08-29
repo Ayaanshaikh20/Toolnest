@@ -47,12 +47,6 @@ const SENSITIVE_PATTERNS = {
     color: '#3B82F6',
     regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g
   },
-  phones: {
-    name: 'Phone Numbers',
-    icon: Phone,
-    color: '#10B981',
-    regex: /\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,5}\b/g
-  },
   nationalIds: {
     name: 'Aadhar & National IDs',
     icon: Shield,
@@ -70,6 +64,12 @@ const SENSITIVE_PATTERNS = {
     icon: CreditCard,
     color: '#F59E0B',
     regex: /\b(?:\d[ -]*?){13,16}\b/g
+  },
+  phones: {
+    name: 'Phone Numbers',
+    icon: Phone,
+    color: '#10B981',
+    regex: /\b(?:\+91[\s.-]?)?[6-9]\d{4}[\s.-]?\d{5}\b|\b(?:\+?\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g
   },
   ipAddresses: {
     name: 'IP Addresses',
@@ -236,44 +236,55 @@ export const DocumentRedactor = () => {
 
                 textItems.push({ text: str, bounds: itemBounds, id: `p${pNum}_t${idx}` });
 
-                // Check sensitive patterns
+                // Deduplicated character span matching
+                const matchedSpans = [];
+
                 Object.entries(SENSITIVE_PATTERNS).forEach(([categoryKey, category]) => {
                   try {
-                    const matches = str.match(category.regex);
-                    if (matches) {
-                      matches.forEach((matchStr) => {
-                        const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
-                        
-                        // Calculate exact sub-string bounding box for precise strike placement
-                        const charWidth = totalWidth / Math.max(1, str.length);
-                        const matchIndex = str.indexOf(matchStr);
-                        const subX = matchIndex >= 0 ? Math.max(0, Math.round(boxX + matchIndex * charWidth)) : boxX;
-                        const subW = matchIndex >= 0 ? Math.max(12, Math.round(matchStr.length * charWidth + 4)) : boxW;
+                    let match;
+                    const rx = new RegExp(category.regex.source, category.regex.flags);
+                    while ((match = rx.exec(str)) !== null) {
+                      const matchStr = match[0];
+                      const startIdx = match.index;
+                      const endIdx = startIdx + matchStr.length;
 
-                        const matchBounds = {
-                          x: subX,
-                          y: boxY,
-                          width: subW,
-                          height: boxHeight
-                        };
+                      // Skip if this character range overlaps with a higher priority secret match
+                      const isOverlapping = matchedSpans.some(span => !(endIdx <= span.start || startIdx >= span.end));
+                      if (isOverlapping) continue;
 
-                        findings.push({
-                          id: redactionId,
-                          category: categoryKey,
-                          categoryName: category.name,
-                          color: category.color,
-                          matchedText: matchStr,
-                          pageNum: pNum,
-                          bounds: matchBounds,
-                          applied: true
-                        });
-                        pageRedactions.push({
-                          id: redactionId,
-                          ...matchBounds,
-                          type: 'blackout',
-                          category: categoryKey,
-                          label: category.name
-                        });
+                      matchedSpans.push({ start: startIdx, end: endIdx });
+
+                      const redactionId = `auto_${categoryKey}_p${pNum}_${idx}_${startIdx}`;
+                      
+                      // Calculate exact sub-string bounding box for precise strike placement
+                      const charWidth = totalWidth / Math.max(1, str.length);
+                      const subX = Math.max(0, Math.round(boxX + startIdx * charWidth));
+                      const subW = Math.max(12, Math.round(matchStr.length * charWidth + 4));
+
+                      const matchBounds = {
+                        x: subX,
+                        y: boxY,
+                        width: subW,
+                        height: boxHeight
+                      };
+
+                      findings.push({
+                        id: redactionId,
+                        category: categoryKey,
+                        categoryName: category.name,
+                        color: category.color,
+                        matchedText: matchStr,
+                        pageNum: pNum,
+                        bounds: matchBounds,
+                        applied: true
+                      });
+
+                      pageRedactions.push({
+                        id: redactionId,
+                        ...matchBounds,
+                        type: 'blackout',
+                        category: categoryKey,
+                        label: category.name
                       });
                     }
                   } catch (regErr) {}
