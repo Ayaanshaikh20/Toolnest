@@ -51,7 +51,7 @@ const SENSITIVE_PATTERNS = {
     name: 'Aadhar & National IDs',
     icon: Shield,
     color: '#EC4899',
-    regex: /\b\d{4}\s\d{4}\s\d{4}\b/g
+    regex: /\b\d{4}\s?\d{4}\s?\d{4}\b/g
   },
   panCards: {
     name: 'PAN & Tax IDs',
@@ -59,22 +59,40 @@ const SENSITIVE_PATTERNS = {
     color: '#6366F1',
     regex: /\b[A-Z]{5}[0-9]{4}[A-Z]\b/g
   },
-  creditCards: {
-    name: 'Credit Cards',
-    icon: CreditCard,
+  passports: {
+    name: 'Passport & Govt IDs',
+    icon: FileText,
+    color: '#8B5CF6',
+    regex: /\b[A-PR-WYa-pr-wy][0-9]{7}\b/g
+  },
+  uanNumbers: {
+    name: 'UAN & Account IDs',
+    icon: FileText,
+    color: '#10B981',
+    regex: /\b10\d{10}\b/g
+  },
+  datesOfBirth: {
+    name: 'Dates of Birth',
+    icon: FileText,
     color: '#F59E0B',
-    regex: /\b(?:\d[ -]*?){13,16}\b/g
+    regex: /\b\d{2}[-/.]\d{2}[-/.]\d{2,4}\b/g
   },
   phones: {
     name: 'Phone Numbers',
     icon: Phone,
-    color: '#10B981',
+    color: '#06B6D4',
     regex: /\b(?:\+91[\s.-]?)?[6-9]\d{4}[\s.-]?\d{5}\b|\b(?:\+?\d{1,3}[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g
+  },
+  creditCards: {
+    name: 'Credit Cards',
+    icon: CreditCard,
+    color: '#F97316',
+    regex: /\b(?:\d[ -]*?){13,16}\b/g
   },
   ipAddresses: {
     name: 'IP Addresses',
     icon: Globe,
-    color: '#8B5CF6',
+    color: '#A855F7',
     regex: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\b/g
   }
 };
@@ -194,35 +212,27 @@ export const DocumentRedactor = () => {
                 if (!item || typeof item.str !== 'string' || !item.str.trim()) return;
                 const str = item.str;
 
-                let vx = 0;
-                let vy = 0;
-                let fontPtSize = 12;
-
-                if (Array.isArray(item.transform) && item.transform.length >= 6) {
-                  const tx = item.transform[4] || 0;
-                  const ty = item.transform[5] || 0;
-                  fontPtSize = Math.abs(item.transform[0]) || Math.abs(item.transform[3]) || item.height || 12;
-
-                  if (typeof viewport.convertToViewportPoint === 'function') {
-                    try {
-                      const pt = viewport.convertToViewportPoint(tx, ty);
-                      if (Array.isArray(pt)) {
-                        vx = pt[0];
-                        vy = pt[1];
-                      }
-                    } catch (e) {
-                      vx = tx * 1.5;
-                      vy = viewport.height - (ty * 1.5);
-                    }
-                  } else {
-                    vx = tx * 1.5;
-                    vy = viewport.height - (ty * 1.5);
-                  }
+                let matrix = item.transform;
+                if (pdfjsLib.Util && typeof pdfjsLib.Util.transform === 'function') {
+                  matrix = pdfjsLib.Util.transform(viewport.transform, item.transform);
+                } else if (Array.isArray(viewport.transform) && Array.isArray(item.transform)) {
+                  const [vA, vB, vC, vD, vE, vF] = viewport.transform;
+                  const [mA, mB, mC, mD, mE, mF] = item.transform;
+                  matrix = [
+                    vA * mA + vC * mB,
+                    vB * mA + vD * mB,
+                    vA * mC + vC * mD,
+                    vB * mC + vD * mD,
+                    vA * mE + vC * mF + vE,
+                    vB * mE + vD * mF + vF
+                  ];
                 }
 
-                const fontCanvasSize = fontPtSize * 1.5;
-                const boxHeight = Math.max(16, Math.round(fontCanvasSize * 1.25));
-                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.98)));
+                const vx = matrix ? matrix[4] : 0;
+                const vy = matrix ? matrix[5] : 0; // Exact Canvas Baseline Y!
+                const fontCanvasSize = matrix ? (Math.abs(matrix[3]) || Math.abs(matrix[0]) || (12 * 1.5)) : (12 * 1.5);
+                const boxHeight = Math.max(14, Math.round(fontCanvasSize * 1.15));
+                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.88)));
                 const totalWidth = Math.max(10, Math.round((item.width || 20) * 1.5));
                 const boxX = Math.max(0, Math.round(vx - 2));
                 const boxW = Math.round(totalWidth + 4);
