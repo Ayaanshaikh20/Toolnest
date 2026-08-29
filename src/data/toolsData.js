@@ -248,56 +248,56 @@ export const TOOLS_DATA = [
       { question: 'Will compressing my PDF reduce text readability?', answer: 'Our "Recommended" preset uses smart DPI downsampling and high-quality JPEG quantization that preserves sharp, readable typography while reducing file size by 50–80%.' },
       { question: 'Are my confidential PDF documents uploaded to your server?', answer: 'No! All rendering and binary recompilation happens 100% locally inside your web browser. Your confidential files never touch our servers.' },
       { question: 'Which preset should I choose for scanned documents?', answer: 'For scanned receipts, contracts, and tax documents, choose "Extreme Compression" and check "Convert to Grayscale" to achieve maximum size reduction.' },
-      { question: 'Can I compress password-protected PDF files?', answer: 'You must remove the password before compressing, as client-side parsers require an unencrypted document stream.' },
+{ question: 'Can I compress password-protected PDF files?', answer: 'You must remove the password before compressing, as client-side parsers require an unencrypted document stream.' },
       { question: 'Is there a limit on file size or number of pages?', answer: 'There are no artificial limits. You can compress any PDF as large as your device RAM and CPU can process.' }
     ],
     relatedSlugs: ['pdf-merger', 'pdf-splitter', 'image-compressor', 'pdf-to-images']
   },
   {
-    slug: 'mockup-studio',
-    name: 'ToolNest Studio',
-    description: 'Turn boring screenshots into gorgeous, viral-ready 3D mockups for social media. Everything renders securely in your browser.',
+    slug: 'signature-extractor',
+    name: 'Signature Extractor',
+    description: 'Upload a photo of your signature and instantly remove the paper background to create a clean, transparent digital signature for PDFs.',
     category: 'image',
-    icon: 'Sparkles',
+    icon: 'PenTool',
     isPopular: true,
-    metaTitle: 'Free 3D Screenshot Mockup Generator | ToolNest Studio',
-    metaDescription: 'Wrap your screenshots in beautiful 3D browser and device frames with stunning gradient backgrounds. Free, no watermarks, client-side rendering.',
-    about: 'ToolNest Studio is a powerful, client-side mockup engine designed for founders, developers, and content creators. It takes a standard screenshot and instantly wraps it in a high-fidelity 3D device frame (like macOS, Windows 11, or minimal browsers), applies perfect drop shadows, and sets it against stunning mesh gradients. Generate viral, professional imagery for Twitter, LinkedIn, and landing pages instantly.',
+    metaTitle: 'Free Signature Extractor Online - Make Signature Transparent | ToolNest',
+    metaDescription: 'Remove the paper background from a photo of your signature. Make your signature transparent online for free. Export as high-res PNG for signing PDFs.',
+    about: 'Signature Extractor is an intelligent image processing utility designed to turn physical paper signatures into clean, transparent digital assets. When you take a photo of your signature, you capture shadows, gray paper textures, and uneven lighting. ToolNest analyzes every pixel of your photo locally in your browser, mathematically separating the dark ink from the bright paper, turning the background completely transparent.',
     whatIs: {
-      heading: 'Why Use a Mockup Generator?',
+      heading: 'How Does Signature Extraction Work?',
       content: [
-        'Plain screenshots often look unpolished and lack the visual hierarchy needed to grab attention in a crowded social media feed. By adding physical device context (like a browser window), padding, and a contrasting background, the eye is naturally drawn to the content of the image.',
-        'ToolNest Studio utilizes modern CSS 3D transforms and HTML-to-Canvas rendering to build these composites entirely within your browser. There is no cloud processing, meaning it is lightning-fast and your unreleased product screenshots remain 100% confidential.'
+        'To digitize a signature, the tool loads your image into an HTML5 Canvas and iterates over every single pixel. It calculates the relative luminance (brightness) of the pixel. If the brightness exceeds your chosen threshold, it identifies that pixel as "paper" and sets its alpha channel to 0 (completely transparent).',
+        'If the pixel is dark enough to be considered ink, it preserves the opacity. Additionally, the tool can algorithmically overwrite the RGB channels to convert your ink to pure black or professional blue, ensuring perfect contrast against any PDF document you sign.'
       ]
     },
     howToUse: [
-      'Click the upload area to load your screenshot, software interface, or code snippet.',
-      'Select a Frame Style (e.g., macOS Dark, Windows 11, Minimal).',
-      'Choose a Background from the curated list of solid colors and mesh gradients.',
-      'Fine-tune the Padding, Border Roundness, and Shadow Intensity using the sliders.',
-      'Click "Export High-Res PNG" to download a crisp 1200x630 image.'
+      'Write your signature on a clean piece of white paper and take a photo of it in good lighting.',
+      'Upload the photo into the ToolNest Signature Extractor.',
+      'Adjust the "Paper Luminance Threshold" slider until the paper background disappears entirely, leaving only the ink.',
+      'Optionally, select "Black" or "Blue" to standardize the ink color.',
+      'Click "Download Transparent PNG" to save your pristine digital signature.'
     ],
     features: [
-      { title: 'Zero Cloud Processing', description: 'Everything is rendered in your browser using local canvas. No data leaves your machine.' },
-      { title: 'High-Resolution 3x Export', description: 'Images are exported at 3x scale to ensure crisp retina-quality rendering.' },
-      { title: 'Curated Mesh Gradients', description: 'Includes a selection of stunning, vibrant gradients used by top designers.' },
-      { title: 'Instant Preview', description: 'See your changes immediately as you adjust sliders and swap frames.' }
+      { title: 'Local Pixel Processing', description: 'Your sensitive signature never leaves your device. All pixel math is computed in your browser.' },
+      { title: 'Variable Thresholding', description: 'A precise slider allows you to dial in the exact luminance cut-off for your specific lighting conditions.' },
+      { title: 'Ink Colorization', description: 'Automatically convert blue ballpoint or faded ink into pure #000000 Black or #2563EB Blue.' },
+      { title: 'Anti-Aliased Edges', description: 'Preserves edge opacity for a smooth, natural-looking pen stroke rather than jagged pixels.' }
     ],
     examples: [
       {
-        title: 'Social Media Updates',
-        description: 'Post your latest software feature or SaaS update on Twitter/X in a gorgeous macOS frame.'
+        title: 'Signing Digital Contracts',
+        description: 'Extract your signature to a transparent PNG so you can drag-and-drop it onto DocuSign, Adobe Acrobat, or Preview.'
       },
       {
-        title: 'Landing Page Assets',
-        description: 'Create uniform, professional hero images for your website showcasing your app.'
+        title: 'Creating Business Stamps',
+        description: 'Take a photo of your company\'s physical rubber stamp and extract the ink to use digitally on invoices.'
       }
     ],
     faqs: [
-      { question: 'What image format is exported?', answer: 'The tool exports a high-resolution, uncompressed PNG file.' },
-      { question: 'Is there a watermark on the exported image?', answer: 'No! ToolNest Studio is completely free and never applies watermarks to your mockups.' },
-      { question: 'Does this tool upload my images to a server?', answer: 'No. The entire rendering process is done locally in your browser via HTML-to-Canvas.' },
-      { question: 'Can I paste images directly from my clipboard?', answer: 'Currently, you need to upload the image file, but clipboard support is coming in a future update!' }
+      { question: 'Is my signature uploaded to your servers?', answer: 'No! Your signature is highly sensitive personal data. ToolNest executes all image processing entirely client-side using JavaScript Canvas API. Your signature is never transmitted over the network.' },
+      { question: 'Why does my signature look jagged or pixelated?', answer: 'Try taking a closer, higher-resolution photo of your signature in natural daylight. The cleaner the original photo, the smoother the extraction.' },
+      { question: 'What does the Threshold slider do?', answer: 'The threshold determines how dark a pixel must be to be considered "ink". If your paper looks gray, lower the threshold. If pieces of your signature are disappearing, raise the threshold.' },
+      { question: 'What file format is the result?', answer: 'The tool exports a PNG file, which is required because it supports alpha transparency (unlike JPEG).' }
     ],
     relatedSlugs: ['image-compressor', 'background-remover']
   },

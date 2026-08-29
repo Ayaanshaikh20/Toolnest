@@ -476,36 +476,21 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
         </svg>
       );
 
-    // ── TOOLNEST STUDIO: 3D Mockup Generator ──
-    case 'mockup-studio':
+    // ── SIGNATURE EXTRACTOR: Pen tip with ink drop and transparent checkerboard ──
+    case 'signature-extractor':
       return (
         <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
-          {/* Gradient Background */}
-          <rect x="2" y="4" width="28" height="24" rx="4" fill="url(#paint0_linear)" />
+          {/* Background Checkerboard (Transparency indicator) */}
+          <rect x="4" y="4" width="24" height="24" rx="4" fill="#E2E8F0" />
+          <path d="M4 4H16V16H4V4ZM16 16H28V28H16V16Z" fill="#CBD5E1" opacity="0.5" />
           
-          {/* 3D Browser Mockup Window */}
-          <g filter="url(#filter0_d)">
-            <rect x="6" y="8" width="20" height="14" rx="1.5" fill="#1E293B" stroke="#334155" strokeWidth="0.5" />
-            <rect x="6.5" y="8.5" width="19" height="3" fill="#0F172A" />
-            <circle cx="8.5" cy="10" r="0.75" fill="#EF4444" />
-            <circle cx="11" cy="10" r="0.75" fill="#F59E0B" />
-            <circle cx="13.5" cy="10" r="0.75" fill="#10B981" />
-            
-            {/* Inner Content (Screenshot) */}
-            <rect x="8" y="13" width="16" height="7" rx="0.5" fill="#3B82F6" opacity="0.8" />
-            <path d="M10 16L14 14L16 17L20 15" stroke="#FFF" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
-          </g>
-
-          <defs>
-            <linearGradient id="paint0_linear" x1="2" y1="4" x2="30" y2="28" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#F472B6" />
-              <stop offset="0.5" stopColor="#8B5CF6" />
-              <stop offset="1" stopColor="#3B82F6" />
-            </linearGradient>
-            <filter id="filter0_d" x="4" y="6" width="24" height="20" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-              <feDropShadow dx="0" dy="2" stdDeviation="1.5" floodOpacity="0.4" />
-            </filter>
-          </defs>
+          {/* Pen Nib */}
+          <path d="M12 20L10 26L16 24L24 10C24 10 21.5 7.5 19 6L12 20Z" fill="#3B82F6" stroke="#1D4ED8" strokeWidth="1" strokeLinejoin="round" />
+          <path d="M19 6L24 10" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M12 20L16 24" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
+          
+          {/* Pen Line / Ink */}
+          <path d="M8 26C12 28 16 26 22 26" stroke="#1D4ED8" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
       );
 
