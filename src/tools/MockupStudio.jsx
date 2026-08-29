@@ -58,7 +58,7 @@ export const MockupStudio = () => {
     
     try {
       const canvas = await html2canvas(renderRef.current, {
-        scale: 3, // High-res export
+        scale: 3, 
         useCORS: true,
         backgroundColor: null,
         logging: false
@@ -77,224 +77,370 @@ export const MockupStudio = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div className="bg-[#1E293B] rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-2xl">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              <Sparkles className="w-8 h-8 text-emerald-400" />
-              ToolNest Studio
-            </h1>
-            <p className="text-slate-400 max-w-2xl text-lg">
-              Turn boring screenshots into gorgeous, viral-ready 3D mockups for social media. Everything renders securely in your browser.
-            </p>
+    <div className="ms-container container">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .ms-layout {
+          display: grid;
+          grid-template-columns: 320px 1fr;
+          gap: 2rem;
+          margin-top: 2rem;
+          margin-bottom: 4rem;
+        }
+        @media (max-width: 900px) {
+          .ms-layout { grid-template-columns: 1fr; }
+        }
+        .ms-sidebar {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .ms-panel {
+          background-color: var(--card-bg);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 1.5rem;
+          box-shadow: var(--shadow-sm);
+        }
+        .ms-panel h3 {
+          font-size: 1.1rem;
+          margin-bottom: 1.25rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .ms-upload-area {
+          border: 2px dashed var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 2rem 1rem;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .ms-upload-area:hover {
+          border-color: var(--primary-color);
+          background-color: var(--primary-light);
+        }
+        .ms-upload-area input { display: none; }
+        
+        .ms-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .ms-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+        
+        .ms-btn-frame {
+          background: transparent;
+          border: 1px solid var(--border-color);
+          color: var(--text-muted);
+          padding: 0.75rem;
+          border-radius: var(--radius-sm);
+          font-size: 0.85rem;
+          font-weight: 500;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: all 0.2s ease;
+        }
+        .ms-btn-frame:hover {
+          background: var(--bg-color);
+          border-color: var(--border-hover);
+        }
+        .ms-btn-frame.active {
+          background: var(--primary-light);
+          border-color: var(--primary-color);
+          color: var(--primary-color);
+        }
+        
+        .ms-btn-bg {
+          width: 100%;
+          aspect-ratio: 1;
+          border-radius: var(--radius-sm);
+          border: 2px solid transparent;
+          cursor: pointer;
+          transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .ms-btn-bg:hover { transform: scale(1.1); }
+        .ms-btn-bg.active {
+          border-color: var(--text-main);
+          transform: scale(1.15);
+          box-shadow: var(--shadow-md);
+        }
+        
+        .ms-slider-group {
+          margin-bottom: 1.25rem;
+        }
+        .ms-slider-group:last-child { margin-bottom: 0; }
+        .ms-slider-label {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.85rem;
+          color: var(--text-muted);
+          margin-bottom: 0.5rem;
+        }
+        .ms-slider {
+          width: 100%;
+          cursor: pointer;
+        }
+        
+        .ms-preview-container {
+          background-color: var(--card-bg);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          box-shadow: var(--shadow-md);
+          min-height: 500px;
+        }
+        .ms-preview-header {
+          padding: 0.75rem 1rem;
+          background-color: var(--bg-color);
+          border-bottom: 1px solid var(--border-color);
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: var(--text-muted);
+        }
+        .ms-canvas-area {
+          flex: 1;
+          background-image: 
+            linear-gradient(45deg, #e5e5e5 25%, transparent 25%), 
+            linear-gradient(-45deg, #e5e5e5 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, #e5e5e5 75%), 
+            linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
+          background-size: 20px 20px;
+          background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
+          overflow: auto;
+        }
+        body.dark-mode .ms-canvas-area {
+          background-image: 
+            linear-gradient(45deg, #1e1e1e 25%, transparent 25%), 
+            linear-gradient(-45deg, #1e1e1e 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, #1e1e1e 75%), 
+            linear-gradient(-45deg, transparent 75%, #1e1e1e 75%);
+        }
+        
+        .ms-render-node {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          max-width: 900px;
+          overflow: hidden;
+          transition: padding 0.3s ease, background 0.3s ease;
+        }
+        
+        .ms-image-wrapper {
+          position: relative;
+          width: 100%;
+          height: auto;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        
+        .ms-frame-header {
+          width: 100%;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          gap: 8px;
+        }
+        .ms-frame-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+        }
+        
+        .ms-img {
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: cover;
+        }
+        
+        .ms-placeholder {
+          width: 100%;
+          aspect-ratio: 16/9;
+          background: rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255,255,255,0.6);
+          font-weight: 500;
+        }
+      `}} />
+
+      <div className="panel" style={{ marginTop: '2rem' }}>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', fontSize: '2rem' }}>
+          <Sparkles color="var(--primary-color)" size={32} />
+          ToolNest Studio
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '800px' }}>
+          Turn boring screenshots into gorgeous, viral-ready 3D mockups for social media. Everything renders securely in your browser.
+        </p>
+      </div>
+
+      <div className="ms-layout">
+        {/* Sidebar Controls */}
+        <div className="ms-sidebar">
+          
+          {/* Image Source Panel */}
+          <div className="ms-panel">
+            <h3><ImageIcon size={18} color="var(--primary-color)" /> Image Source</h3>
+            {!image ? (
+              <label className="ms-upload-area">
+                <ImageIcon size={32} color="var(--text-light)" />
+                <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Click to upload screenshot</span>
+                <input type="file" accept="image/png, image/jpeg, image/webp" onChange={handleImageUpload} />
+              </label>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'var(--bg-color)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Screenshot loaded</span>
+                <button 
+                  onClick={() => setImage(null)}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--error-color)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}
+                  title="Remove Image"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            )}
           </div>
+
+          {/* Adjustments Panel */}
+          <div className="ms-panel">
+            <h3><Monitor size={18} color="var(--primary-color)" /> Frame Style</h3>
+            <div className="ms-grid-2" style={{ marginBottom: '1.5rem' }}>
+              {FRAMES.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setFrame(f)}
+                  className={`ms-btn-frame ${frame.id === f.id ? 'active' : ''}`}
+                >
+                  <f.icon size={16} />
+                  {f.name}
+                </button>
+              ))}
+            </div>
+
+            <h3><Droplet size={18} color="var(--primary-color)" /> Background</h3>
+            <div className="ms-grid-5" style={{ marginBottom: '1.5rem' }}>
+              {BACKGROUNDS.map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => setBg(b)}
+                  className={`ms-btn-bg ${bg.id === b.id ? 'active' : ''}`}
+                  style={{ background: b.css }}
+                  title={b.name}
+                />
+              ))}
+            </div>
+
+            <h3><Sliders size={18} color="var(--primary-color)" /> Adjustments</h3>
+            <div className="ms-slider-group">
+              <div className="ms-slider-label"><span>Padding</span><span>{padding}px</span></div>
+              <input type="range" min="0" max="120" value={padding} onChange={(e) => setPadding(Number(e.target.value))} className="ms-slider" />
+            </div>
+            <div className="ms-slider-group">
+              <div className="ms-slider-label"><span>Rounding</span><span>{borderRadius}px</span></div>
+              <input type="range" min="0" max="40" value={borderRadius} onChange={(e) => setBorderRadius(Number(e.target.value))} className="ms-slider" />
+            </div>
+            <div className="ms-slider-group">
+              <div className="ms-slider-label"><span>Shadow</span><span>{shadow}%</span></div>
+              <input type="range" min="0" max="100" value={shadow} onChange={(e) => setShadow(Number(e.target.value))} className="ms-slider" />
+            </div>
+          </div>
+
+          <Button
+            onClick={handleExport}
+            disabled={!image || isExporting}
+            className="btn btn-primary"
+            style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', justifyContent: 'center' }}
+            icon={isExporting ? RefreshCw : Download}
+          >
+            {isExporting ? 'Rendering Image...' : 'Export High-Res PNG'}
+          </Button>
+
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Controls Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-700/50">
-              <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-emerald-400" /> Image Source
-              </h3>
-              {!image ? (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-600 border-dashed rounded-lg cursor-pointer hover:bg-slate-800/50 hover:border-emerald-500/50 transition-all group">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <ImageIcon className="w-8 h-8 text-slate-400 mb-2 group-hover:text-emerald-400 transition-colors" />
-                    <p className="text-sm text-slate-400 font-medium">Click to upload screenshot</p>
-                  </div>
-                  <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={handleImageUpload} />
-                </label>
+        {/* Preview Area */}
+        <div className="ms-preview-container">
+          <div className="ms-preview-header">
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Layers size={16} /> Canvas Preview</span>
+            <span>Scale: 3x</span>
+          </div>
+          <div className="ms-canvas-area">
+            
+            <div 
+              id="mockup-render-node"
+              ref={renderRef}
+              className="ms-render-node"
+              style={{
+                background: bg.css,
+                padding: `${padding}px`,
+              }}
+            >
+              {image ? (
+                <div 
+                  className="ms-image-wrapper"
+                  style={{
+                    borderRadius: `${borderRadius}px`,
+                    boxShadow: `0px ${shadow}px ${shadow * 2.5}px -${shadow / 2}px rgba(0,0,0,${Math.min(0.6, shadow/100 + 0.1)})`,
+                  }}
+                >
+                  {/* Frame Decorators */}
+                  {frame.id === 'mac-dark' && (
+                    <div className="ms-frame-header" style={{ background: '#1E1E1E', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <div className="ms-frame-dot" style={{ background: '#FF5F56' }}></div>
+                      <div className="ms-frame-dot" style={{ background: '#FFBD2E' }}></div>
+                      <div className="ms-frame-dot" style={{ background: '#27C93F' }}></div>
+                    </div>
+                  )}
+                  {frame.id === 'mac-light' && (
+                    <div className="ms-frame-header" style={{ background: '#EFEFEF', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
+                      <div className="ms-frame-dot" style={{ background: '#FF5F56' }}></div>
+                      <div className="ms-frame-dot" style={{ background: '#FFBD2E' }}></div>
+                      <div className="ms-frame-dot" style={{ background: '#27C93F' }}></div>
+                    </div>
+                  )}
+                  {frame.id === 'windows-11' && (
+                    <div className="ms-frame-header" style={{ background: '#202020', borderBottom: '1px solid rgba(255,255,255,0.1)', justifyContent: 'flex-end', padding: '0', height: '32px' }}>
+                      <div style={{ display: 'flex', height: '100%' }}>
+                        <div style={{ width: '46px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: '10px', height: '1px', background: 'rgba(255,255,255,0.7)' }}></div>
+                        </div>
+                        <div style={{ width: '46px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: '10px', height: '10px', border: '1px solid rgba(255,255,255,0.7)' }}></div>
+                        </div>
+                        <div style={{ width: '46px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ position: 'relative', width: '10px', height: '10px' }}>
+                            <div style={{ position: 'absolute', width: '12px', height: '1px', background: 'rgba(255,255,255,0.7)', transform: 'rotate(45deg)', top: '4px', left: '-1px' }}></div>
+                            <div style={{ position: 'absolute', width: '12px', height: '1px', background: 'rgba(255,255,255,0.7)', transform: 'rotate(-45deg)', top: '4px', left: '-1px' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <img src={image} alt="Screenshot" className="ms-img" crossOrigin="anonymous" />
+                </div>
               ) : (
-                <div className="flex items-center justify-between bg-slate-800 rounded-lg p-3 border border-slate-700">
-                  <span className="text-slate-300 text-sm font-medium truncate">Screenshot loaded</span>
-                  <button 
-                    onClick={() => setImage(null)}
-                    className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
-                    title="Remove Image"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                <div className="ms-placeholder" style={{ borderRadius: `${borderRadius}px` }}>
+                  Your Screenshot Here
                 </div>
               )}
             </div>
 
-            <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-700/50 space-y-6">
-              {/* Frame Selection */}
-              <div>
-                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
-                  <Monitor className="w-4 h-4 text-emerald-400" /> Frame Style
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {FRAMES.map((f) => (
-                    <button
-                      key={f.id}
-                      onClick={() => setFrame(f)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                        frame.id === f.id 
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' 
-                          : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
-                      }`}
-                    >
-                      <f.icon className="w-4 h-4" />
-                      {f.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Background Selection */}
-              <div>
-                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
-                  <Droplet className="w-4 h-4 text-emerald-400" /> Background
-                </h3>
-                <div className="grid grid-cols-5 gap-2">
-                  {BACKGROUNDS.map((b) => (
-                    <button
-                      key={b.id}
-                      onClick={() => setBg(b)}
-                      className={`w-full aspect-square rounded-lg border-2 transition-all ${
-                        bg.id === b.id ? 'border-emerald-400 scale-110 shadow-lg' : 'border-transparent hover:scale-105'
-                      }`}
-                      style={{ background: b.css }}
-                      title={b.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Sliders */}
-              <div>
-                <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-emerald-400" /> Adjustments
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
-                      <span>Padding</span>
-                      <span>{padding}px</span>
-                    </div>
-                    <input 
-                      type="range" min="0" max="120" value={padding} 
-                      onChange={(e) => setPadding(Number(e.target.value))}
-                      className="w-full accent-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
-                      <span>Rounding</span>
-                      <span>{borderRadius}px</span>
-                    </div>
-                    <input 
-                      type="range" min="0" max="40" value={borderRadius} 
-                      onChange={(e) => setBorderRadius(Number(e.target.value))}
-                      className="w-full accent-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
-                      <span>Shadow</span>
-                      <span>{shadow}%</span>
-                    </div>
-                    <input 
-                      type="range" min="0" max="100" value={shadow} 
-                      onChange={(e) => setShadow(Number(e.target.value))}
-                      className="w-full accent-emerald-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <Button
-              onClick={handleExport}
-              disabled={!image || isExporting}
-              className="w-full h-12 text-lg font-medium shadow-xl shadow-emerald-900/20"
-              icon={isExporting ? RefreshCw : Download}
-            >
-              {isExporting ? 'Rendering Image...' : 'Export High-Res PNG'}
-            </Button>
-          </div>
-
-          {/* Canvas Preview Area */}
-          <div className="lg:col-span-8">
-            <div className="bg-slate-900 rounded-xl border border-slate-700/50 overflow-hidden flex flex-col h-full min-h-[600px]">
-              <div className="p-3 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center text-xs text-slate-400 font-medium">
-                <span className="flex items-center gap-1.5"><Layers className="w-3.5 h-3.5" /> Canvas Preview</span>
-                <span>1200 x 630 (Scale: 3x)</span>
-              </div>
-              
-              <div className="flex-1 overflow-auto bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMWUxZTFlIj48L3JlY3Q+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMxZTFlMWUiPjwvcmVjdD4KPHJlY3QgeD0iNCIgd2lkdGg9IjQiIGhlaWdodD0iNCIgZmlsbD0iIzIyMjIyMiI+PC9yZWN0Pgo8cmVjdCB5PSI0IiB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMjIyMjIyIj48L3JlY3Q+Cjwvc3ZnPg==')] flex items-center justify-center p-8">
-                
-                {/* 
-                  RENDER NODE 
-                  This is the exact DOM node that html2canvas will snapshot.
-                */}
-                <div 
-                  id="mockup-render-node"
-                  ref={renderRef}
-                  className="transition-all duration-300 relative flex items-center justify-center w-full max-w-4xl overflow-hidden"
-                  style={{
-                    background: bg.css,
-                    padding: `${padding}px`,
-                  }}
-                >
-                  {image ? (
-                    <div 
-                      className="relative w-full h-auto"
-                      style={{
-                        borderRadius: `${borderRadius}px`,
-                        boxShadow: `0px ${shadow}px ${shadow * 2.5}px -${shadow / 2}px rgba(0,0,0,${Math.min(0.8, shadow/100 + 0.2)})`,
-                        overflow: 'hidden'
-                      }}
-                    >
-                      {/* Frame Decorators */}
-                      {frame.id === 'mac-dark' && (
-                        <div className="bg-[#1E1E1E] h-10 w-full flex items-center px-4 gap-2 border-b border-white/10">
-                          <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
-                          <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                          <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
-                        </div>
-                      )}
-                      {frame.id === 'mac-light' && (
-                        <div className="bg-[#EFEFEF] h-10 w-full flex items-center px-4 gap-2 border-b border-black/10">
-                          <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
-                          <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                          <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
-                        </div>
-                      )}
-                      {frame.id === 'windows-11' && (
-                        <div className="bg-[#202020] h-10 w-full flex items-center justify-between px-4 border-b border-white/10">
-                          <div className="text-[10px] text-white/50 font-sans">App View</div>
-                          <div className="flex items-center gap-4">
-                            <div className="w-2.5 h-[1px] bg-white/70"></div>
-                            <div className="w-2.5 h-2.5 border border-white/70"></div>
-                            <div className="w-2.5 h-2.5 relative">
-                               <div className="absolute w-[12px] h-[1px] bg-white/70 rotate-45 top-1 -left-[1px]"></div>
-                               <div className="absolute w-[12px] h-[1px] bg-white/70 -rotate-45 top-1 -left-[1px]"></div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* The Image */}
-                      <img 
-                        src={image} 
-                        alt="Screenshot" 
-                        className="w-full h-auto block object-cover" 
-                        crossOrigin="anonymous"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full aspect-[16/9] bg-slate-900/40 rounded-xl flex items-center justify-center border border-white/10">
-                      <p className="text-white/40 font-medium">Your Screenshot Here</p>
-                    </div>
-                  )}
-                </div>
-
-              </div>
-            </div>
           </div>
         </div>
       </div>
