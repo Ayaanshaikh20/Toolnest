@@ -804,24 +804,39 @@ export const DocumentRedactor = () => {
       {!file ? (
         <div
           onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--primary-color)'; }}
-          onDragLeave={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = '#EF4444';
+            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)';
+            e.currentTarget.style.transform = 'scale(1.008)';
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            e.currentTarget.style.background = 'var(--card-bg, #fff)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
           onDrop={(e) => {
             e.preventDefault();
-            e.currentTarget.style.borderColor = 'var(--border-color)';
+            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            e.currentTarget.style.background = 'var(--card-bg, #fff)';
+            e.currentTarget.style.transform = 'scale(1)';
             if (e.dataTransfer.files?.[0]) {
               handleFileSelect({ target: { files: e.dataTransfer.files } });
             }
           }}
           style={{
-            border: '2px dashed var(--border-color)',
+            border: '2px dashed rgba(239, 68, 68, 0.35)',
             borderRadius: 'var(--radius-lg)',
-            padding: '3.5rem 2rem',
+            padding: '4rem 2rem',
             textAlign: 'center',
             background: 'var(--card-bg, #fff)',
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            marginBottom: '2rem'
+            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+            marginBottom: '2rem',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.1)'
           }}
         >
           <input
@@ -831,27 +846,46 @@ export const DocumentRedactor = () => {
             accept=".pdf,image/png,image/jpeg,image/webp"
             style={{ display: 'none' }}
           />
+
           <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            background: 'rgba(239, 68, 68, 0.1)',
+            width: '72px',
+            height: '72px',
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15))',
             color: '#EF4444',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1.25rem'
+            margin: '0 auto 1.5rem',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            boxShadow: '0 8px 20px -6px rgba(239, 68, 68, 0.25)'
           }}>
-            <ShieldAlert size={32} />
+            <ShieldAlert size={36} />
           </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
-            Upload PDF or Screenshot to Redact
+
+          <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '0.6rem', letterSpacing: '-0.02em' }}>
+            Drop PDF or Document Image Here
           </h3>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto 1.25rem' }}>
-            Auto-detect & blackout API keys, emails, phone numbers, credit cards, and sensitive identifiers with 100% in-browser security.
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', maxWidth: '520px', margin: '0 auto 1.5rem', lineHeight: '1.6' }}>
+            Auto-detect & blackout API keys, emails, phone numbers, Aadhar, PAN, credit cards, and confidential text with instant client-side execution.
           </p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#10B981', fontWeight: '600', background: 'rgba(16, 185, 129, 0.1)', padding: '0.35rem 0.75rem', borderRadius: '999px' }}>
-            <ShieldCheck size={14} /> Zero Server Uploads &bull; Irreversible Pixel Burn-In
+
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+            <Button variant="primary" style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)', border: 'none', padding: '0.65rem 1.4rem', fontWeight: '700' }}>
+              <FileUp size={18} style={{ marginRight: '0.4rem' }} /> Choose Document File
+            </Button>
+          </div>
+
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.75rem', color: '#10B981', fontWeight: '700', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '0.4rem 0.9rem', borderRadius: '999px' }}>
+            <ShieldCheck size={16} /> 100% In-Browser Local Execution &bull; Zero Cloud Uploads
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1.25rem' }}>
+            {['PDF', 'PNG', 'JPG', 'WEBP'].map(ext => (
+              <span key={ext} style={{ fontSize: '0.68rem', fontWeight: '700', color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.06)', padding: '0.15rem 0.45rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+                {ext}
+              </span>
+            ))}
           </div>
         </div>
       ) : (
