@@ -213,30 +213,52 @@ export const DocumentRedactor = () => {
                 if (!item || typeof item.str !== 'string' || !item.str.trim()) return;
                 const str = item.str;
 
-                const tx = (Array.isArray(item.transform) && item.transform.length >= 6) ? item.transform[4] : 0;
-                const ty = (Array.isArray(item.transform) && item.transform.length >= 6) ? item.transform[5] : 0;
+                let vx = 0;
+                let vy = 0;
+                let fontCanvasSize = 16;
+                let textWidth = 20;
 
-                let vx = tx * 1.5;
-                let vy = viewport.height - (ty * 1.5);
-                if (typeof viewport.convertToViewportPoint === 'function') {
-                  try {
-                    const pt = viewport.convertToViewportPoint(tx, ty);
-                    if (Array.isArray(pt)) {
-                      vx = pt[0];
-                      vy = pt[1];
-                    }
-                  } catch (e) {}
+                if (Array.isArray(item.transform) && item.transform.length === 6) {
+                  // Text matrix in PDF space
+                  const m2 = item.transform;
+                  // Viewport matrix (PDF to Canvas)
+                  const m1 = viewport.transform;
+                  
+                  if (Array.isArray(m1) && m1.length === 6) {
+                    // Multiply m1 * m2
+                    const finalMatrix = [
+                      m1[0] * m2[0] + m1[2] * m2[1],
+                      m1[1] * m2[0] + m1[3] * m2[1],
+                      m1[0] * m2[2] + m1[2] * m2[3],
+                      m1[1] * m2[2] + m1[3] * m2[3],
+                      m1[0] * m2[4] + m1[2] * m2[5] + m1[4],
+                      m1[1] * m2[4] + m1[3] * m2[5] + m1[5]
+                    ];
+                    
+                    vx = finalMatrix[4];
+                    // finalMatrix[5] is the Canvas Y of the baseline.
+                    vy = finalMatrix[5];
+                    
+                    // finalMatrix[3] is the scaled font height in Canvas space.
+                    // finalMatrix[0] is the scaled font width.
+                    fontCanvasSize = Math.abs(finalMatrix[3]) || Math.abs(finalMatrix[0]) || 16;
+                    
+                    // item.width is in PDF space. Scale it by the viewport scale.
+                    // The viewport scale is roughly m1[0] (if no rotation) or viewport.scale.
+                    textWidth = (item.width || 0) * viewport.scale;
+                  } else {
+                    vx = m2[4] * viewport.scale;
+                    vy = viewport.height - (m2[5] * viewport.scale);
+                    fontCanvasSize = (m2[3] || 10) * viewport.scale;
+                    textWidth = (item.width || 20) * viewport.scale;
+                  }
                 }
 
-                const fontPtSize = (Array.isArray(item.transform) && item.transform.length >= 6)
-                  ? (Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || item.height || 10)
-                  : (item.height || 10);
-                const fontCanvasSize = fontPtSize * 1.5;
-                const boxHeight = Math.max(16, Math.round(fontCanvasSize * 1.15));
-                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.2)));
-                const totalWidth = Math.max(10, Math.round((item.width || 20) * 1.5));
+                // The box starts at the baseline (vy) minus the font height.
+                const boxHeight = Math.max(12, Math.round(fontCanvasSize * 1.15));
+                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.95)));
                 const boxX = Math.max(0, Math.round(vx - 2));
-                const boxW = Math.round(totalWidth + 4);
+                const boxW = Math.max(10, Math.round(textWidth + 4));
 
                 const itemBounds = {
                   x: boxX,
