@@ -202,59 +202,94 @@ export const DocumentRedactor = () => {
 
           const dataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
 
-          // Extract text and scan patterns safely without throwing
-          const textItems = [];
-          const pageRedactions = [];
-
+          // Option 3: Client-Side DOM Overlay math bypass
+          // We let the browser's native C++ layout engine compute the matrices.
+          // Batch DOM operations to prevent layout thrashing
+          const wrapper = document.createElement('div');
+          wrapper.style.position = 'absolute';
+          wrapper.style.top = '-9999px';
+          wrapper.style.left = '-9999px';
+          wrapper.style.visibility = 'hidden';
+          
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'absolute';
+          tempDiv.style.transformOrigin = '0% 0%';
+          if (viewport.transform && viewport.transform.length === 6) {
+            tempDiv.style.transform = `matrix(${viewport.transform.join(',')})`;
+          }
+          wrapper.appendChild(tempDiv);
+          
+          const spanRefs = [];
+          
+          let validTextContent = false;
           try {
             const textContent = await page.getTextContent();
             if (textContent && Array.isArray(textContent.items)) {
+              validTextContent = true;
               textContent.items.forEach((item, idx) => {
                 if (!item || typeof item.str !== 'string' || !item.str.trim()) return;
-                const str = item.str;
-
-                let vx = 0;
-                let vy = 0;
-                let fontCanvasSize = 16;
-                let textWidth = 20;
-
+                
                 const hasTransform = item.transform && item.transform.length === 6;
-                const hasViewportTransform = viewport.transform && viewport.transform.length === 6;
+                if (!hasTransform) return;
+                
+                const m2 = item.transform;
+                const span = document.createElement('span');
+                span.style.position = 'absolute';
+                span.style.transformOrigin = '0% 0%';
+                
+                // Extract scale to prevent font-size explosion in browsers
+                const fontHeight = Math.sqrt(m2[2] * m2[2] + m2[3] * m2[3]) || 1;
+                const tx = [...m2];
+                tx[0] /= fontHeight;
+                tx[1] /= fontHeight;
+                tx[2] /= fontHeight;
+                tx[3] /= fontHeight;
+                
+                span.style.transform = `matrix(${tx.join(',')})`;
+                span.style.fontSize = `${fontHeight}px`;
+                span.style.lineHeight = '1';
+                span.style.whiteSpace = 'pre';
+                span.textContent = item.str;
+                
+                tempDiv.appendChild(span);
+                spanRefs.push({ item, idx, span });
+              });
+            }
+          } catch (err) {
+            console.error('Error parsing text:', err);
+          }
+          
+          // Force a single layout calculation for the entire page
+          document.body.appendChild(wrapper);
+          const wrapperRect = wrapper.getBoundingClientRect();
+          
+          // Read all coordinates
+          const extractedItems = spanRefs.map(ref => {
+            const spanRect = ref.span.getBoundingClientRect();
+            return {
+              item: ref.item,
+              idx: ref.idx,
+              vx: spanRect.left - wrapperRect.left,
+              vy: spanRect.top - wrapperRect.top + spanRect.height,
+              fontCanvasSize: spanRect.height,
+              textWidth: spanRect.width
+            };
+          });
+          
+          // Cleanup DOM
+          document.body.removeChild(wrapper);
 
-                if (hasTransform) {
-                  // Text matrix in PDF space
-                  const m2 = item.transform;
-                  // Viewport matrix (PDF to Canvas)
-                  const m1 = viewport.transform;
-                  
-                  if (hasViewportTransform) {
-                    // Multiply m1 * m2
-                    const finalMatrix = [
-                      m1[0] * m2[0] + m1[2] * m2[1],
-                      m1[1] * m2[0] + m1[3] * m2[1],
-                      m1[0] * m2[2] + m1[2] * m2[3],
-                      m1[1] * m2[2] + m1[3] * m2[3],
-                      m1[0] * m2[4] + m1[2] * m2[5] + m1[4],
-                      m1[1] * m2[4] + m1[3] * m2[5] + m1[5]
-                    ];
-                    
-                    vx = finalMatrix[4];
-                    vy = finalMatrix[5];
-                    
-                    fontCanvasSize = Math.abs(finalMatrix[3]) || Math.abs(finalMatrix[0]) || 16;
-                    textWidth = (item.width || 0) * viewport.scale;
-                  } else {
-                    vx = m2[4] * viewport.scale;
-                    vy = viewport.height - (m2[5] * viewport.scale);
-                    fontCanvasSize = (m2[3] || 10) * viewport.scale;
-                    textWidth = (item.width || 20) * viewport.scale;
-                  }
-                }
-
-                // The box starts at the baseline (vy) minus the font height.
-                const boxHeight = Math.max(12, Math.round(fontCanvasSize * 1.15));
-                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.95)));
-                const boxX = Math.max(0, Math.round(vx - 2));
+          const textItems = [];
+          const pageRedactions = [];
+          
+          if (validTextContent) {
+            extractedItems.forEach(({ item, idx, vx, vy, fontCanvasSize, textWidth }) => {
+              const str = item.str;
+              
+              // The box starts at the baseline (vy) minus the font height.
+              const boxHeight = Math.max(12, Math.round(fontCanvasSize * 1.15));
+              const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.95)));
+              const boxX = Math.max(0, Math.round(vx - 2));
                 const boxW = Math.max(10, Math.round(textWidth + 4));
 
                 const itemBounds = {
@@ -321,10 +356,6 @@ export const DocumentRedactor = () => {
                 });
               });
             }
-          } catch (textErr) {
-            console.warn('Text scan skipped for page', pNum, textErr);
-          }
-
           initialPages[pNum] = {
             dataUrl,
             width: offCanvas.width,
