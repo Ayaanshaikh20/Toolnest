@@ -500,52 +500,87 @@ export const DocumentRedactor = () => {
 
   // Toggle Auto-Detected Finding
   const toggleFinding = (findingId) => {
-    setDetectedFindings(prev => prev.map(f => {
-      if (f.id === findingId) {
-        const nextApplied = !f.applied;
-        
-        setPageData(pData => {
-          const pInfo = pData[f.pageNum] || { redactions: [] };
-          let updatedRedactions = [...(pInfo.redactions || [])];
-          
-          if (nextApplied) {
-            updatedRedactions.push({
-              id: f.id,
-              ...f.bounds,
-              type: 'blackout',
-              category: f.category,
-              label: f.categoryName
-            });
-          } else {
-            updatedRedactions = updatedRedactions.filter(r => r.id !== f.id);
-          }
+    const targetFinding = detectedFindings.find(f => f.id === findingId);
+    if (!targetFinding) return;
 
-          return {
-            ...pData,
-            [f.pageNum]: {
-              ...pInfo,
-              redactions: updatedRedactions
-            }
-          };
-        });
+    const nextApplied = !targetFinding.applied;
 
-        return { ...f, applied: nextApplied };
+    setDetectedFindings(prev =>
+      prev.map(f => (f.id === findingId ? { ...f, applied: nextApplied } : f))
+    );
+
+    setPageData(prevPageData => {
+      const pNum = targetFinding.pageNum;
+      const pInfo = prevPageData[pNum] || { redactions: [] };
+      let updatedRedactions = [...(pInfo.redactions || [])];
+
+      if (nextApplied) {
+        if (!updatedRedactions.some(r => r.id === findingId)) {
+          updatedRedactions.push({
+            id: targetFinding.id,
+            ...targetFinding.bounds,
+            type: activeTool || 'blackout',
+            category: targetFinding.category,
+            label: targetFinding.categoryName
+          });
+        }
+      } else {
+        updatedRedactions = updatedRedactions.filter(r => r.id !== findingId);
       }
-      return f;
-    }));
+
+      return {
+        ...prevPageData,
+        [pNum]: {
+          ...pInfo,
+          redactions: updatedRedactions
+        }
+      };
+    });
   };
 
   // Toggle All Findings in a Category
   const toggleCategory = (categoryKey, targetState) => {
-    setDetectedFindings(prev => prev.map(f => {
-      if (f.category === categoryKey) {
-        if (f.applied !== targetState) {
-          toggleFinding(f.id);
+    const categoryFindingIds = new Set(
+      detectedFindings.filter(f => f.category === categoryKey).map(f => f.id)
+    );
+
+    setDetectedFindings(prev =>
+      prev.map(f => (f.category === categoryKey ? { ...f, applied: targetState } : f))
+    );
+
+    setPageData(prevPageData => {
+      const nextPages = { ...prevPageData };
+
+      Object.entries(nextPages).forEach(([pNumStr, pInfo]) => {
+        const pNum = Number(pNumStr);
+        let updatedRedactions = [...(pInfo.redactions || [])];
+
+        if (targetState) {
+          detectedFindings
+            .filter(f => f.category === categoryKey && f.pageNum === pNum)
+            .forEach(f => {
+              if (!updatedRedactions.some(r => r.id === f.id)) {
+                updatedRedactions.push({
+                  id: f.id,
+                  ...f.bounds,
+                  type: activeTool || 'blackout',
+                  category: f.category,
+                  label: f.categoryName
+                });
+              }
+            });
+        } else {
+          updatedRedactions = updatedRedactions.filter(r => !categoryFindingIds.has(r.id));
         }
-        return { ...f, applied: targetState };
-      }
-      return f;
-    }));
+
+        nextPages[pNum] = {
+          ...pInfo,
+          redactions: updatedRedactions
+        };
+      });
+
+      return nextPages;
+    });
   };
 
   // Custom Text Keyword Search & Redact
