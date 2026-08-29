@@ -232,8 +232,8 @@ export const DocumentRedactor = () => {
                   ? (Math.abs(item.transform[3]) || Math.abs(item.transform[0]) || item.height || 10)
                   : (item.height || 10);
                 const fontCanvasSize = fontPtSize * 1.5;
-                const boxHeight = Math.max(14, Math.round(fontCanvasSize * 1.15));
-                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.85)));
+                const boxHeight = Math.max(16, Math.round(fontCanvasSize * 1.15));
+                const boxY = Math.max(0, Math.round(vy - (fontCanvasSize * 0.2)));
                 const totalWidth = Math.max(10, Math.round((item.width || 20) * 1.5));
                 const boxX = Math.max(0, Math.round(vx - 2));
                 const boxW = Math.round(totalWidth + 4);
