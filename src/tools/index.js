@@ -28,6 +28,7 @@ import { MarkdownConverter } from './MarkdownConverter';
 import { CodeMinifier } from './CodeMinifier';
 import { PdfCompressor } from './PdfCompressor';
 import { SignatureExtractor } from './SignatureExtractor';
+import { ResumeAtsOptimizer } from './ResumeAtsOptimizer';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -60,4 +61,5 @@ export const TOOL_COMPONENTS = {
   'background-remover': BackgroundRemover,
   'markdown-converter': MarkdownConverter,
   'code-minifier': CodeMinifier,
+  'resume-ats-optimizer': ResumeAtsOptimizer,
 };

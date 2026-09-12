@@ -12,6 +12,53 @@ export const CATEGORIES = [
 
 export const TOOLS_DATA = [
   {
+    slug: 'resume-ats-optimizer',
+    name: 'Resume ATS Optimizer',
+    description: 'Instantly check how well your resume matches a job description with our 100% private ATS keyword scanner.',
+    category: 'utility',
+    icon: 'Briefcase',
+    isPopular: true,
+    metaTitle: 'Free Resume ATS Keyword Scanner & Optimizer | ToolNest',
+    metaDescription: 'Scan your resume against a job description instantly and 100% privately. Find missing keywords and improve your ATS match score to land more interviews.',
+    about: 'Resume ATS Optimizer is a powerful, privacy-focused applicant tracking system (ATS) scanner. By comparing the text inside your PDF resume against a pasted job description, it identifies crucial missing keywords and calculates a match score. All processing happens locally in your browser—your sensitive personal data and resume are never uploaded to any server.',
+    whatIs: {
+      heading: 'How do Applicant Tracking Systems work?',
+      content: [
+        'An Applicant Tracking System (ATS) is software used by recruiters to automatically filter resumes based on keyword matches with the job description. If your resume lacks the specific terminology and skills mentioned in the job posting, it may be automatically rejected before a human ever sees it.',
+        'Our scanner replicates this process locally, extracting text from your PDF and identifying the critical keywords you need to add to bypass the ATS.'
+      ]
+    },
+    howToUse: [
+      'Upload your Resume in PDF format.',
+      'Paste the full text of the Job Description you are applying for.',
+      'Click "Analyze Resume Match".',
+      'Review your Match Score and specifically look at the "Missing Keywords" section to optimize your resume before submitting.'
+    ],
+    features: [
+      { title: '100% Client-Side Privacy', description: 'Your resume contains highly sensitive data. Our tool extracts text locally—your PDF is never uploaded.' },
+      { title: 'Instant Keyword Extraction', description: 'Identifies found and missing keywords in milliseconds.' },
+      { title: 'Zero File Size Limits', description: 'Process complex, multi-page resumes without any upload restrictions.' },
+      { title: 'Free & Unlimited', description: 'Scan as many resumes and job descriptions as you need without a paywall.' }
+    ],
+    examples: [
+      {
+        title: 'Optimizing for Software Engineering Roles',
+        description: 'Ensure you aren\'t missing crucial tech stack keywords like "React", "Node.js", or "Kubernetes" that the recruiter is filtering for.'
+      },
+      {
+        title: 'Tailoring for Marketing',
+        description: 'Verify you have included exact phrase matches like "SEO", "Content Strategy", or "Google Analytics" to pass the automated screen.'
+      }
+    ],
+    faqs: [
+      { question: 'Is my resume uploaded to a server?', answer: 'No! All text extraction and keyword analysis happens securely inside your local browser memory using JavaScript. Your resume is never uploaded.' },
+      { question: 'What is a good ATS match score?', answer: 'Aim for an ATS match score of 70% or higher. Ensure you organically incorporate the missing keywords into your bullet points.' },
+      { question: 'Does this read Word Documents (.doc, .docx)?', answer: 'Currently, the tool only supports standard PDF resumes, as PDFs are the universally recommended format for ATS submission.' },
+      { question: 'Why am I missing words that I have in my resume?', answer: 'ATS systems look for exact matches or very close matches. If the JD says "JavaScript" and you wrote "JS", the ATS might miss it. It is always safer to use the exact terminology found in the JD.' }
+    ],
+    relatedSlugs: ['word-counter', 'text-diff-checker']
+  },
+  {
     slug: 'pdf-merger',
     name: 'PDF Merger',
     description: 'Combine and merge multiple PDF files into one single organized PDF document in seconds.',
