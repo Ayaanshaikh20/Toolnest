@@ -29,6 +29,7 @@ import { CodeMinifier } from './CodeMinifier';
 import { PdfCompressor } from './PdfCompressor';
 import { SignatureExtractor } from './SignatureExtractor';
 import { ResumeAtsOptimizer } from './ResumeAtsOptimizer';
+import { SvgToPng } from './SvgToPng';
 
 export const TOOL_COMPONENTS = {
   'json-formatter': JsonFormatter,
@@ -62,4 +63,5 @@ export const TOOL_COMPONENTS = {
   'markdown-converter': MarkdownConverter,
   'code-minifier': CodeMinifier,
   'resume-ats-optimizer': ResumeAtsOptimizer,
+  'svg-to-png': SvgToPng,
 };

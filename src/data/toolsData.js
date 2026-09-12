@@ -12,6 +12,54 @@ export const CATEGORIES = [
 
 export const TOOLS_DATA = [
   {
+    slug: 'svg-to-png',
+    name: 'SVG to PNG Converter',
+    description: 'Convert any SVG file to a high-resolution PNG image with custom scale (1x, 2x, 3x, 4x) and background color options.',
+    category: 'image',
+    icon: 'Image',
+    isPopular: true,
+    metaTitle: 'Free SVG to PNG Converter Online — 1x, 2x, 4x Export | ToolNest',
+    metaDescription: 'Convert SVG files to high-resolution PNG images online for free. Choose scale factor (1x to 4x) and background color. 100% private, runs in your browser.',
+    about: 'SVG to PNG Converter renders your Scalable Vector Graphics file into a crisp, high-resolution PNG raster image entirely within your browser. Unlike server-based converters, your SVG code is never uploaded anywhere. Simply upload your file, choose your desired scale factor (1x, 2x, 3x, or 4x for Retina-quality exports), set a background color or keep it transparent, and download your PNG instantly.',
+    whatIs: {
+      heading: 'What is an SVG and Why Convert it to PNG?',
+      content: [
+        'An SVG (Scalable Vector Graphic) is an XML-based vector image format that scales infinitely without pixelation. However, many applications — social media platforms, email clients, and word processors — do not support SVG and require raster formats like PNG.',
+        'Converting to PNG gives you a universal, widely-supported image that works everywhere, while the scale factor allows you to export at Retina (2x) or Ultra HD (4x) resolution to ensure sharpness on modern high-density displays.'
+      ]
+    },
+    howToUse: [
+      'Upload your .svg file by clicking the upload area.',
+      'Choose your export scale: 1x (original size), 2x (Retina), 3x or 4x (Ultra HD).',
+      'Select a background color: Transparent (for logos/icons), White, or Black.',
+      'Preview the result and click "Download PNG" to save your high-resolution image.'
+    ],
+    features: [
+      { title: 'Up to 4x Retina Export', description: 'Export at 1x, 2x, 3x, or 4x resolution for crisp results on any display density.' },
+      { title: 'Transparent Background Support', description: 'Keep the SVG background transparent for logos and icons, or fill with white or black.' },
+      { title: '100% Client-Side Privacy', description: 'Your SVG is rendered locally using the browser Canvas API — never uploaded to any server.' },
+      { title: 'Live Preview', description: 'See the converted PNG rendered against a checkerboard (transparent) or colored background before downloading.' }
+    ],
+    examples: [
+      {
+        title: 'Exporting Figma Icons',
+        description: 'Export SVG icons from Figma at 2x or 3x scale for use in mobile apps and web assets that require PNG format.'
+      },
+      {
+        title: 'Social Media Profile Images',
+        description: 'Convert a vector logo SVG to a 4x PNG at 800×800px for a sharp, high-resolution profile picture on LinkedIn or Twitter.'
+      }
+    ],
+    faqs: [
+      { question: 'Will my SVG be uploaded to a server?', answer: 'No. The SVG is rendered entirely in your browser using the HTML5 Canvas API and a Blob URL. Nothing is sent over the network.' },
+      { question: 'Why does my converted PNG look blurry?', answer: 'Try increasing the scale factor to 2x or 4x. If your original SVG has no explicit width/height attributes, the tool defaults to 800×600px — you can re-export the SVG with explicit dimensions from your design tool.' },
+      { question: 'Does this support animated SVGs?', answer: 'The converter captures a static frame of the SVG. Animated SVG elements (using CSS animations or SMIL) will render as their initial static state in the PNG.' },
+      { question: 'What if my SVG uses external fonts or images?', answer: 'SVGs referencing external resources (web fonts, external image URLs) may not render correctly due to browser security restrictions (CORS). Ensure your SVG embeds all resources inline.' },
+      { question: 'What is the maximum output resolution?', answer: 'At 4x scale, a typical 1024×1024px SVG icon exports as a 4096×4096px PNG. The limit is your device RAM.' }
+    ],
+    relatedSlugs: ['image-compressor', 'image-resizer', 'jpg-to-png', 'png-to-jpg', 'background-remover']
+  },
+  {
     slug: 'resume-ats-optimizer',
     name: 'Resume ATS Optimizer',
     description: 'Instantly check how well your resume matches a job description with our 100% private ATS keyword scanner.',
