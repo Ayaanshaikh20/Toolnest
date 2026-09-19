@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://toolnest.shaikhayaan.com/</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -240,5 +240,31 @@
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://toolnest.shaikhayaan.com/blog</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolnest.shaikhayaan.com/blog/10-must-have-browser-extensions-for-web-developers-in-2024</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://toolnest.shaikhayaan.com/blog/why-privacy-first-web-tools-are-the-future</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://toolnest.shaikhayaan.com/blog/how-applicant-tracking-systems-read-your-resume</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
