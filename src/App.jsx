@@ -11,6 +11,8 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { CookiePolicyPage } from './pages/CookiePolicyPage';
+import { BlogDirectoryPage } from './pages/BlogDirectoryPage';
+import { BlogPostPage } from './pages/BlogPostPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { initAnalytics, trackPageView } from './config/analytics';
 
@@ -60,6 +62,8 @@ export function App() {
           {/* /tools redirects to home since all tools are listed there */}
           <Route path="/tools" element={<HomePage onOpenCommandPalette={openCmd} />} />
           <Route path="/tools/:slug" element={<ToolPage />} />
+          <Route path="/blog" element={<BlogDirectoryPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

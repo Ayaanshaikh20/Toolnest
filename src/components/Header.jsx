@@ -84,6 +84,11 @@ export const Header = () => {
               </Link>
             </li>
             <li>
+              <Link to="/blog" className={`nav-link ${isActive('/blog') || location.pathname.startsWith('/blog/') ? 'active' : ''}`}>
+                Blog
+              </Link>
+            </li>
+            <li>
               <Link to="/about" className={`nav-link ${isActive('/about') ? 'active' : ''}`}>
                 About
               </Link>
@@ -150,6 +155,11 @@ export const Header = () => {
             <li>
               <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}>
                 Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/blog" className={`mobile-nav-link ${isActive('/blog') || location.pathname.startsWith('/blog/') ? 'active' : ''}`}>
+                Blog
               </Link>
             </li>
             <li>
