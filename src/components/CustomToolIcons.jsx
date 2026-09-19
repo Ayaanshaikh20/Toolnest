@@ -494,6 +494,27 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
         </svg>
       );
 
+    case 'svg-to-png':
+      return (
+        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
+          <rect x="2" y="7" width="13" height="18" rx="2" fill={C.img} />
+          <text x="3.5" y="18" fill="#FFF" fontSize="5" fontWeight="bold" fontFamily="sans-serif">SVG</text>
+          <path d="M15 16L18 16M17 14L19 16L17 18" stroke={C.imgDark} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="18" y="7" width="12" height="18" rx="2" fill={C.txt} />
+          <text x="19.5" y="18" fill="#FFF" fontSize="5" fontWeight="bold" fontFamily="sans-serif">PNG</text>
+        </svg>
+      );
+
+    case 'resume-ats-optimizer':
+      return (
+        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
+          <rect x="5" y="4" width="22" height="24" rx="3" fill={C.util} />
+          <path d="M9 10H18M9 14H15M9 18H20" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="20" cy="20" r="5" fill={C.utilDark} stroke="#FFF" strokeWidth="1.5" />
+          <path d="M23.5 23.5L27 27" stroke={C.utilDark} strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      );
+
     // Default Fallback
     default:
       return (
