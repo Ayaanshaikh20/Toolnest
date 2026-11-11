@@ -6,49 +6,77 @@ export const PrivacyPolicyPage = () => {
     <div className="container" style={{ padding: '3rem 1.5rem', maxWidth: '840px' }}>
       <SEO
         title="Privacy Policy | ToolNest"
-        description="ToolNest Privacy Policy detailing our client-side browser processing policy, cookies, and commitment to user data privacy."
+        description="ToolNest Privacy Policy detailing client-side browser processing, cookies, Google AdSense compliance, and user data rights under GDPR & CCPA."
         canonicalUrl="/privacy-policy"
       />
 
-      <h1 style={{ marginBottom: '1rem' }}>Privacy Policy</h1>
-      <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>Last updated: August 23, 2026</p>
+      <h1 style={{ marginBottom: '1rem', color: 'var(--text-main)' }}>Privacy Policy</h1>
+      <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>Last updated: September 20, 2026 &bull; Compliant with Google AdSense, GDPR & CCPA</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', lineHeight: '1.7', color: 'var(--text-muted)' }}>
         <p>
-          At <strong>ToolNest</strong> (accessible from https://toolnest.shaikhayaan.com), one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ToolNest and how we use it.
+          At <strong>ToolNest</strong> (accessible from <a href="https://toolnest.shaikhayaan.com">https://toolnest.shaikhayaan.com</a>), operated by <strong>Muhammad Ayaan Shaikh</strong>, protecting visitor privacy is our foundational commitment. This document outlines the types of information collected and how we uphold client-side confidentiality.
         </p>
 
-        <h2>1. Client-Side Browser Processing</h2>
+        <h2>1. 100% Client-Side In-Browser Processing Guarantee</h2>
         <p>
-          ToolNest is explicitly designed to process user input data locally inside your web browser whenever possible. This includes JSON payloads, images processed via Image Compressor or Resizer, password generation, Base64 strings, URL encoding, and text analytics.
+          Unlike conventional online converters and utility sites, ToolNest is architected to perform computations directly within your local browser runtime via modern WebAssembly (WASM), HTML5 Canvas, and the Web Crypto API.
         </p>
         <p>
-          <strong>Your data is processed strictly in your local memory and is never uploaded, stored, or processed on external remote servers.</strong>
+          <strong>Your files, PDF documents, JSON structures, images, passwords, and source code are strictly held in volatile client RAM and are never uploaded, transmitted, logged, or saved on any remote backend server.</strong>
         </p>
 
         <h2>2. Information We Collect</h2>
         <p>
-          Because ToolNest does not require account registration or user logins, we do not collect personal identification details such as your name, phone number, or home address unless you voluntarily submit a contact request.
+          ToolNest does not mandate user accounts, credit cards, or profile logins. We do not harvest personally identifiable information (PII) such as your legal name, billing address, or telephone number unless you voluntarily choose to contact our support team via our contact form or direct email.
         </p>
 
-        <h2>3. Log Files</h2>
+        <h2>3. Server Logs & Analytics</h2>
         <p>
-          Like most standard web servers, ToolNest uses standard hosting log files. These files log visitors when they visit websites. The information collected includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and number of clicks. These are not linked to any personally identifiable information.
+          Like all standard web servers, our hosting infrastructure (AWS CloudFront / Amplify) may log standard request metadata for security and performance diagnostics. This includes anonymous internet protocol (IP) addresses, browser user-agent, operating system, referring/exit pages, and timestamps. These logs are non-identifiable and never correlated with individual users.
         </p>
 
-        <h2>4. Cookies & Web Beacons</h2>
+        <h2>4. Google AdSense & Third-Party Advertising Policy</h2>
         <p>
-          ToolNest uses basic cookies to store user preferences (such as tool settings). Third-party vendors, including Google AdSense, use cookies to serve ads based on a user's prior visits to website pages.
+          ToolNest partners with Google AdSense to serve non-intrusive advertisements that support the ongoing maintenance and free access to our utilities. Please note the following disclosures required by Google:
+        </p>
+        <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <li>
+            <strong>Third-Party Vendor Cookies:</strong> Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites across the internet.
+          </li>
+          <li>
+            <strong>Advertising Cookies:</strong> Google's use of advertising cookies enables it and its partners to serve ads to users based on their visit to ToolNest and/or other websites on the internet.
+          </li>
+          <li>
+            <strong>Personalized Advertising Opt-Out:</strong> Users may opt out of personalized advertising by visiting Google's <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Ads Settings</a>. Alternatively, you can opt out of third-party vendor use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.
+          </li>
+        </ul>
+
+        <h2>5. Cookies & Local Storage</h2>
+        <p>
+          ToolNest uses minimal first-party browser storage (such as <code>localStorage</code>) strictly to preserve functional user preferences:
+        </p>
+        <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <li>Dark Mode vs. Light Mode interface preference.</li>
+          <li>Local list of recently accessed tools to provide quick shortcuts.</li>
+        </ul>
+        <p>
+          This local state stays stored in your browser and is never synchronized to an external cloud database.
         </p>
 
-        <h2>5. Advertising Partners</h2>
+        <h2>6. GDPR & CCPA Data Rights</h2>
         <p>
-          Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Web Beacons in their respective advertisements that appear on ToolNest. You may consult the respective Privacy Policies of these third-party ad servers for more detailed information.
+          Under the General Data Protection Regulation (GDPR) and California Consumer Privacy Act (CCPA), visitors have the right to request access to, deletion of, or restriction of their personal data. Because we do not store accounts or personal database records, ToolNest does not retain personal profiles. For any privacy queries, reach out directly to <strong>support@shaikhayaan.com</strong>.
         </p>
 
-        <h2>6. Contact Us</h2>
+        <h2>7. Contact Information</h2>
         <p>
-          If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us via our <a href="/contact">Contact Page</a> or by email at <strong>support@shaikhayaan.com</strong>.
+          If you have questions regarding this Privacy Policy or our architectural security model, contact:
+        </p>
+        <p style={{ margin: 0 }}>
+          <strong>Muhammad Ayaan Shaikh</strong> &bull; ToolNest<br />
+          Email: <a href="mailto:support@shaikhayaan.com">support@shaikhayaan.com</a><br />
+          Website: <a href="https://shaikhayaan.com" target="_blank" rel="noopener noreferrer">https://shaikhayaan.com</a>
         </p>
       </div>
     </div>
