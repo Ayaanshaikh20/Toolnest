@@ -83,7 +83,7 @@ export const AboutPage = () => {
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <a
-                href="https://shaikhayaan.com"
+                href="https://portfolio.shaikhayaan.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

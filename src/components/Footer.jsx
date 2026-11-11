@@ -44,7 +44,7 @@ export const Footer = () => {
               <li><Link to="/blog">Engineering Blog</Link></li>
               <li><Link to="/contact">Contact & Bug Reports</Link></li>
               <li>
-                <a href="https://shaikhayaan.com" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                <a href="https://portfolio.shaikhayaan.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                   Ayaan's Portfolio <ArrowUpRight size={12} />
                 </a>
               </li>
@@ -66,7 +66,7 @@ export const Footer = () => {
             <p style={{ margin: 0 }}>
               &copy; {currentYear} ToolNest &bull; Designed &amp; Developed by{' '}
               <a 
-                href="https://shaikhayaan.com" 
+                href="https://portfolio.shaikhayaan.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 style={{ color: 'var(--text-main)', fontWeight: '600', textDecoration: 'underline' }}

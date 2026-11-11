@@ -76,7 +76,7 @@ export const PrivacyPolicyPage = () => {
         <p style={{ margin: 0 }}>
           <strong>Muhammad Ayaan Shaikh</strong> &bull; ToolNest<br />
           Email: <a href="mailto:support@shaikhayaan.com">support@shaikhayaan.com</a><br />
-          Website: <a href="https://shaikhayaan.com" target="_blank" rel="noopener noreferrer">https://shaikhayaan.com</a>
+          Website: <a href="https://portfolio.shaikhayaan.com/" target="_blank" rel="noopener noreferrer">https://portfolio.shaikhayaan.com</a>
         </p>
       </div>
     </div>

@@ -20,7 +20,7 @@ export const BlogPostPage = () => {
     "author": {
       "@type": "Person",
       "name": post.author,
-      "url": "https://shaikhayaan.com"
+      "url": "https://portfolio.shaikhayaan.com/"
     },
     "datePublished": "2024-09-15",
     "mainEntityOfPage": {
