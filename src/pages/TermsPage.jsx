@@ -42,6 +42,11 @@ export const TermsPage = () => {
         <p>
           ToolNest may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the current version of these terms of service.
         </p>
+
+        <h2>6. Operator Information</h2>
+        <p>
+          ToolNest is operated by <strong>Muhammad Ayaan Shaikh</strong>. For questions regarding these Terms of Service or utility operations, contact us at <a href="mailto:support@shaikhayaan.com">support@shaikhayaan.com</a> or visit our <a href="/contact">Contact Page</a>.
+        </p>
       </div>
     </div>
   );

@@ -1336,3 +1336,15 @@ body.dark-mode select {
   .hero-compact-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .hero-compact-search { max-width: 100%; width: 100%; }
 }
+
+/* AdSense clean auto-collapse: prevent blank gaps when ads are unfilled */
+ins.adsbygoogle[data-ad-status="unfilled"],
+ins.adsbygoogle:empty {
+  display: none !important;
+}
+.ad-container:empty,
+.ad-container:has(ins.adsbygoogle:empty) {
+  min-height: 0;
+  margin: 0 !important;
+}
+

@@ -1,30 +1,51 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { BLOG_POSTS } from '../data/blogData';
+import { SEO } from '../components/SEO';
 import { NotFoundPage } from './NotFoundPage';
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
   const post = BLOG_POSTS.find(p => p.slug === slug);
 
-  useEffect(() => {
-    if (post) {
-      document.title = `${post.title} | ToolNest Blog`;
-      
-      // Update meta description for SEO
-      let metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute('content', post.excerpt);
-      }
-    }
-  }, [post]);
-
   if (!post) {
     return <NotFoundPage />;
   }
 
+  const articleStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "author": {
+      "@type": "Person",
+      "name": post.author,
+      "url": "https://shaikhayaan.com"
+    },
+    "datePublished": "2024-09-15",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://toolnest.shaikhayaan.com/blog/${post.slug}`
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToolNest",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://toolnest.shaikhayaan.com/favicon.svg"
+      }
+    }
+  };
+
   return (
     <div className="container" style={{ padding: '3rem 1rem', maxWidth: '800px', margin: '0 auto' }}>
+      <SEO
+        title={`${post.title} | ToolNest Blog`}
+        description={post.excerpt}
+        canonicalUrl={`/blog/${post.slug}`}
+        structuredData={articleStructuredData}
+      />
+
       <div style={{ marginBottom: '2rem' }}>
         <Link to="/blog" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
           &larr; Back to Blog
