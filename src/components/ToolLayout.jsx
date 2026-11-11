@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Breadcrumb } from './Breadcrumb';
 import { AdPlaceholder } from './AdPlaceholder';
 import { FAQ } from './FAQ';
@@ -6,10 +6,21 @@ import { RelatedTools } from './RelatedTools';
 import { SEO } from './SEO';
 import { CustomToolIcon } from './CustomToolIcons';
 import { getRelatedTools } from '../data/toolsData';
-import { CheckCircle, Lightbulb } from 'lucide-react';
+import { CheckCircle, Lightbulb, ShieldCheck } from 'lucide-react';
 
 export const ToolLayout = ({ tool, children }) => {
   if (!tool) return null;
+
+  // Track recently used tool in localStorage
+  useEffect(() => {
+    try {
+      const recent = JSON.parse(localStorage.getItem('toolnest_recent') || '[]');
+      const updated = [tool.slug, ...recent.filter(s => s !== tool.slug)].slice(0, 6);
+      localStorage.setItem('toolnest_recent', JSON.stringify(updated));
+    } catch (e) {
+      // Ignore localStorage errors in private browsing
+    }
+  }, [tool.slug]);
 
   const relatedTools = getRelatedTools(tool);
 
@@ -218,6 +229,44 @@ export const ToolLayout = ({ tool, children }) => {
 
         {/* 7. Related Tools */}
         <RelatedTools tools={relatedTools} />
+
+        {/* Human Creator & Architectural Guarantee Badge (E-E-A-T) */}
+        <div style={{
+          marginTop: '2.5rem',
+          padding: '1.25rem 1.5rem',
+          backgroundColor: 'var(--card-bg)',
+          border: '1.5px solid var(--border-color)',
+          borderRadius: 'var(--radius-lg, 12px)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          boxShadow: 'var(--shadow-sm)'
+        }}>
+          <div style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+            color: '#FFFFFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: '800',
+            fontSize: '0.95rem',
+            flexShrink: 0
+          }}>
+            AS
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '0.875rem', fontWeight: '700', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <span>Verified In-Browser Architecture</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '500', color: 'var(--text-light)' }}>&bull; Maintained by Muhammad Ayaan Shaikh</span>
+            </div>
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.825rem', color: 'var(--text-muted)', lineHeight: '1.45' }}>
+              This utility executes entirely within your local browser memory using modern web APIs. Your files and inputs are never transmitted, inspected, or saved to any remote server.
+            </p>
+          </div>
+        </div>
       </div>
 
       <AdPlaceholder position="bottom" />

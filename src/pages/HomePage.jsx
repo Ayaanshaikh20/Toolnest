@@ -6,13 +6,30 @@ import { SEO } from '../components/SEO';
 import { AdPlaceholder } from '../components/AdPlaceholder';
 import { FAQ } from '../components/FAQ';
 import { CustomToolIcon } from '../components/CustomToolIcons';
-import { Search, X, Smartphone, WifiOff, Zap, ShieldCheck, Download, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Search, X, Smartphone, WifiOff, Zap, ShieldCheck, Download, Sparkles, CheckCircle2, History, ArrowRight } from 'lucide-react';
 
 export const HomePage = ({ onOpenCommandPalette }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [installPrompt, setInstallPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [recentSlugs, setRecentSlugs] = useState([]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('toolnest_recent') || '[]');
+      if (Array.isArray(stored)) {
+        setRecentSlugs(stored);
+      }
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }, []);
+
+  const recentTools = recentSlugs
+    .map(slug => TOOLS_DATA.find(t => t.slug === slug))
+    .filter(Boolean)
+    .slice(0, 4);
 
   useEffect(() => {
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
@@ -83,8 +100,8 @@ export const HomePage = ({ onOpenCommandPalette }) => {
   return (
     <div>
       <SEO
-        title="ToolNest - 25+ Free Online Tools & Offline PWA Utilities"
-        description="Fast, private and free web utilities for developers, creators, students and everyday productivity. PDF tools, image compressors, QR codes, and converters with 100% offline PWA support."
+        title="ToolNest - 32+ Private Online Utilities & Offline PWA Suite"
+        description="Fast, private, and free web utilities for developers, creators, students, and everyday productivity. 100% in-browser processing with zero server uploads."
         canonicalUrl="/"
         structuredData={homepageStructuredData}
       />
@@ -95,13 +112,13 @@ export const HomePage = ({ onOpenCommandPalette }) => {
           <div className="hero-compact-inner">
             <div className="hero-compact-text">
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.25rem 0.65rem', borderRadius: '999px', background: 'rgba(37, 99, 235, 0.1)', color: 'var(--primary-color)', fontSize: '0.78rem', fontWeight: '700', marginBottom: '0.75rem' }}>
-                <Sparkles size={14} /> 25+ Tools &bull; 100% Offline PWA Ready
+                <Sparkles size={14} /> 32+ Client-Side Utilities &bull; Zero Server Uploads
               </div>
-              <h1>Free Online Tools.<br /><span style={{ color: 'var(--primary-color)' }}>Open. Use. Done.</span></h1>
-              <p>Fast, privacy-first developer & document utilities. Zero server uploads, zero logins, and full offline execution.</p>
+              <h1>Private Online Tools.<br /><span style={{ color: 'var(--primary-color)' }}>Zero Uploads. Instant Results.</span></h1>
+              <p>High-performance developer and creator utilities engineered by Muhammad Ayaan Shaikh. Process PDFs, format code, and convert media 100% locally in your browser memory.</p>
             </div>
             <div className="hero-compact-search">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} onOpenCommandPalette={onOpenCommandPalette} placeholder="Search tools (PDF, JSON, Image, Password...)" />
+              <SearchBar value={searchQuery} onChange={setSearchQuery} onOpenCommandPalette={onOpenCommandPalette} placeholder="Search 32+ tools (PDF, JSON, Image, Password, SVG...)" />
             </div>
           </div>
         </div>
@@ -109,6 +126,55 @@ export const HomePage = ({ onOpenCommandPalette }) => {
 
       {/* ── Main Layout: Sidebar + Tool Grid ── */}
       <div className="container">
+        {/* Recently Used Quick-Access Tray (if user has history) */}
+        {recentTools.length > 0 && !searchQuery && activeCategory === 'all' && (
+          <div style={{
+            marginBottom: '2rem',
+            padding: '1rem 1.25rem',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-lg, 12px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            boxShadow: 'var(--shadow-sm)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <History size={16} style={{ color: 'var(--primary-color)' }} />
+              <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Recently Used
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+              {recentTools.map(t => (
+                <Link
+                  key={t.slug}
+                  to={`/tools/${t.slug}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    padding: '0.35rem 0.75rem',
+                    background: 'var(--bg-color)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-sm, 6px)',
+                    fontSize: '0.825rem',
+                    fontWeight: '600',
+                    color: 'var(--text-main)',
+                    textDecoration: 'none',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <CustomToolIcon slug={t.slug} size={16} />
+                  <span>{t.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="tools-layout">
 
           {/* Sidebar: Category Filter */}
