@@ -100,7 +100,7 @@ export const HomePage = ({ onOpenCommandPalette }) => {
   return (
     <div>
       <SEO
-        title="ToolNest - 32+ Private Online Utilities & Offline PWA Suite"
+        title="ToolNest - 33+ Private Online Utilities & Offline PWA Suite"
         description="Fast, private, and free web utilities for developers, creators, students, and everyday productivity. 100% in-browser processing with zero server uploads."
         canonicalUrl="/"
         structuredData={homepageStructuredData}
@@ -112,7 +112,7 @@ export const HomePage = ({ onOpenCommandPalette }) => {
           <div className="hero-compact-inner">
             <div className="hero-compact-text">
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.25rem 0.65rem', borderRadius: '999px', background: 'rgba(37, 99, 235, 0.1)', color: 'var(--primary-color)', fontSize: '0.78rem', fontWeight: '700', marginBottom: '0.75rem' }}>
-                <Sparkles size={14} /> 32+ Client-Side Utilities &bull; Zero Server Uploads
+                <Sparkles size={14} /> 33+ Client-Side Utilities &bull; Zero Server Uploads
               </div>
               <h1>Private Online Tools.<br /><span style={{ color: 'var(--primary-color)' }}>Zero Uploads. Instant Results.</span></h1>
               <p>High-performance developer and creator utilities engineered by Muhammad Ayaan Shaikh. Process PDFs, format code, and convert media 100% locally in your browser memory.</p>

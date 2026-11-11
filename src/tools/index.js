@@ -30,8 +30,10 @@ import { PdfCompressor } from './PdfCompressor';
 import { SignatureExtractor } from './SignatureExtractor';
 import { ResumeAtsOptimizer } from './ResumeAtsOptimizer';
 import { SvgToPng } from './SvgToPng';
+import { PdfSigner } from './PdfSigner';
 
 export const TOOL_COMPONENTS = {
+  'pdf-signer': PdfSigner,
   'json-formatter': JsonFormatter,
   'json-validator': JsonValidator,
   'uuid-generator': UuidGenerator,

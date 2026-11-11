@@ -10,6 +10,12 @@
 
   <!-- PDF Tools -->
   <url>
+    <loc>https://toolnest.shaikhayaan.com/tools/pdf-signer</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://toolnest.shaikhayaan.com/tools/pdf-merger</loc>
     <lastmod>2026-08-23</lastmod>
     <changefreq>weekly</changefreq>

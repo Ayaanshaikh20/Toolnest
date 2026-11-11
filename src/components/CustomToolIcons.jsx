@@ -32,6 +32,26 @@ export const CustomToolIcon = ({ slug, size = 28, className = '' }) => {
   const s = size;
 
   switch (slug) {
+    // ── PDF SIGNER: PDF document with digital signature & fountain pen ──
+    case 'pdf-signer':
+      return (
+        <svg width={s} height={s} viewBox="0 0 32 32" fill="none" className={className}>
+          {/* Main PDF Document Base */}
+          <rect x="4" y="3" width="20" height="26" rx="2.5" fill={C.pdf} />
+          <rect x="7" y="7" width="10" height="2" rx="1" fill="#FFF" opacity="0.8" />
+          <rect x="7" y="11" width="14" height="2" rx="1" fill="#FFF" opacity="0.6" />
+          <rect x="7" y="15" width="8" height="2" rx="1" fill="#FFF" opacity="0.6" />
+          {/* Signature Line */}
+          <line x1="7" y1="23" x2="19" y2="23" stroke="#FFF" strokeWidth="1" strokeDasharray="2 1.5" opacity="0.7" />
+          {/* Cursive Signature Stroke */}
+          <path d="M7 21C9 19.5 10 22 12 20.5C14 19 15 22 17 21" stroke="#FEF08A" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Floating Pen Nib Badge */}
+          <circle cx="23" cy="23" r="7" fill="#1D4ED8" stroke="#FFF" strokeWidth="1.5" />
+          <path d="M25.5 19.5L20.5 24.5L19.5 26.5L21.5 25.5L26.5 20.5L25.5 19.5Z" fill="#FFF" />
+          <path d="M24 21L25 22" stroke="#1D4ED8" strokeWidth="0.8" />
+        </svg>
+      );
+
     // ── PDF MERGER: Two PDF files merging into one ──
     case 'pdf-merger':
       return (

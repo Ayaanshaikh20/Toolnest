@@ -29,11 +29,11 @@ export const Footer = () => {
           <div className="footer-column">
             <h4>Popular Tools</h4>
             <ul className="footer-links">
+              <li><Link to="/tools/pdf-signer">Free PDF Signer</Link></li>
               <li><Link to="/tools/svg-to-png">SVG to PNG Converter</Link></li>
               <li><Link to="/tools/pdf-compressor">PDF Compressor</Link></li>
               <li><Link to="/tools/json-formatter">JSON Formatter</Link></li>
               <li><Link to="/tools/qr-code-generator">QR Code Generator</Link></li>
-              <li><Link to="/tools/password-generator">Password Generator</Link></li>
             </ul>
           </div>
 

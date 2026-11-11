@@ -12,6 +12,71 @@ export const CATEGORIES = [
 
 export const TOOLS_DATA = [
   {
+    slug: 'pdf-signer',
+    name: 'Free PDF Signer',
+    description: 'Sign PDF documents online for free. Draw your signature, type cursive signatures, or upload an image. 100% private in-browser processing with zero cloud uploads.',
+    category: 'pdf',
+    icon: 'PenTool',
+    isPopular: true,
+    metaTitle: 'Free PDF Signer Online — Sign Documents in Browser (Zero Uploads) | ToolNest',
+    metaDescription: 'Sign PDF documents online for free without creating an account or paying for DocuSign. Draw, type, or upload your signature, drag to position on any page, and download instantly. 100% private in-browser.',
+    about: 'ToolNest Free PDF Signer allows you to legally e-sign PDF contracts, lease agreements, NDAs, and tax documents directly inside your browser. Unlike traditional e-signature services like DocuSign or Adobe Acrobat that require expensive monthly subscriptions and store your sensitive contracts on third-party cloud servers, ToolNest executes the entire signing process locally in your computer memory using modern WebAssembly and Canvas APIs. Your confidential files never leave your device.',
+    whatIs: {
+      heading: 'What is In-Browser PDF Signing and Why Does it Matter?',
+      content: [
+        'Electronic signatures (e-signatures) have legally replaced physical pen-and-paper signatures across most jurisdictions under the US ESIGN Act, UETA, and European eIDAS regulations.',
+        'Traditional signing platforms force you to upload your sensitive contracts to remote servers, exposing private financial, legal, and personal data to cloud storage risks. ToolNest embeds your cryptographic and visual signatures into the PDF binary using client-side JavaScript, guaranteeing zero telemetry and absolute data confidentiality.'
+      ]
+    },
+    howToUse: [
+      'Upload your PDF document by clicking the file selector or dragging it into the dropzone.',
+      'Create your signature: draw it smoothly with your mouse/touchscreen, type your name in cursive, or upload an existing signature image.',
+      'Click "Place Signature on Page", then drag and scale the signature box directly onto the designated signing line.',
+      'Optionally click "Place Date Stamp" to append today\'s date next to your signature.',
+      'Click "Save & Download Signed PDF" to export your finalized, legally signed document instantly.'
+    ],
+    features: [
+      { title: '100% Client-Side Confidentiality', description: 'Your PDF and signature are processed strictly in volatile local memory — zero server uploads.' },
+      { title: '3 Flexible Signature Methods', description: 'Draw freehand with smooth ink rendering, type your name in elegant script styles, or upload a photo/PNG.' },
+      { title: 'Interactive Drag & Position', description: 'Visually drag and resize your signature directly on the document canvas to fit any signature line perfectly.' },
+      { title: 'Automatic Date Stamp', description: 'Add formatted date stamps with a single click to satisfy official legal execution requirements.' },
+      { title: 'Multi-Page Navigation', description: 'Browse and sign any page across multi-page contracts, leases, or multi-party agreements.' },
+      { title: 'Zero Fees & No Account Required', description: 'Sign unlimited documents completely free without hidden subscription paywalls or registration gates.' }
+    ],
+    examples: [
+      {
+        title: 'Signing a Real Estate Lease Agreement',
+        description: 'Tenants and landlords can open rental agreements, navigate to the final execution page, place initial stamps and signatures, and export the executed lease in under 30 seconds.'
+      },
+      {
+        title: 'Signing Employment Contracts & NDAs',
+        description: 'New hires and freelancers can sign Non-Disclosure Agreements (NDAs) and offer letters without paying for monthly DocuSign licenses.'
+      },
+      {
+        title: 'Tax Forms & Financial Waivers',
+        description: 'Safely sign W-9, 1099, or bank authorization forms with peace of mind knowing sensitive social security numbers and financials stay strictly on your local device.'
+      }
+    ],
+    faqs: [
+      {
+        question: 'Is a signature created on ToolNest legally binding?',
+        answer: 'Yes. In the United States (under the ESIGN Act and UETA), the European Union (eIDAS), the UK, Canada, and Australia, electronic signatures carry the same legal weight as traditional handwritten wet-ink signatures for most commercial contracts, leases, and agreements.'
+      },
+      {
+        question: 'Are my uploaded PDF documents saved on your servers?',
+        answer: 'No! ToolNest uses client-side WebAssembly and HTML5 Canvas. Your document and signature never travel across the internet and are never saved to any database or server.'
+      },
+      {
+        question: 'Can I sign multiple pages in the same PDF?',
+        answer: 'Yes! Use the page navigation arrows to switch between pages. You can place signatures, initials, and date stamps across as many pages as needed before exporting.'
+      },
+      {
+        question: 'Do I have to pay or create an account after a trial period?',
+        answer: 'No. ToolNest PDF Signer is 100% free with unlimited document signing and zero paywalls.'
+      }
+    ]
+  },
+  {
     slug: 'svg-to-png',
     name: 'SVG to PNG Converter',
     description: 'Convert any SVG file to a high-resolution PNG image with custom scale (1x, 2x, 3x, 4x) and background color options.',
