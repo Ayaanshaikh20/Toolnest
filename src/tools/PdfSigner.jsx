@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import { pdfjsLib } from '../config/pdfWorker';
 import { Button } from '../components/Button';
 import { 
@@ -18,7 +18,9 @@ import {
   Calendar,
   Sparkles,
   ShieldCheck,
-  FileCheck
+  FileCheck,
+  Plus,
+  Minus
 } from 'lucide-react';
 
 export const PdfSigner = () => {
@@ -39,11 +41,12 @@ export const PdfSigner = () => {
   const [typedFont, setTypedFont] = useState('cursive');
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
 
-  // Placed signatures state: array of { id, page, x, y, width, height, dataUrl, type: 'sig' | 'date', text }
+  // Placed items state: uses NORMALIZED coordinates (0.0 to 1.0) so it's 100% resolution & screen-independent!
+  // { id, page, relX, relY, relW, relH, dataUrl, type: 'sig' | 'date' }
   const [placedItems, setPlacedItems] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef({ mouseX: 0, mouseY: 0, itemX: 0, itemY: 0 });
+  const dragStartRef = useRef({ startX: 0, startY: 0, initialRelX: 0, initialRelY: 0, containerWidth: 0, containerHeight: 0 });
 
   // Canvas refs
   const pdfCanvasRef = useRef(null);
@@ -94,9 +97,10 @@ export const PdfSigner = () => {
       const canvas = pdfCanvasRef.current;
       const context = canvas.getContext('2d');
 
-      // Calculate responsive viewport scale (fit container nicely)
+      // Calculate responsive viewport scale based on parent column width
       const unscaledViewport = page.getViewport({ scale: 1 });
-      const targetWidth = Math.min(window.innerWidth > 768 ? 680 : window.innerWidth - 48, unscaledViewport.width);
+      const parentWidth = containerRef.current?.parentElement ? containerRef.current.parentElement.clientWidth - 40 : 660;
+      const targetWidth = Math.min(Math.max(parentWidth, 320), unscaledViewport.width * 1.5, 740);
       const scale = targetWidth / unscaledViewport.width;
       const viewport = page.getViewport({ scale });
 
@@ -121,6 +125,17 @@ export const PdfSigner = () => {
     if (pdfDocProxy) {
       renderPage(currentPage);
     }
+  }, [pdfDocProxy, currentPage, renderPage]);
+
+  // Handle window resize to re-render page at crisp scale
+  useEffect(() => {
+    const handleResize = () => {
+      if (pdfDocProxy) {
+        renderPage(currentPage);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [pdfDocProxy, currentPage, renderPage]);
 
   // 3. Drawing Canvas Setup
@@ -183,20 +198,20 @@ export const PdfSigner = () => {
   useEffect(() => {
     if (sigMode === 'type' && typedName.trim()) {
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = 400;
-      tempCanvas.height = 120;
+      tempCanvas.width = 500;
+      tempCanvas.height = 140;
       const ctx = tempCanvas.getContext('2d');
-      ctx.clearRect(0, 0, 400, 120);
+      ctx.clearRect(0, 0, 500, 140);
 
-      let fontStyle = 'italic 38px "Brush Script MT", cursive';
-      if (typedFont === 'dancing') fontStyle = 'italic 40px "Dancing Script", cursive';
-      if (typedFont === 'serif') fontStyle = 'italic 36px "Georgia", serif';
+      let fontStyle = 'italic 46px "Brush Script MT", cursive';
+      if (typedFont === 'dancing') fontStyle = 'italic 48px "Dancing Script", cursive';
+      if (typedFont === 'serif') fontStyle = 'italic 42px "Georgia", serif';
 
       ctx.font = fontStyle;
       ctx.fillStyle = sigColor;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(typedName.trim(), 200, 60);
+      ctx.fillText(typedName.trim(), 250, 70);
 
       setSignatureDataUrl(tempCanvas.toDataURL('image/png'));
     }
@@ -213,7 +228,7 @@ export const PdfSigner = () => {
     reader.readAsDataURL(uploaded);
   };
 
-  // 6. Place Signature onto Current PDF Page
+  // 6. Place Signature onto Current PDF Page (Normalized 0.0 to 1.0)
   const placeSignatureOnPdf = () => {
     if (!signatureDataUrl) {
       setError('Please draw, type, or upload a signature first.');
@@ -221,18 +236,19 @@ export const PdfSigner = () => {
     }
     setError('');
 
-    const defaultWidth = 140;
-    const defaultHeight = 60;
-    const centerX = Math.max(10, (canvasDimensions.width - defaultWidth) / 2);
-    const centerY = Math.max(10, (canvasDimensions.height - defaultHeight) / 2);
+    // Default: ~25% of page width, ~8.5% of page height, placed near bottom (75% down)
+    const relW = 0.25;
+    const relH = 0.085;
+    const relX = (1 - relW) / 2;
+    const relY = 0.72;
 
     const newItem = {
       id: Date.now().toString(),
       page: currentPage,
-      x: centerX,
-      y: centerY,
-      width: defaultWidth,
-      height: defaultHeight,
+      relX,
+      relY,
+      relW,
+      relH,
       dataUrl: signatureDataUrl,
       type: 'sig'
     };
@@ -241,7 +257,7 @@ export const PdfSigner = () => {
     setSelectedItemId(newItem.id);
   };
 
-  // 7. Place Date Stamp onto Current PDF Page
+  // 7. Place Date Stamp onto Current PDF Page (Normalized 0.0 to 1.0)
   const placeDateStamp = () => {
     const today = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -250,86 +266,125 @@ export const PdfSigner = () => {
     });
 
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 160;
-    tempCanvas.height = 40;
+    tempCanvas.width = 280;
+    tempCanvas.height = 70;
     const ctx = tempCanvas.getContext('2d');
-    ctx.font = '14px sans-serif';
-    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = sigColor || '#0f172a';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(today, 80, 20);
+    ctx.fillText(today, 140, 35);
+
+    const relW = 0.20;
+    const relH = 0.05;
+    const relX = 0.62;
+    const relY = 0.74;
 
     const newItem = {
       id: Date.now().toString(),
       page: currentPage,
-      x: Math.max(10, (canvasDimensions.width - 120) / 2),
-      y: Math.max(10, (canvasDimensions.height - 35) / 2 + 50),
-      width: 120,
-      height: 30,
+      relX,
+      relY,
+      relW,
+      relH,
       dataUrl: tempCanvas.toDataURL('image/png'),
-      type: 'date'
+      type: 'date',
+      text: today
     };
 
     setPlacedItems(prev => [...prev, newItem]);
     setSelectedItemId(newItem.id);
   };
 
-  // 8. Drag & Move Signature Logic
-  const handleItemMouseDown = (e, item) => {
+  // 8. Robust Pointer Drag Logic with Global Event Listeners
+  const handleItemPointerDown = (e, item) => {
     e.stopPropagation();
+    e.preventDefault();
     setSelectedItemId(item.id);
     setIsDragging(true);
 
     const clientX = e.clientX || e.touches?.[0]?.clientX;
     const clientY = e.clientY || e.touches?.[0]?.clientY;
 
+    if (!containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+
     dragStartRef.current = {
-      mouseX: clientX,
-      mouseY: clientY,
-      itemX: item.x,
-      itemY: item.y
+      startX: clientX,
+      startY: clientY,
+      initialRelX: item.relX,
+      initialRelY: item.relY,
+      containerWidth: containerRect.width,
+      containerHeight: containerRect.height,
+      itemRelW: item.relW,
+      itemRelH: item.relH
     };
   };
 
-  const handleContainerMouseMove = (e) => {
-    if (!isDragging || !selectedItemId) return;
-    const clientX = e.clientX || e.touches?.[0]?.clientX;
-    const clientY = e.clientY || e.touches?.[0]?.clientY;
+  useEffect(() => {
+    if (!isDragging) return;
 
-    const deltaX = clientX - dragStartRef.current.mouseX;
-    const deltaY = clientY - dragStartRef.current.mouseY;
+    const handlePointerMove = (e) => {
+      if (!selectedItemId || !dragStartRef.current.containerWidth) return;
+      const clientX = e.clientX || e.touches?.[0]?.clientX;
+      const clientY = e.clientY || e.touches?.[0]?.clientY;
 
-    setPlacedItems(prev => prev.map(item => {
-      if (item.id === selectedItemId) {
-        const newX = Math.max(0, Math.min(canvasDimensions.width - item.width, dragStartRef.current.itemX + deltaX));
-        const newY = Math.max(0, Math.min(canvasDimensions.height - item.height, dragStartRef.current.itemY + deltaY));
-        return { ...item, x: newX, y: newY };
-      }
-      return item;
-    }));
-  };
+      const deltaPixelX = clientX - dragStartRef.current.startX;
+      const deltaPixelY = clientY - dragStartRef.current.startY;
 
-  const handleContainerMouseUp = () => {
-    setIsDragging(false);
-  };
+      const deltaRelX = deltaPixelX / dragStartRef.current.containerWidth;
+      const deltaRelY = deltaPixelY / dragStartRef.current.containerHeight;
+
+      setPlacedItems(prev => prev.map(item => {
+        if (item.id === selectedItemId) {
+          const newRelX = Math.max(0, Math.min(1 - item.relW, dragStartRef.current.initialRelX + deltaRelX));
+          const newRelY = Math.max(0, Math.min(1 - item.relH, dragStartRef.current.initialRelY + deltaRelY));
+          return { ...item, relX: newRelX, relY: newRelY };
+        }
+        return item;
+      }));
+    };
+
+    const handlePointerUp = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('touchmove', handlePointerMove);
+    window.addEventListener('touchend', handlePointerUp);
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
+    };
+  }, [isDragging, selectedItemId]);
 
   const removeItem = (id) => {
     setPlacedItems(prev => prev.filter(i => i.id !== id));
     if (selectedItemId === id) setSelectedItemId(null);
   };
 
-  const updateItemScale = (id, delta) => {
+  const updateItemScale = (id, factor) => {
     setPlacedItems(prev => prev.map(item => {
       if (item.id === id) {
-        const newW = Math.max(50, Math.min(300, item.width * delta));
-        const newH = Math.max(20, Math.min(150, item.height * delta));
-        return { ...item, width: newW, height: newH };
+        const newRelW = Math.max(0.06, Math.min(0.85, item.relW * factor));
+        const newRelH = Math.max(0.02, Math.min(0.50, item.relH * factor));
+        return { 
+          ...item, 
+          relW: newRelW, 
+          relH: newRelH,
+          relX: Math.min(item.relX, 1 - newRelW),
+          relY: Math.min(item.relY, 1 - newRelH)
+        };
       }
       return item;
     }));
   };
 
-  // 9. Burn Signatures & Export Signed PDF via pdf-lib
+  // 9. Mathematically Perfect Coordinate Mapping & Burning via pdf-lib
   const handleBurnAndDownload = async () => {
     if (!file || placedItems.length === 0) {
       setError('Please place at least one signature or stamp before downloading.');
@@ -344,35 +399,80 @@ export const PdfSigner = () => {
       const pdfDoc = await PDFDocument.load(originalBuffer);
       const pages = pdfDoc.getPages();
 
-      // Group items by page
+      // Burn items onto their designated pages
       for (const item of placedItems) {
         const pageIndex = item.page - 1;
         if (pageIndex < 0 || pageIndex >= pages.length) continue;
 
         const targetPage = pages[pageIndex];
-        const { width: pdfWidth, height: pdfHeight } = targetPage.getSize();
+        const { width: rawWidth, height: rawHeight } = targetPage.getSize();
+        const angle = targetPage.getRotation().angle; // 0, 90, 180, 270
 
         // Convert base64 dataUrl to PNG bytes
         const base64Data = item.dataUrl.split(',')[1];
         const pngBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
         const embeddedImage = await pdfDoc.embedPng(pngBytes);
 
-        // Map screen canvas coordinates to PDF point coordinates
-        // Canvas origin is Top-Left; PDF origin is Bottom-Left
-        const scaleX = pdfWidth / canvasDimensions.width;
-        const scaleY = pdfHeight / canvasDimensions.height;
+        // Compute exact coordinates based on PDF page rotation matrix
+        let pdfX, pdfY, pdfW, pdfH;
 
-        const finalPdfX = item.x * scaleX;
-        const finalPdfY = pdfHeight - ((item.y + item.height) * scaleY);
-        const finalPdfW = item.width * scaleX;
-        const finalPdfH = item.height * scaleY;
+        if (angle === 90) {
+          // Clockwise 90 deg: Visual width = rawHeight, Visual height = rawWidth
+          pdfW = item.relW * rawHeight;
+          pdfH = item.relH * rawWidth;
+          pdfX = item.relY * rawWidth;
+          pdfY = item.relX * rawHeight;
 
-        targetPage.drawImage(embeddedImage, {
-          x: finalPdfX,
-          y: finalPdfY,
-          width: finalPdfW,
-          height: finalPdfH
-        });
+          targetPage.drawImage(embeddedImage, {
+            x: pdfX,
+            y: pdfY,
+            width: pdfH,
+            height: pdfW,
+            rotate: degrees(270)
+          });
+        } else if (angle === 180) {
+          // Upside down 180 deg
+          pdfW = item.relW * rawWidth;
+          pdfH = item.relH * rawHeight;
+          pdfX = rawWidth - (item.relX * rawWidth);
+          pdfY = (item.relY + item.relH) * rawHeight;
+
+          targetPage.drawImage(embeddedImage, {
+            x: pdfX,
+            y: pdfY,
+            width: pdfW,
+            height: pdfH,
+            rotate: degrees(180)
+          });
+        } else if (angle === 270) {
+          // Counter-clockwise 270 deg
+          pdfW = item.relW * rawHeight;
+          pdfH = item.relH * rawWidth;
+          pdfX = rawWidth - ((item.relY + item.relH) * rawWidth);
+          pdfY = rawHeight - (item.relX * rawHeight);
+
+          targetPage.drawImage(embeddedImage, {
+            x: pdfX,
+            y: pdfY,
+            width: pdfH,
+            height: pdfW,
+            rotate: degrees(90)
+          });
+        } else {
+          // Normal 0 deg (Standard for 95%+ of PDFs)
+          // Origin is Bottom-Left in PDF points
+          pdfW = item.relW * rawWidth;
+          pdfH = item.relH * rawHeight;
+          pdfX = item.relX * rawWidth;
+          pdfY = rawHeight - ((item.relY + item.relH) * rawHeight);
+
+          targetPage.drawImage(embeddedImage, {
+            x: pdfX,
+            y: pdfY,
+            width: pdfW,
+            height: pdfH
+          });
+        }
       }
 
       const signedBytes = await pdfDoc.save();
@@ -397,7 +497,7 @@ export const PdfSigner = () => {
   };
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '980px', margin: '0 auto' }}>
       {/* ── Top Guarantee Banner ── */}
       <div style={{
         display: 'flex',
@@ -482,7 +582,7 @@ export const PdfSigner = () => {
         </div>
       ) : (
         /* ── Screen 2: Interactive Signing Studio ── */
-        <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 900 ? '340px 1fr' : '1fr', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 920 ? '340px 1fr' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
           
           {/* Left Column: Signature Maker Controls */}
           <div style={{
@@ -694,10 +794,10 @@ export const PdfSigner = () => {
                       key={item.id}
                       onClick={() => { setSelectedItemId(item.id); setCurrentPage(item.page); }}
                       style={{
-                        padding: '0.4rem 0.65rem',
+                        padding: '0.45rem 0.65rem',
                         borderRadius: 'var(--radius-sm)',
                         background: selectedItemId === item.id ? 'var(--primary-light)' : 'var(--bg-color)',
-                        border: selectedItemId === item.id ? '1px solid var(--primary-color)' : '1px solid var(--border-color)',
+                        border: selectedItemId === item.id ? '1.5px solid var(--primary-color)' : '1px solid var(--border-color)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -705,28 +805,32 @@ export const PdfSigner = () => {
                         cursor: 'pointer'
                       }}
                     >
-                      <span>{item.type === 'sig' ? `Signature #${idx + 1}` : 'Date Stamp'} (p. {item.page})</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontWeight: '600' }}>
+                        {item.type === 'sig' ? `Signature #${idx + 1}` : 'Date Stamp'} (p. {item.page})
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <button
                           onClick={(e) => { e.stopPropagation(); updateItemScale(item.id, 1.15); }}
-                          style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '2px', fontSize: '0.75rem', fontWeight: 'bold' }}
+                          className="btn btn-outline btn-sm"
+                          style={{ padding: '2px 6px', fontSize: '0.75rem', height: '22px' }}
                           title="Enlarge"
                         >
-                          +
+                          <Plus size={11} />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); updateItemScale(item.id, 0.85); }}
-                          style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '2px', fontSize: '0.75rem', fontWeight: 'bold' }}
+                          className="btn btn-outline btn-sm"
+                          style={{ padding: '2px 6px', fontSize: '0.75rem', height: '22px' }}
                           title="Shrink"
                         >
-                          -
+                          <Minus size={11} />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); removeItem(item.id); }}
                           style={{ border: 'none', background: 'none', color: 'var(--danger-color, #ef4444)', cursor: 'pointer', padding: '2px' }}
                           title="Delete"
                         >
-                          <Trash2 size={13} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
@@ -745,7 +849,9 @@ export const PdfSigner = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            boxShadow: 'var(--shadow-sm)'
+            boxShadow: 'var(--shadow-sm)',
+            width: '100%',
+            overflowX: 'auto'
           }}>
             {/* Viewport Header with Pagination */}
             <div style={{
@@ -755,10 +861,10 @@ export const PdfSigner = () => {
               justifyContent: 'space-between',
               marginBottom: '1rem',
               flexWrap: 'wrap',
-              gap: '0.5rem'
+              gap: '0.75rem'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-main)' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)' }}>
                   Page {currentPage} of {numPages}
                 </span>
                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -794,26 +900,25 @@ export const PdfSigner = () => {
               </Button>
             </div>
 
-            {/* Document Interactive Container */}
+            {/* Document Interactive Container: Dimensions locked to Canvas Viewport */}
             <div
               ref={containerRef}
-              onMouseMove={handleContainerMouseMove}
-              onMouseUp={handleContainerMouseUp}
-              onTouchMove={handleContainerMouseMove}
-              onTouchEnd={handleContainerMouseUp}
               style={{
                 position: 'relative',
                 display: 'inline-block',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                 borderRadius: '4px',
                 overflow: 'hidden',
                 background: '#525659',
-                userSelect: 'none'
+                userSelect: 'none',
+                width: canvasDimensions.width ? `${canvasDimensions.width}px` : 'auto',
+                height: canvasDimensions.height ? `${canvasDimensions.height}px` : 'auto',
+                maxWidth: '100%'
               }}
             >
-              <canvas ref={pdfCanvasRef} style={{ display: 'block', maxWidth: '100%' }} />
+              <canvas ref={pdfCanvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
 
-              {/* Placed Elements on Current Page */}
+              {/* Placed Elements on Current Page using Exact Percentage Positioning */}
               {placedItems
                 .filter(item => item.page === currentPage)
                 .map(item => {
@@ -821,27 +926,27 @@ export const PdfSigner = () => {
                   return (
                     <div
                       key={item.id}
-                      onMouseDown={(e) => handleItemMouseDown(e, item)}
-                      onTouchStart={(e) => handleItemMouseDown(e, item)}
+                      onPointerDown={(e) => handleItemPointerDown(e, item)}
                       style={{
                         position: 'absolute',
-                        left: `${item.x}px`,
-                        top: `${item.y}px`,
-                        width: `${item.width}px`,
-                        height: `${item.height}px`,
-                        cursor: 'move',
-                        border: isSelected ? '1.5px dashed #2563EB' : '1px dashed rgba(0,0,0,0.25)',
-                        backgroundColor: isSelected ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+                        left: `${item.relX * 100}%`,
+                        top: `${item.relY * 100}%`,
+                        width: `${item.relW * 100}%`,
+                        height: `${item.relH * 100}%`,
+                        cursor: isDragging && selectedItemId === item.id ? 'grabbing' : 'grab',
+                        border: isSelected ? '2px dashed #2563EB' : '1px dashed rgba(0,0,0,0.3)',
+                        backgroundColor: isSelected ? 'rgba(37, 99, 235, 0.12)' : 'transparent',
                         padding: '2px',
                         boxSizing: 'border-box',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        touchAction: 'none'
                       }}
                     >
                       <img
                         src={item.dataUrl}
-                        alt="Signature item"
+                        alt="Placed item"
                         style={{
                           width: '100%',
                           height: '100%',
@@ -852,18 +957,21 @@ export const PdfSigner = () => {
                       {isSelected && (
                         <div style={{
                           position: 'absolute',
-                          top: '-18px',
+                          top: '-20px',
                           left: '0',
                           background: '#2563EB',
                           color: '#FFF',
                           fontSize: '10px',
-                          padding: '1px 4px',
-                          borderRadius: '2px',
+                          fontWeight: '700',
+                          padding: '1px 5px',
+                          borderRadius: '3px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '2px'
+                          gap: '3px',
+                          pointerEvents: 'none',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                         }}>
-                          <Move size={10} /> Drag to position
+                          <Move size={10} /> Drag to place
                         </div>
                       )}
                     </div>
@@ -872,8 +980,8 @@ export const PdfSigner = () => {
             </div>
 
             {/* Instruction footnote */}
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.75rem', textAlign: 'center' }}>
-              💡 Click and drag the signature box to place it exactly on your document’s signature line.
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.85rem', textAlign: 'center' }}>
+              💡 Click and drag the signature box to place it exactly where you need to sign. Use the <strong>+</strong> and <strong>-</strong> buttons to resize.
             </p>
           </div>
         </div>
